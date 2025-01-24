@@ -67,4 +67,6 @@ public class Utilisateur extends Personne {
     public void setEntraineur(Entraineur entraineur) {
         this.entraineur = entraineur;
     }
+
+
 }

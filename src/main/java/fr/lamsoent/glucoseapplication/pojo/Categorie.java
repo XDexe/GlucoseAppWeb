@@ -39,4 +39,6 @@ public class Categorie {
     public void setNom(String nom) {
         this.nom = nom;
     }
+
+
 }

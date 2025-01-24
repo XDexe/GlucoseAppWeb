@@ -59,4 +59,6 @@ public abstract class Personne {
     public void setNom(String nom) {
         this.nom = nom;
     }
+
+
 }

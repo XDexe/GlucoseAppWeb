@@ -22,4 +22,5 @@ public class Dieteticien extends Personne{
     public void setListUtilisateurs(List<Utilisateur> listUtilisateurs) {
         this.listUtilisateurs = listUtilisateurs;
     }
+
 }
