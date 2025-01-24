@@ -1,9 +1,9 @@
 package fr.lamsoent.glucoseapplication.pojo;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Capteur {
@@ -15,6 +15,9 @@ public class Capteur {
     private String mac;
     private String longitude;
     private String latitude;
+
+    @OneToMany(mappedBy = "capteur")
+    private List<Activite> listActivites = new ArrayList<Activite>();
 
     public int getId() {
         return id;
@@ -54,5 +57,13 @@ public class Capteur {
 
     public void setLatitude(String latitude) {
         this.latitude = latitude;
+    }
+
+    public List<Activite> getListActivites() {
+        return listActivites;
+    }
+
+    public void setListActivites(List<Activite> listActivites) {
+        this.listActivites = listActivites;
     }
 }

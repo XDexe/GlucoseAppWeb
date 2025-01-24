@@ -2,6 +2,11 @@ package fr.lamsoent.glucoseapplication.pojo;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 public class Utilisateur extends Personne {
     private String remarque;
@@ -14,17 +19,22 @@ public class Utilisateur extends Personne {
     @ManyToOne
     private Entraineur entraineur = new Entraineur();
 
+    @ManyToOne
+    private Capteur capteur = new Capteur();
 
     @ManyToOne
     private Dieteticien dieteticien = new Dieteticien();
 
-    public Utilisateur(){
+    @OneToMany
+    private List<Activite> activite = new ArrayList<Activite>();
 
+    public Utilisateur(){
     }
 
     public String getRemarque() {
         return remarque;
     }
+
 
     public void setRemarque(String remarque) {
         this.remarque = remarque;
@@ -68,5 +78,19 @@ public class Utilisateur extends Personne {
         this.entraineur = entraineur;
     }
 
+    public Capteur getCapteur() {
+        return capteur;
+    }
 
+    public void setCapteur(Capteur capteur) {
+        this.capteur = capteur;
+    }
+
+    public List<Activite> getActivite() {
+        return activite;
+    }
+
+    public void setActivite(List<Activite> activite) {
+        this.activite = activite;
+    }
 }
