@@ -1,7 +1,7 @@
 package fr.lamsoent.glucoseapplication.pojo;
 
 import jakarta.persistence.*;
-import sun.net.www.protocol.http.AuthenticationInfo;
+
 
 import java.util.ArrayList;
 import java.util.Date;

@@ -14,6 +14,10 @@ public class Utilisateur extends Personne {
     private String seuilMin;
 
     @ManyToOne
+    private Categorie categorie = new Categorie();
+
+
+    @ManyToOne
     private Medecin medecin = new Medecin();
 
     @ManyToOne
@@ -92,5 +96,12 @@ public class Utilisateur extends Personne {
 
     public void setActivite(List<Activite> activite) {
         this.activite = activite;
+    }
+    public  void setCategorie(Categorie categorie){
+        this.categorie = categorie;
+    }
+
+    public Categorie getCategorie(){
+        return categorie;
     }
 }

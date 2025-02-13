@@ -28,6 +28,14 @@ public class ActiviteREST {
     private UtilisateurModel utilisateurModel;
     @GET
     public Response deploy(){
+        Capteur capteur = new Capteur();
+        capteur.setMac("58:85:c9:b4:df:83");
+        capteur = capteurModel.update(capteur);
+
+        Utilisateur user = new Utilisateur();
+        user.setNom("JeansBaptiqre");
+        user.setCapteur(capteur);
+        utilisateurModel.update(user);
         return Response.ok("deploiement ok").build();
     }
 
@@ -40,11 +48,11 @@ public class ActiviteREST {
         List<Capteur> lc = capteurModel.read();
         List<Utilisateur> lu = utilisateurModel.read();
 
-
         Capteur c =null;
         Utilisateur u =null;
         for (Capteur capteur : lc) {
             if (capteur.getMac().equalsIgnoreCase( mac)) {
+                System.out.println("Capteur trouver " + c.getMac());
                 c = capteur;
             }
         }
@@ -53,6 +61,7 @@ public class ActiviteREST {
         }
         for (Utilisateur user : lu) {
             if (user.getCapteur().equals( c)) {
+                System.out.println("Utilisateur trouver " + u.getNom());
                 u=user;
             }
         }
@@ -64,6 +73,8 @@ public class ActiviteREST {
         a1.setCapteur(c);
         a1.setDateDebut(formatDate(dateDebut));
         a1=activiteModel.update(a1);
+        activiteModel.update(a1);
+        System.out.println(a1.getId());
         return  Response.ok(a1.getId()).build();
     }
 

@@ -1,5 +1,6 @@
 package fr.lamsoent.glucoseapplication.pojo;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class Capteur {
     private String longitude;
     private String latitude;
 
+    @JsonbTransient
     @OneToMany(mappedBy = "capteur")
     private List<Activite> listActivites = new ArrayList<Activite>();
 
@@ -59,6 +61,7 @@ public class Capteur {
         this.latitude = latitude;
     }
 
+    @JsonbTransient
     public List<Activite> getListActivites() {
         return listActivites;
     }

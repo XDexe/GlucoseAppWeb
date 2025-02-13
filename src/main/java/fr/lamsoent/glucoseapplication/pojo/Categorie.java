@@ -13,7 +13,7 @@ public class Categorie {
     private String nom;
 
 
-    @OneToMany
+    @OneToMany(mappedBy = "categorie")
     private List<Utilisateur> listUtilisateurs = new ArrayList<Utilisateur>();
 
     public int getId() {

@@ -19,7 +19,7 @@ public class ActiviteModel {
         em.persist(activite);
     }
     public Activite update(Activite activite) {
-        return  em.merge(activite);
+        return em.merge(activite);
     }
     public void delete(Activite activite) {
         em.remove(em.merge(activite));
