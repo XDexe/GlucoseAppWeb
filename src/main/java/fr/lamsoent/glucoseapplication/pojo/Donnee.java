@@ -3,7 +3,7 @@ package fr.lamsoent.glucoseapplication.pojo;
 import jakarta.persistence.*;
 
 @Entity
-public class Data {
+public class Donnee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

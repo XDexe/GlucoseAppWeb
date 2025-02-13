@@ -1,34 +1,33 @@
 package fr.lamsoent.glucoseapplication.model;
 
-import fr.lamsoent.glucoseapplication.pojo.Data;
+import fr.lamsoent.glucoseapplication.pojo.Donnee;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
-public class DataModel {
+public class DonneeModel {
 
     @PersistenceContext(unitName = "default")
     private EntityManager em;
 
-    public void create(Data data) {
-        em.persist(data);
+    public void create(Donnee donnee) {
+        em.persist(donnee);
     }
-    public Data update(Data data) {
-        return  em.merge(data);
+    public Donnee update(Donnee donnee) {
+        return  em.merge(donnee);
     }
-    public void delete(Data data) {
-        em.remove(em.merge(data));
+    public void delete(Donnee donnee) {
+        em.remove(em.merge(donnee));
     }
-    public Data read(int id) {
-        return em.find(Data.class, id);
+    public Donnee read(int id) {
+        return em.find(Donnee.class, id);
     }
-    public List<Data> read(){
-        Query query = em.createQuery("select datas from Data as datas ", Data.class);
+    public List<Donnee> read(){
+        Query query = em.createQuery("select datas from Donnee as datas ", Donnee.class);
         return query.getResultList();
     }
 

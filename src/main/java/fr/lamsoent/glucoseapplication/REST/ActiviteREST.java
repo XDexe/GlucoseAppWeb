@@ -5,8 +5,12 @@ import fr.lamsoent.glucoseapplication.model.CapteurModel;
 import fr.lamsoent.glucoseapplication.model.UtilisateurModel;
 import fr.lamsoent.glucoseapplication.pojo.Activite;
 import fr.lamsoent.glucoseapplication.pojo.Capteur;
+import fr.lamsoent.glucoseapplication.pojo.Donnee;
 import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
+import fr.lamsoent.glucoseapplication.websocket.Graphique;
 import jakarta.ejb.EJB;
+import jakarta.ejb.Init;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -24,18 +28,13 @@ public class ActiviteREST {
     @EJB
     private CapteurModel capteurModel;
 
+    @Inject
+    private Graphique graphiqueWebServer;
+
     @EJB
     private UtilisateurModel utilisateurModel;
     @GET
     public Response deploy(){
-        Capteur capteur = new Capteur();
-        capteur.setMac("58:85:c9:b4:df:83");
-        capteur = capteurModel.update(capteur);
-
-        Utilisateur user = new Utilisateur();
-        user.setNom("JeansBaptiqre");
-        user.setCapteur(capteur);
-        utilisateurModel.update(user);
         return Response.ok("deploiement ok").build();
     }
 
@@ -88,5 +87,12 @@ public class ActiviteREST {
         catch (Exception e){
             return new Date();
         }
+    }
+
+    @POST
+    @Path("/envoiDonnee")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void recevoirDonnées(Donnee donnee){
+
     }
 }

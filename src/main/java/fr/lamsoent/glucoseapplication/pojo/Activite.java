@@ -18,7 +18,7 @@ public class Activite {
     private Date dateFin;
 
     @OneToMany(mappedBy = "activite")
-    private List<Data> listDatas = new ArrayList<>();
+    private List<Donnee> listDonnees = new ArrayList<>();
 
     @ManyToOne
     private Utilisateur utilisateur= new Utilisateur();
@@ -50,12 +50,12 @@ public class Activite {
         this.dateFin = dateFin;
     }
 
-    public List<Data> getListDatas() {
-        return listDatas;
+    public List<Donnee> getListDatas() {
+        return listDonnees;
     }
 
-    public void setListDatas(List<Data> listDatas) {
-        this.listDatas = listDatas;
+    public void setListDatas(List<Donnee> listDonnees) {
+        this.listDonnees = listDonnees;
     }
 
     public Utilisateur getUtilisateur() {
