@@ -7,6 +7,7 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Named
 @SessionScoped
@@ -38,4 +39,7 @@ public class MedecinController implements Serializable {
         this.activite = activite;
     }
 
+    public List<Medecin> getMedecins() {
+        return activiteModel.read();
+    }
 }

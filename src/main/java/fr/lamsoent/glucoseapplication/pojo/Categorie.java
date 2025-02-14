@@ -1,5 +1,6 @@
 package fr.lamsoent.glucoseapplication.pojo;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class Categorie {
 
 
     @OneToMany(mappedBy = "categorie")
+    @JsonbTransient
     private List<Utilisateur> listUtilisateurs = new ArrayList<Utilisateur>();
 
     public int getId() {
@@ -24,6 +26,7 @@ public class Categorie {
         this.id = id;
     }
 
+    @JsonbTransient
     public List<Utilisateur> getListUtilisateurs() {
         return listUtilisateurs;
     }

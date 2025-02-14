@@ -6,6 +6,8 @@ import fr.lamsoent.glucoseapplication.pojo.Donnee;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
 import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
 
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@ServerEndpoint("/websocketdata")
+@ServerEndpoint(value = "/websocketdata")
 @Singleton
 @ApplicationScoped
 public class Graphique {
@@ -38,6 +40,7 @@ public class Graphique {
 
         switch (args[0]){
             case "abonnement":
+                System.out.println("Debug 01 abonnement");
                 abonnementClient(args, session);
             default:
                 break;
@@ -49,6 +52,7 @@ public class Graphique {
     @OnClose
     public void onClose(Session session) {
         anonyme.remove(session);
+
         clientAbonnes.values().forEach(sessions -> {
             if (sessions.contains(session)){
                 sessions.remove(session);
@@ -73,7 +77,7 @@ public class Graphique {
             return;
         }
 
-        if(!clientAbonnes.get(activite.getId()).isEmpty()){
+        if(clientAbonnes.get(activite.getId())!= null && !clientAbonnes.get(activite.getId()).isEmpty()){
             clientAbonnes.get(activite.getId()).forEach(session -> {
                 session.getAsyncRemote().sendText(dataString);
             });
@@ -83,23 +87,30 @@ public class Graphique {
 
     public void abonnementClient(String[] args,Session session){
         int idActivite;
+
+        System.out.println("Debug 02 abonnement");
         try {
             idActivite = Integer.parseInt(args[1]);
         }catch (NumberFormatException  e){
             e.printStackTrace();
-            return;
+            idActivite =0;
         }
+
+        System.out.println("Debug 03 abonnement");
         if(activiteModel.read(idActivite) == null) {
               return;
         }
 
+        System.out.println("Debug 04 abonnement");
         if(!clientAbonnes.containsKey(idActivite)){
             clientAbonnes.put(idActivite, new ArrayList<Session>());
         }
-
+        System.out.println("Debug 05 abonnement");
         if (!clientAbonnes.get(idActivite).contains(session)){
             clientAbonnes.get(idActivite).add(session);
         }
+
+        System.out.println("nouvel abonné :" + idActivite );
 
     }
 

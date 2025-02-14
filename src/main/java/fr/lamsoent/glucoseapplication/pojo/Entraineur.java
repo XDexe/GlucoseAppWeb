@@ -1,5 +1,6 @@
 package fr.lamsoent.glucoseapplication.pojo;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 
@@ -10,11 +11,12 @@ import java.util.List;
 public class Entraineur extends Personne {
 
     @OneToMany(mappedBy = "entraineur")
+    @JsonbTransient
     private List<Utilisateur> listUtilisateurs = new ArrayList<>();
 
     public Entraineur() {
     }
-
+    @JsonbTransient
     public List<Utilisateur> getListUtilisateurs() {
         return listUtilisateurs;
     }

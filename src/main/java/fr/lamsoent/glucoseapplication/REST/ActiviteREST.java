@@ -2,12 +2,14 @@ package fr.lamsoent.glucoseapplication.REST;
 
 import fr.lamsoent.glucoseapplication.model.ActiviteModel;
 import fr.lamsoent.glucoseapplication.model.CapteurModel;
+import fr.lamsoent.glucoseapplication.model.DonneeModel;
 import fr.lamsoent.glucoseapplication.model.UtilisateurModel;
 import fr.lamsoent.glucoseapplication.pojo.Activite;
 import fr.lamsoent.glucoseapplication.pojo.Capteur;
 import fr.lamsoent.glucoseapplication.pojo.Donnee;
 import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
 import fr.lamsoent.glucoseapplication.websocket.Graphique;
+import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Init;
 import jakarta.inject.Inject;
@@ -28,6 +30,9 @@ public class ActiviteREST {
     @EJB
     private CapteurModel capteurModel;
 
+    @EJB
+    private DonneeModel donneeModel;
+
     @Inject
     private Graphique graphiqueWebServer;
 
@@ -37,6 +42,16 @@ public class ActiviteREST {
     public Response deploy(){
         return Response.ok("deploiement ok").build();
     }
+
+    @GET
+    @Path("/read")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response lireActivite(@QueryParam("idActivite") int idActivite){
+        Activite actSelect=activiteModel.read(idActivite);
+    return Response.accepted(actSelect).build();
+    }
+
+
 
     //Créer
     @POST
@@ -49,22 +64,25 @@ public class ActiviteREST {
 
         Capteur c =null;
         Utilisateur u =null;
+
         for (Capteur capteur : lc) {
-            if (capteur.getMac().equalsIgnoreCase( mac)) {
-                System.out.println("Capteur trouver " + c.getMac());
+            if (capteur.getMac().equalsIgnoreCase(mac)) {
+                System.out.println("Capteur trouver " + capteur.getMac());
                 c = capteur;
             }
         }
         if (c==null){
+            System.out.println("Le capteur c est nulle");
             return Response.noContent().build();
         }
         for (Utilisateur user : lu) {
-            if (user.getCapteur().equals( c)) {
-                System.out.println("Utilisateur trouver " + u.getNom());
+            if (user.getCapteur().getMac().equalsIgnoreCase(c.getMac())) {
+                System.out.println("Utilisateur trouver " + user.getNom());
                 u=user;
             }
         }
         if (u==null){
+            System.out.println("L' utilisateur u est nulle");
             return Response.noContent().build();
         }
         Activite a1 = new Activite();
@@ -72,7 +90,7 @@ public class ActiviteREST {
         a1.setCapteur(c);
         a1.setDateDebut(formatDate(dateDebut));
         a1=activiteModel.update(a1);
-        activiteModel.update(a1);
+        a1 = activiteModel.update(a1);
         System.out.println(a1.getId());
         return  Response.ok(a1.getId()).build();
     }
@@ -92,7 +110,20 @@ public class ActiviteREST {
     @POST
     @Path("/envoiDonnee")
     @Produces(MediaType.APPLICATION_JSON)
-    public void recevoirDonnées(Donnee donnee){
+    public void envoyerDonnées(@QueryParam("dateData") String dateDebut,
+                                @QueryParam("tauxGlucose") String tauxGlucose,
+                                @QueryParam("idActivite") int idActivite){
 
+        if(activiteModel.read(idActivite)== null){
+            return ;
+        }
+        Donnee donnee = new Donnee();
+        donnee.setDateData(formatDate(dateDebut));
+        donnee.setGlucose(tauxGlucose);
+        donnee.getActivite().setId(idActivite);
+
+
+        donnee = donneeModel.update(donnee);
+        graphiqueWebServer.sendMessage(donnee);
     }
 }

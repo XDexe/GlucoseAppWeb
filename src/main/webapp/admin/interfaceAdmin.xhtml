@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Admin dashboard</title>
+    <h:outputStylesheet library="css" name="glucoseApp.css"/>
+</h:head>
+<h:body>
+    <p:growl id="messages"/>
+
+    <div class="header">
+        <div class="logo">
+            <p:graphicImage value="/resources/images/fluxosLogo.png" alt="logo"/>
+        </div>
+        <div class="title">
+            <div class="input-button-left">
+            </div>
+        </div>
+    </div>
+
+    <p:panelGrid columns="3">
+    <p:card>
+        <f:facet name="title">
+            Gestion des médecins
+        </f:facet>
+        <p>Ajouter, modifier ou supprimer des médecins.</p>
+        <h:form>
+            <p:commandButton value="Aller" action="medecin.xhtml" ajax="false"/>
+        </h:form>
+    </p:card>
+
+    <p:card>
+        <f:facet name="title">
+            Gestion des diététiciens
+        </f:facet>
+        <p>Ajouter, modifier ou supprimer des diététiciens.</p>
+        <h:form>
+            <p:commandButton value="Aller" action="dieteticien.xhtml" ajax="false"/>
+        </h:form>
+    </p:card>
+
+    <p:card>
+        <f:facet name="title">
+            Gestion des utilisateurs
+        </f:facet>
+        <p>Ajouter, modifier ou supprimer des utilisateurs.</p>
+        <h:form>
+            <p:commandButton value="Aller" action="utilisateur.xhtml" ajax="false"/>
+        </h:form>
+    </p:card>
+
+    </p:panelGrid>
+    <p:panelGrid columns="3">
+
+    <p:card>
+        <f:facet name="title">
+            Gestion des entraineurs
+        </f:facet>
+        <p>Ajouter, modifier ou supprimer des entraineurs.</p>
+        <h:form>
+            <p:commandButton value="Aller" action="patient.xhtml" ajax="false"/>
+        </h:form>
+    </p:card>
+
+    <p:card>
+        <f:facet name="title">
+            Gestion des catégories
+        </f:facet>
+        <p>Ajouter, modifier ou supprimer des catégories.</p>
+        <h:form>
+            <p:commandButton value="Aller" action="rendezVous.xhtml" ajax="false"/>
+        </h:form>
+    </p:card>
+
+    <p:card>
+        <f:facet name="title">
+            Gestion des administrateurs
+        </f:facet>
+        <p>Ajouter, modifier ou supprimer des administrateurs.</p>
+        <h:form>
+            <p:commandButton value="Aller" action="consultation.xhtml" ajax="false"/>
+        </h:form>
+    </p:card>
+
+    </p:panelGrid>
+
+</h:body>
+</html>

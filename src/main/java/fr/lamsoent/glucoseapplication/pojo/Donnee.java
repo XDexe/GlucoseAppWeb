@@ -1,6 +1,10 @@
 package fr.lamsoent.glucoseapplication.pojo;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
+
+import java.util.Date;
+
 
 @Entity
 public class Donnee {
@@ -11,8 +15,9 @@ public class Donnee {
 
     private String glucose;
 
-    private String dateData;
+    private Date dateData;
 
+    @JsonbTransient
     @ManyToOne
     private Activite activite = new Activite();
 
@@ -32,14 +37,15 @@ public class Donnee {
         this.glucose = glucose;
     }
 
-    public String getDateData() {
+    public Date getDateData() {
         return dateData;
     }
 
-    public void setDateData(String dateData) {
+    public void setDateData(Date dateData) {
         this.dateData = dateData;
     }
 
+    @JsonbTransient
     public Activite getActivite() {
         return activite;
     }

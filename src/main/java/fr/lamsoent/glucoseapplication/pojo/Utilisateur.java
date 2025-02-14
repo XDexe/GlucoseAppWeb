@@ -1,5 +1,6 @@
 package fr.lamsoent.glucoseapplication.pojo;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -17,6 +18,7 @@ public class Utilisateur extends Personne {
     private Categorie categorie = new Categorie();
 
 
+
     @ManyToOne
     private Medecin medecin = new Medecin();
 
@@ -25,6 +27,7 @@ public class Utilisateur extends Personne {
 
     @ManyToOne
     private Capteur capteur = new Capteur();
+
 
     @ManyToOne
     private Dieteticien dieteticien = new Dieteticien();
