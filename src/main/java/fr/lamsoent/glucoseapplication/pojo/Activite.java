@@ -1,5 +1,6 @@
 package fr.lamsoent.glucoseapplication.pojo;
 
+import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.*;
 
 
@@ -13,9 +14,11 @@ public class Activite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
+    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private Date dateDebut;
+    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private Date dateFin;
+
 
     @OneToMany(mappedBy = "activite")
     private List<Donnee> listDonnees = new ArrayList<>();

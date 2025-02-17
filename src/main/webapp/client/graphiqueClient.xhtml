@@ -19,11 +19,41 @@
    </h:form>
    <canvas id="line" width="1000" height="750"></canvas>
    <script>
-      let idActivite = document.getElementById('formData:idActivite')
-      let isAlive = document.getElementById('formData:isAlive')
-      console.log(idActivite.value)
-   </script>
-   <script>
+      let idActivite = document.getElementById('formData:idActivite').value;
+      let isAlive = document.getElementById('formData:isAlive').value;
+      let ws;
+
+      console.log(idActivite);
+      fetchData(idActivite);
+
+      if (isAlive === "true") {
+         ws = new WebSocket("ws://192.168.223.240:8080/GlucoseApplication-1.0-SNAPSHOT/websocketdata");
+
+         ws.onopen = event => {
+            ws.send("abonnement#" + idActivite);
+            console.log("WebSocket connection opened");
+         };
+
+         ws.onmessage = event => {
+            let txt = event.data;
+            let txtJson = JSON.parse(txt);
+            let temps = new Date(txtJson.dateData);
+            let glucoseConverted = txtJson.glucose;
+            console.log("Message received");
+            lineChart.data.labels.push(temps);
+            lineChart.data.datasets[0].data.push(glucoseConverted);
+            lineChart.update();
+         };
+
+         ws.onerror = error => {
+            console.error("WebSocket error:", error);
+         };
+
+         ws.onclose = event => {
+            console.log("WebSocket connection closed:", event);
+         };
+      }
+
       const labels = [];
       const data = {
          labels: labels,
@@ -31,7 +61,7 @@
             label: 'Taux de glucose dans le sang (mg/dL)',
             data: [],
             fill: false,
-            borderColor: 'rgb(255, 87, 34)',
+            borderColor: 'rgb(240,34,255)',
             tension: 0.4
          }]
       };
@@ -53,6 +83,12 @@
             },
             scales: {
                x: {
+                  type: 'time',
+                  time: {
+                     tooltipFormat: 'yyyy-MM-dd HH:mm:ss',
+                     unit: 'second',
+                     displayFormats: { second: 'yyyy-MM-dd HH:mm:ss' }
+                  },
                   title: {
                      display: true,
                      text: 'Temps (s)'
@@ -71,32 +107,45 @@
          }
       };
 
-      // Initialiser le graphique
+      // Initialize the chart
       const lineChart = new Chart(
               document.getElementById('line'),
               config
       );
 
       function updateChart(newData) {
-         lineChart.data.labels = newData.map((_, index) => index + 1);
-         lineChart.data.datasets[0].data = newData;
+         const datas = newData;
+         datas.forEach((data) => {
+            let date = data.dateData;
+            let glucose = data.glucose;
+            let id = data.id;
+            let temps = new Date(date);
+            let glucoseConverted = parseFloat(glucose);
+            lineChart.data.labels.push(temps);
+            lineChart.data.datasets[0].data.push(glucoseConverted);
+            lineChart.update();
+         });
+
          lineChart.update();
       }
 
-      function fetchData() {
-         fetch('http://localhost:8080/CardioScantest-1.0-SNAPSHOT/ws/data/chartData')
+      function fetchData(idActivite) {
+         fetch('http://192.168.223.240:8080/GlucoseApplication-1.0-SNAPSHOT/api/activite/getDonneesAct?idActivite=' + idActivite)
                  .then(response => response.json())
                  .then(data => {
-                    updateChart(data);
+                    console.log(data);
+                    if (data &amp;&amp; Array.isArray(data)) {
+                       // Add data to the chart
+                       updateChart(data);
+                    }
                  })
                  .catch(error => console.error('Error fetching chart data:', error));
       }
-
       // Fetch data initially
-     // fetchData();
+      // fetchData();
 
       // Fetch data every 1 seconds
-     // setInterval(fetchData, 1000);
+      // setInterval(fetchData, 1000);
    </script>
 </h:body>
 </html>

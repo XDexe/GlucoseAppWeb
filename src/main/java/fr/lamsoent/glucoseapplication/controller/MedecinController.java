@@ -14,32 +14,36 @@ import java.util.List;
 public class MedecinController implements Serializable {
 
     @EJB
-    private MedecinModel activiteModel;
+    private MedecinModel medecinModel;
 
-    private Medecin activite = new Medecin();
+    private Medecin medecin = new Medecin();
 
     public void editMedecin() {
-        activiteModel.update(this.activite);
-        activite = new Medecin();
+        medecinModel.update(this.medecin);
+        medecin = new Medecin();
     }
 
-    public void deleteMedecin(Medecin activite) {
-        activiteModel.delete(activite);
+    public void deleteMedecin(Medecin medecin) {
+        medecinModel.delete(medecin);
     }
 
-    public void loadMedecin(Medecin activite) {
-        this.activite=activite;
+    public void loadMedecin(Medecin medecin) {
+        this.medecin=medecin;
     }
 
     public Medecin getMedecin() {
-        return activite;
+        return medecin;
     }
 
-    public void setMedecin(Medecin activite) {
-        this.activite = activite;
+    public void setMedecin(Medecin medecin) {
+        this.medecin = medecin;
     }
 
     public List<Medecin> getMedecins() {
-        return activiteModel.read();
+        return medecinModel.read();
+    }
+
+    public void resetForm() {
+        this.medecin = new Medecin();
     }
 }

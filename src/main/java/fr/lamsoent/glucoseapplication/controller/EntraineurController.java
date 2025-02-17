@@ -7,6 +7,7 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Named
 @SessionScoped
@@ -38,4 +39,11 @@ public class EntraineurController implements Serializable {
         this.entraineur = entraineur;
     }
 
+    public List<Entraineur> getEntraineurs() {
+        return entraineurModel.read();
+    }
+
+    public void resetForm() {
+        this.entraineur = new Entraineur();
+    }
 }

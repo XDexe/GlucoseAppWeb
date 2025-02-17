@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
@@ -31,6 +32,11 @@ public class DonneeModel {
         return query.getResultList();
     }
 
+    public List<Donnee> donneeListWithIdActivite(int idActivite){
+        Query query = em.createQuery("SELECT d FROM Donnee d WHERE d.activite.id = :idActivite", Donnee.class);
+        query.setParameter("idActivite", idActivite);
+        return query.getResultList();
+    }
     public EntityManager getEm() {
         return em;
     }

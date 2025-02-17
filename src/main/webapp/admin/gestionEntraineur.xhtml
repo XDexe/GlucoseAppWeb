@@ -6,54 +6,54 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 <h:head>
-    <title>Gestion médecin</title>
+    <title>Gestion entraineur</title>
     <h:outputStylesheet library="css" name="glucoseApp.css"/>
 </h:head>
 
 <h:body>
 <div id="appContainer">
     <div class="table-wrapper">
-        <h:form id="formMedecins" style="display: flex; flex-direction: column; height: 100%;">
-            <p:dataTable value="#{medecinController.medecins}"
-                         var="medecin"
+        <h:form id="formEntraineurs" style="display: flex; flex-direction: column; height: 100%;">
+            <p:dataTable value="#{entraineurController.entraineurs}"
+                         var="entraineur"
                          scrollable="true"
                          scrollHeight="500px"
                          styleClass="table-container"
                          style="width:100%; flex:1; border: none !important;">
 
                 <p:column headerText="Nom">
-                    <h:outputText value="#{medecin.nom}" />
+                    <h:outputText value="#{entraineur.nom}" />
                 </p:column>
 
                 <p:column headerText="Prénom">
-                    <h:outputText value="#{medecin.prenom}" />
+                    <h:outputText value="#{entraineur.prenom}" />
                 </p:column>
 
                 <p:column headerText="Actions" style="width: 100px; text-align: center;">
                     <p:commandButton icon="pi pi-pencil"
-                                     action="#{medecinController.loadMedecin(medecin)}"
-                                     update=":formAddMedecin"
-                                     oncomplete="PF('dlgAddMedecin').show()"
+                                     action="#{entraineurController.loadEntraineur(entraineur)}"
+                                     update=":formAddEntraineur"
+                                     oncomplete="PF('dlgAddEntraineur').show()"
                                      styleClass="iconButton"
                                      title="Modifier"/>
                     <p:commandButton icon="pi pi-trash"
-                                     action="#{medecinController.deleteMedecin(medecin)}"
-                                     update="formMedecins"
+                                     action="#{entraineurController.deleteEntraineur(entraineur)}"
+                                     update="formEntraineurs"
                                      styleClass="iconButton"
                                      title="Supprimer"/>
                 </p:column>
             </p:dataTable>
 
-            <p:commandButton value="Ajouter un médecin"
+            <p:commandButton value="Ajouter un entraineur"
                              icon="pi pi-plus"
-                             actionListener="#{medecinController.resetForm()}"
-                             update="formAddMedecin"
+                             actionListener="#{entraineurController.resetForm()}"
+                             update="formAddEntraineur"
                              style="margin:20px auto 0 auto;"
-                             oncomplete="PF('dlgAddMedecin').show()" />
+                             oncomplete="PF('dlgAddEntraineur').show()" />
         </h:form>
     </div>
 </div>
-<p:dialog widgetVar="dlgAddMedecin"
+<p:dialog widgetVar="dlgAddEntraineur"
           modal="true"
           resizable="false"
           draggable="false"
@@ -64,30 +64,30 @@
           bottom="0"
           left="50%">
 
-    <h:form id="formAddMedecin">
-        <h:inputHidden value="#{medecinController.medecin.idPersonne}"/>
+    <h:form id="formAddEntraineur">
+        <h:inputHidden value="#{entraineurController.entraineur.idPersonne}"/>
 
         <p:panelGrid columns="2" styleClass="grid">
 
             <h:outputLabel value="Nom :" />
-            <p:inputText value="#{medecinController.medecin.nom}" />
+            <p:inputText value="#{entraineurController.entraineur.nom}" />
 
             <h:outputLabel value="Prénom :" />
-            <p:inputText value="#{medecinController.medecin.prenom}" />
+            <p:inputText value="#{entraineurController.entraineur.prenom}" />
 
         </p:panelGrid>
 
         <p:separator/>
 
         <p:commandButton value="Enregistrer"
-                         actionListener="#{medecinController.editMedecin()}"
-                         oncomplete="PF('dlgAddMedecin').hide()"
-                         update="formMedecins"
+                         actionListener="#{entraineurController.editEntraineur()}"
+                         oncomplete="PF('dlgAddEntraineur').hide()"
+                         update="formEntraineurs"
                          icon="pi pi-check"/>
 
         <p:commandButton value="Annuler"
                          type="button"
-                         onclick="PF('dlgAddMedecin').hide()"
+                         onclick="PF('dlgAddEntraineur').hide()"
                          icon="pi pi-times"/>
     </h:form>
 </p:dialog>

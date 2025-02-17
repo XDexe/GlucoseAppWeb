@@ -2,11 +2,13 @@ package fr.lamsoent.glucoseapplication.controller;
 
 import fr.lamsoent.glucoseapplication.model.DieteticienModel;
 import fr.lamsoent.glucoseapplication.pojo.Dieteticien;
+import fr.lamsoent.glucoseapplication.pojo.Medecin;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Named
 @SessionScoped
@@ -36,6 +38,14 @@ public class DieteticienController implements Serializable {
 
     public void setDieteticien(Dieteticien dieteticien) {
         this.dieteticien = dieteticien;
+    }
+
+    public List<Dieteticien> getDieteticiens() {
+        return dieteticienModel.read();
+    }
+
+    public void resetForm() {
+        this.dieteticien = new Dieteticien();
     }
 
 }

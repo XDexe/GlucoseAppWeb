@@ -23,69 +23,67 @@
     </div>
 
     <p:panelGrid columns="3">
-    <p:card>
-        <f:facet name="title">
-            Gestion des médecins
-        </f:facet>
-        <p>Ajouter, modifier ou supprimer des médecins.</p>
-        <h:form>
-            <p:commandButton value="Aller" action="medecin.xhtml" ajax="false"/>
-        </h:form>
-    </p:card>
+        <p:card>
+            <f:facet name="title">
+                Gestion des médecins
+            </f:facet>
+            <p>Ajouter, modifier ou supprimer des médecins.</p>
+            <h:form>
+                <p:button value="Aller" outcome="gestionMedecin.html" ajax="false"/>
+            </h:form>
+        </p:card>
 
-    <p:card>
-        <f:facet name="title">
-            Gestion des diététiciens
-        </f:facet>
-        <p>Ajouter, modifier ou supprimer des diététiciens.</p>
-        <h:form>
-            <p:commandButton value="Aller" action="dieteticien.xhtml" ajax="false"/>
-        </h:form>
-    </p:card>
+        <p:card>
+            <f:facet name="title">
+                Gestion des diététiciens
+            </f:facet>
+            <p>Ajouter, modifier ou supprimer des diététiciens.</p>
+            <h:form>
+                <p:button value="Aller" outcome="gestionDieteticien.html" ajax="false"/>
+            </h:form>
+        </p:card>
 
-    <p:card>
-        <f:facet name="title">
-            Gestion des utilisateurs
-        </f:facet>
-        <p>Ajouter, modifier ou supprimer des utilisateurs.</p>
-        <h:form>
-            <p:commandButton value="Aller" action="utilisateur.xhtml" ajax="false"/>
-        </h:form>
-    </p:card>
-
+        <p:card>
+            <f:facet name="title">
+                Gestion des entraineurs
+            </f:facet>
+            <p>Ajouter, modifier ou supprimer des entraineurs.</p>
+            <h:form>
+                <p:button value="Aller" outcome="gestionEntraineur.html" ajax="false"/>
+            </h:form>
+        </p:card>
     </p:panelGrid>
+
     <p:panelGrid columns="3">
+        <p:card>
+            <f:facet name="title">
+                Gestion des utilisateurs
+            </f:facet>
+            <p>Ajouter, modifier ou supprimer des utilisateurs.</p>
+            <h:form>
+                <p:commandButton value="Aller" action="utilisateur.xhtml" ajax="false"/>
+            </h:form>
+        </p:card>
 
-    <p:card>
-        <f:facet name="title">
-            Gestion des entraineurs
-        </f:facet>
-        <p>Ajouter, modifier ou supprimer des entraineurs.</p>
-        <h:form>
-            <p:commandButton value="Aller" action="patient.xhtml" ajax="false"/>
-        </h:form>
-    </p:card>
+        <p:card>
+            <f:facet name="title">
+                Gestion des catégories
+            </f:facet>
+            <p>Ajouter, modifier ou supprimer des catégories.</p>
+            <h:form>
+                <p:commandButton value="Aller" action="rendezVous.xhtml" ajax="false"/>
+            </h:form>
+        </p:card>
 
-    <p:card>
-        <f:facet name="title">
-            Gestion des catégories
-        </f:facet>
-        <p>Ajouter, modifier ou supprimer des catégories.</p>
-        <h:form>
-            <p:commandButton value="Aller" action="rendezVous.xhtml" ajax="false"/>
-        </h:form>
-    </p:card>
-
-    <p:card>
-        <f:facet name="title">
-            Gestion des administrateurs
-        </f:facet>
-        <p>Ajouter, modifier ou supprimer des administrateurs.</p>
-        <h:form>
-            <p:commandButton value="Aller" action="consultation.xhtml" ajax="false"/>
-        </h:form>
-    </p:card>
-
+        <p:card>
+            <f:facet name="title">
+                Gestion des administrateurs
+            </f:facet>
+            <p>Ajouter, modifier ou supprimer des administrateurs.</p>
+            <h:form>
+                <p:commandButton value="Aller" action="consultation.xhtml" ajax="false"/>
+            </h:form>
+        </p:card>
     </p:panelGrid>
 
 </h:body>

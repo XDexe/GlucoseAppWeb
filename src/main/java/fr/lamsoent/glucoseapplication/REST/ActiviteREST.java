@@ -32,7 +32,7 @@ public class ActiviteREST {
 
     @EJB
     private DonneeModel donneeModel;
-
+    
     @Inject
     private Graphique graphiqueWebServer;
 
@@ -52,6 +52,12 @@ public class ActiviteREST {
     }
 
 
+    @GET
+    @Path("/getDonneesAct")
+    public Response getData(@QueryParam("idActivite") int idActivite){
+               List<Donnee> datas = donneeModel.donneeListWithIdActivite(idActivite);
+        return Response.accepted(datas).build();
+    }
 
     //Créer
     @POST

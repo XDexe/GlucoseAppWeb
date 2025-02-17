@@ -1,5 +1,6 @@
 package fr.lamsoent.glucoseapplication.pojo;
 
+import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
 
@@ -14,7 +15,7 @@ public class Donnee {
     private int id;
 
     private String glucose;
-
+    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private Date dateData;
 
     @JsonbTransient
