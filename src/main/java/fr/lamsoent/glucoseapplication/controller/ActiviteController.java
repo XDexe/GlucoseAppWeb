@@ -4,8 +4,10 @@ import fr.lamsoent.glucoseapplication.pojo.Activite;
 import fr.lamsoent.glucoseapplication.pojo.Activite;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.Serializable;
 import java.util.List;
@@ -32,8 +34,9 @@ public class ActiviteController implements Serializable {
     }
 
     public String accesActivite(Activite activite) {
-        donneeController.setActivite(activite);
-        return "graphiqueClient.html";
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        session.setAttribute("idActivite", activite.getId());
+        return "graphiqueClient.xhtml?faces-redirect=true";
     }
 
     public Activite getActivite() {
@@ -60,4 +63,13 @@ public class ActiviteController implements Serializable {
         this.activiteModel = activiteModel;
     }
 
+    public void GraphiqueClientController() {
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+        if (session != null) {
+            Object idParam = session.getAttribute("idActivite");
+            if (idParam != null) {
+                this.activite.setId((int) idParam);
+            }
+        }
+    }
 }

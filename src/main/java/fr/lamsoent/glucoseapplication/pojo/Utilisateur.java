@@ -17,8 +17,6 @@ public class Utilisateur extends Personne {
     @ManyToOne
     private Categorie categorie = new Categorie();
 
-
-
     @ManyToOne
     private Medecin medecin = new Medecin();
 
@@ -27,7 +25,6 @@ public class Utilisateur extends Personne {
 
     @ManyToOne
     private Capteur capteur = new Capteur();
-
 
     @ManyToOne
     private Dieteticien dieteticien = new Dieteticien();
@@ -41,7 +38,6 @@ public class Utilisateur extends Personne {
     public String getRemarque() {
         return remarque;
     }
-
 
     public void setRemarque(String remarque) {
         this.remarque = remarque;
@@ -100,6 +96,7 @@ public class Utilisateur extends Personne {
     public void setActivite(List<Activite> activite) {
         this.activite = activite;
     }
+
     public  void setCategorie(Categorie categorie){
         this.categorie = categorie;
     }
