@@ -9,11 +9,19 @@
     <title>Gestion entraineur</title>
     <h:outputStylesheet library="css" name="glucoseApp.css"/>
 </h:head>
-
 <h:body>
+    <div class="header">
+        <div class="logo">
+            <p:graphicImage value="/resources/images/fluxosLogo.png" alt="logo"/>
+        </div>
+        <div class="title">
+            <div class="input-button-left">
+            </div>
+        </div>
+    </div>
 <div id="appContainer">
     <div class="table-wrapper">
-        <h:form id="formEntraineurs" style="display: flex; flex-direction: column; height: 100%;">
+        <h:form id="formEntraineurs" style="display: flex; flex-direction: column; height: 100%; border-radius: 10px !important;*">
             <p:dataTable value="#{entraineurController.entraineurs}"
                          var="entraineur"
                          scrollable="true"

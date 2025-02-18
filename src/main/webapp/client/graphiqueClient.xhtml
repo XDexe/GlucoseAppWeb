@@ -62,7 +62,7 @@
             data: [],
             fill: false,
             borderColor: 'rgb(240,34,255)',
-            tension: 0.4
+            tension: 0.2
          }]
       };
 
@@ -86,8 +86,8 @@
                   type: 'time',
                   time: {
                      tooltipFormat: 'yyyy-MM-dd HH:mm:ss',
-                     unit: 'second',
-                     displayFormats: { second: 'yyyy-MM-dd HH:mm:ss' }
+                     unit: 'minute',
+                     displayFormats: { minute: 'yyyy-MM-dd HH:mm' }
                   },
                   title: {
                      display: true,
@@ -97,7 +97,7 @@
                y: {
                   title: {
                      display: true,
-                     text: 'taux de glucose (mg/dL)'
+                     text: 'Taux de glucose (mg/dL)'
                   },
                   beginAtZero: false,
                   suggestedMin: 50,
@@ -130,7 +130,9 @@
       }
 
       function fetchData(idActivite) {
-         fetch('http://192.168.223.240:8080/GlucoseApplication-1.0-SNAPSHOT/api/activite/getDonneesAct?idActivite=' + idActivite)
+         fetch('http://192.168.223.240:8080/GlucoseApplication-1.0-SNAPSHOT/api/activite/getDonneesAct?idActivite=' + idActivite, {
+            mode: 'no-cors'
+         })
                  .then(response => response.json())
                  .then(data => {
                     console.log(data);
