@@ -1,6 +1,7 @@
 package fr.lamsoent.glucoseapplication.controller;
 
 import fr.lamsoent.glucoseapplication.model.DonneeModel;
+import fr.lamsoent.glucoseapplication.pojo.Activite;
 import fr.lamsoent.glucoseapplication.pojo.Donnee;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.RequestScoped;
@@ -14,7 +15,7 @@ public class DonneeController implements Serializable {
 
     @EJB
     private DonneeModel donneeModel;
-
+    private Activite activite;
     private Donnee donnee = new Donnee();
 
     public void editData() {
@@ -38,4 +39,27 @@ public class DonneeController implements Serializable {
         this.donnee = donnee;
     }
 
+    public DonneeModel getDonneeModel() {
+        return donneeModel;
+    }
+
+    public void setDonneeModel(DonneeModel donneeModel) {
+        this.donneeModel = donneeModel;
+    }
+
+    public Activite getActivite() {
+        return activite;
+    }
+
+    public void setActivite(Activite activite) {
+        this.activite = activite;
+    }
+
+    public Donnee getDonnee() {
+        return donnee;
+    }
+
+    public void setDonnee(Donnee donnee) {
+        this.donnee = donnee;
+    }
 }

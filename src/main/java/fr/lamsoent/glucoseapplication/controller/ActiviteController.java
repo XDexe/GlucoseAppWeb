@@ -4,6 +4,7 @@ import fr.lamsoent.glucoseapplication.pojo.Activite;
 import fr.lamsoent.glucoseapplication.pojo.Activite;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
@@ -15,6 +16,9 @@ public class ActiviteController implements Serializable {
 
     @EJB
     private ActiviteModel activiteModel;
+
+    @Inject
+    private DonneeController donneeController;
 
     private Activite activite = new Activite();
 
@@ -28,8 +32,8 @@ public class ActiviteController implements Serializable {
     }
 
     public String accesActivite(Activite activite) {
-        this.activite = activite;
-        return "/graphiqueClient.xhtml";
+        donneeController.setActivite(activite);
+        return "graphiqueClient.html";
     }
 
     public Activite getActivite() {

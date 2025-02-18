@@ -1,12 +1,14 @@
 package fr.lamsoent.glucoseapplication.controller;
 
 import fr.lamsoent.glucoseapplication.model.UtilisateurModel;
+import fr.lamsoent.glucoseapplication.pojo.Medecin;
 import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Named
 @SessionScoped
@@ -36,6 +38,14 @@ public class UtilisateurController implements Serializable {
 
     public void setUtilisateur(Utilisateur utilisateur) {
         this.utilisateur = utilisateur;
+    }
+
+    public List<Utilisateur> getUtilisateurs() {
+        return utilisateurModel.read();
+    }
+
+    public void resetForm() {
+        this.utilisateur = new Utilisateur();
     }
 
 }

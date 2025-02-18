@@ -7,6 +7,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Named
 @RequestScoped
@@ -36,6 +37,14 @@ public class CategorieController implements Serializable {
 
     public void setCategorie(Categorie categorie) {
         this.categorie = categorie;
+    }
+
+    public List<Categorie> getCategories() {
+        return categorieModel.read();
+    }
+
+    public void resetForm() {
+        this.categorie = new Categorie();
     }
 
 }
