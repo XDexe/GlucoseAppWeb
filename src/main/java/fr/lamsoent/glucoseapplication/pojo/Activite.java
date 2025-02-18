@@ -19,6 +19,8 @@ public class Activite {
     @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private Date dateFin;
 
+    private boolean isAlive;
+
 
     @OneToMany(mappedBy = "activite")
     private List<Donnee> listDonnees = new ArrayList<>();
@@ -75,5 +77,21 @@ public class Activite {
 
     public void setCapteur(Capteur capteur) {
         this.capteur = capteur;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    public void setAlive(boolean alive) {
+        isAlive = alive;
+    }
+
+    public List<Donnee> getListDonnees() {
+        return listDonnees;
+    }
+
+    public void setListDonnees(List<Donnee> listDonnees) {
+        this.listDonnees = listDonnees;
     }
 }

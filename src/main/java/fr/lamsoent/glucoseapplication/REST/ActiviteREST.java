@@ -63,8 +63,9 @@ public class ActiviteREST {
     @POST
     @Path("/create")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createDonnee(@QueryParam("dateDebut") String dateDebut,
+    public Response createActivite(@QueryParam("dateDebut") String dateDebut,
                                  @QueryParam("mac") String mac) {
+
         List<Capteur> lc = capteurModel.read();
         List<Utilisateur> lu = utilisateurModel.read();
 
@@ -92,6 +93,7 @@ public class ActiviteREST {
             return Response.noContent().build();
         }
         Activite a1 = new Activite();
+        a1.setAlive(true);
         a1.setUtilisateur(u);
         a1.setCapteur(c);
         a1.setDateDebut(formatDate(dateDebut));

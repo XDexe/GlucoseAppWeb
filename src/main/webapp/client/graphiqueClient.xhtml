@@ -14,8 +14,8 @@
 
 <h:body>
    <h:form id="formData">
-      <h:inputHidden id="isAlive" value="true"/>
-      <h:inputHidden id="idActivite" value="1"/>
+      <h:inputHidden id="isAlive" value="#{activiteController.activite.isAlive}"/>
+      <h:inputHidden id="idActivite" value="#{activiteController.activite.id}"/>
    </h:form>
    <canvas id="line" width="1000" height="750"></canvas>
    <script>

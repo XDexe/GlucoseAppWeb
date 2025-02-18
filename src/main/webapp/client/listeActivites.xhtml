@@ -13,84 +13,36 @@
 <h:body>
    <div id="appContainer">
       <div class="table-wrapper">
-         <h:form id="formMedecins" style="display: flex; flex-direction: column; height: 100%;">
-            <p:dataTable value="#{medecinController.medecins}"
-                         var="medecin"
+         <h:form id="formActivites" style="display: flex; flex-direction: column; height: 100%;">
+            <p:dataTable value="#{activiteController.activites}"
+                         var="activite"
                          scrollable="true"
                          scrollHeight="500px"
                          styleClass="table-container"
                          style="width:100%; flex:1; border: none !important;">
 
-               <p:column headerText="Nom">
-                  <h:outputText value="#{medecin.nom}" />
+               <p:column headerText="Date debut">
+                  <h:outputText value="#{activite.dateDebut}" />
                </p:column>
 
-               <p:column headerText="Prénom">
-                  <h:outputText value="#{medecin.prenom}" />
+               <p:column headerText="Date fin">
+                  <h:outputText value="#{activite.dateFin}" />
                </p:column>
 
                <p:column headerText="Actions" style="width: 100px; text-align: center;">
-                  <p:commandButton icon="pi pi-pencil"
-                                   action="#{medecinController.loadMedecin(medecin)}"
-                                   update=":formAddMedecin"
-                                   oncomplete="PF('dlgAddMedecin').show()"
+                  <p:commandButton icon="pi pi-chart-line"
+                                   action="#{activiteController.accesActivite(activite)}"
                                    styleClass="iconButton"
                                    title="Modifier"/>
                   <p:commandButton icon="pi pi-trash"
-                                   action="#{medecinController.deleteMedecin(medecin)}"
-                                   update="formMedecins"
+                                   action="#{activiteController.deleteActivite(activite)}"
                                    styleClass="iconButton"
                                    title="Supprimer"/>
                </p:column>
             </p:dataTable>
-
-            <p:commandButton value="Ajouter un médecin"
-                             icon="pi pi-plus"
-                             actionListener="#{medecinController.resetForm()}"
-                             update="formAddMedecin"
-                             style="margin:20px auto 0 auto;"
-                             oncomplete="PF('dlgAddMedecin').show()" />
          </h:form>
       </div>
    </div>
-   <p:dialog widgetVar="dlgAddMedecin"
-             modal="true"
-             resizable="false"
-             draggable="false"
-             closeOnEscape="true"
-             showEffect="fade"
-             hideEffect="fade"
-             width="650px"
-             bottom="0"
-             left="50%">
-
-      <h:form id="formAddMedecin">
-         <h:inputHidden value="#{medecinController.medecin.idPersonne}"/>
-
-         <p:panelGrid columns="2" styleClass="grid">
-
-            <h:outputLabel value="Nom :" />
-            <p:inputText value="#{medecinController.medecin.nom}" />
-
-            <h:outputLabel value="Prénom :" />
-            <p:inputText value="#{medecinController.medecin.prenom}" />
-
-         </p:panelGrid>
-
-         <p:separator/>
-
-         <p:commandButton value="Enregistrer"
-                          actionListener="#{medecinController.editMedecin()}"
-                          oncomplete="PF('dlgAddMedecin').hide()"
-                          update="formMedecins"
-                          icon="pi pi-check"/>
-
-         <p:commandButton value="Annuler"
-                          type="button"
-                          onclick="PF('dlgAddMedecin').hide()"
-                          icon="pi pi-times"/>
-      </h:form>
-   </p:dialog>
-
 </h:body>
 </html>
+
