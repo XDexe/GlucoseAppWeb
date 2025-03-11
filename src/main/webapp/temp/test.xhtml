@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Client Image</title>
+    <h:outputStylesheet library="css" name="cssTemp.css"/>
+</h:head>
+
+<h:body id="bodyElement">
+    <div class="header">
+        <div class="drop">
+            <input class="dropdown" type="checkbox" id="dropdown2" name="dropdown"/>
+            <label class="profile-image" for="dropdown2">
+                <h:graphicImage library="images" name="Screenshot 2023-11-29 160453.png" alt="Profile"/>
+            </label>
+            <div class="section-dropdown">
+                <div class="toggle-switch">
+                    <input type="checkbox" id="themeToggle" onchange="toggleTheme()"/>
+                    <label class="slider" for="themeToggle"></label>
+                </div>
+                <p:commandButton styleClass="custom-btn" value="Modifier votre profil"
+                                 actionListener="#{categorieController.resetForm()}"
+                                 update=""
+                                 oncomplete="PF('').show()"/>
+                <p:commandButton value="Contacter votre medecin"
+                                 actionListener="#{categorieController.resetForm()}"
+                                 update=""
+                                 styleClass="custom-btn"
+                                 oncomplete="PF('').show()"/>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function toggleTheme() {
+            var body = document.getElementById('bodyElement');
+            body.classList.toggle('light-theme');
+        }
+    </script>
+
+    <div id="appContainer">
+        <div class="locked-table">
+            <h:form id="formUtilisateurs">
+                <div class="table-margin">
+                    <p:dataTable value="#{utilisateurController.utilisateurs}" var="utilisateur">
+                        <p:column headerText="Nom">
+                            <h:outputText value="#{utilisateur.nom}"/>
+                        </p:column>
+                        <p:column headerText="Prénom">
+                            <h:outputText value="#{utilisateur.prenom}"/>
+                        </p:column>
+                        <p:column headerText="Actions">
+                            <p:commandButton icon="pi pi-pencil"
+                                             action="#{utilisateurController.loadUtilisateur(utilisateur)}"
+                                             update=":formAddUtilisateur" oncomplete="PF('dlgAddUtilisateur').show()"
+                                             title="Modifier"/>
+                            <p:commandButton icon="pi pi-trash"
+                                             action="#{utilisateurController.deleteUtilisateur(utilisateur)}"
+                                             update="formUtilisateurs" title="Supprimer"/>
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </h:form>
+        </div>
+
+    </div>
+    <div class="bottom">
+        <p:commandButton value="Ajouter un médecin"
+                         icon="pi pi-plus"
+                         actionListener="#{utilisateurController.resetForm()}"
+                         update="formAddUtilisateur"
+                         oncomplete="PF('dlgAddUtilisateur').show()"
+                         styleClass="button-bottom"/>
+    </div>
+
+    <p:dialog widgetVar="dlgAddUtilisateur"
+              modal="true"
+              resizable="false"
+              draggable="false"
+              closeOnEscape="true"
+              showEffect="fade"
+              hideEffect="fade"
+              width="650px"
+              bottom="0"
+              left="50%">
+
+        <h:form id="formAddUtilisateur">
+            <h:inputHidden value="#{utilisateurController.utilisateur.idPersonne}"/>
+
+            <p:panelGrid columns="2" styleClass="grid">
+
+                <h:outputLabel value="Nom :"/>
+                <p:inputText value="#{utilisateurController.utilisateur.nom}"/>
+
+                <h:outputLabel value="Prénom :"/>
+                <p:inputText value="#{utilisateurController.utilisateur.prenom}"/>
+
+            </p:panelGrid>
+
+            <p:separator/>
+
+            <p:commandButton value="Enregistrer"
+                             actionListener="#{utilisateurController.editUtilisateur()}"
+                             oncomplete="PF('dlgAddUtilisateur').hide()"
+                             update="formUtilisateurs"
+                             icon="pi pi-check"/>
+
+            <p:commandButton value="Annuler"
+                             type="button"
+                             onclick="PF('dlgAddUtilisateur').hide()"
+                             icon="pi pi-times"/>
+        </h:form>
+    </p:dialog>
+</h:body>
+</html>

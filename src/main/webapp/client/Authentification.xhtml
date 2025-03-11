@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+   <p:outputLabel>Authentification</p:outputLabel>
+   <h:outputStylesheet name="CSS/Auth.css"/>
+
+</h:head>
+<body>
+<p:growl id="messages"/>
+<br/><br/><br/>
+<h1 style="text-align: center">Bienvenue sur Glucose App ! Connectez vous à votre compte</h1>
+<div class="Formulaire" id="Formulaire">
+   <h:form id="formId">
+      <p:panelGrid id="panel" columns="2" layout="grid" >
+         Identifiant
+         <p:inputText id="identifiant" value="#{personneController.getPersonneLogin().identifiant}" required="true" label="Identifiant"/>
+         Mot de Passe <p:password id="mdp" value="#{personneController.getPersonneLogin().motDePasse}" required="true" label="MotDePasse"/><br/>
+         <p:commandButton id="auth" action="#{personneController.AuthPersonne()}" value="Connexion"/>
+      </p:panelGrid>
+   </h:form>
+</div>
+</body>
+</html>

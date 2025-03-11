@@ -1,0 +1,204 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+:root {
+    --page-bg: #1f2029;
+    --page-text: #fff;
+    --dropdown-bg: #1f2029;
+    --dropdown-text: #fff;
+    --button-hover: #2f303f;
+}
+
+/* Light theme variables */
+body.light-theme {
+    --page-bg: #fff;
+    --page-text: #000;
+    --dropdown-bg: #fff;
+    --dropdown-text: #000;
+    --button-hover: #e5e5e5;
+}
+
+/* Apply theme to entire page */
+body {
+    font-family: "Roboto", sans-serif;
+    background-color: var(--page-bg);
+    color: var(--page-text);
+    margin: 0;
+    padding: 0;
+    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat-back.svg');
+    background-position: center;
+    background-repeat: repeat;
+    background-size: 5%;
+    width: 100%;
+    display: -ms-flexbox;
+    display: flex;
+    transition: all 200ms linear;
+}
+
+/* Hide the checkbox off-screen */
+[type="checkbox"] {
+    position: absolute;
+    left: -9999px;
+    opacity: 0;
+}
+
+/* Profile image styling */
+.profile-image {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+}
+
+/* Force the contained image to fill the profile container */
+.profile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Dropdown menu styling with fixed width */
+.section-dropdown {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 220px;
+    padding: 5px;
+    background-color: var(--dropdown-bg);
+    color: var(--dropdown-text);
+    border-radius: 10px;
+    box-shadow: 0 14px 35px 0 rgba(9, 9, 12, 0.4);
+    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+    transition: all 200ms linear;
+}
+
+/* Show dropdown menu when checkbox is checked */
+.dropdown:checked ~ .section-dropdown {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+/* Theme switcher button styling */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    vertical-align: middle;
+
+}
+.toggle-switch input {
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+
+}
+input:checked + .slider {
+    background-color: #1f2029;
+}
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.custom-btn {
+    border: none !important;
+    border-radius: 10px !important;
+    background-color: var(--dropdown-bg) !important;
+    color: var(--dropdown-text) !important;
+    transition: background-color 0.3s ease !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    cursor: pointer !important;
+    width: 100% !important;
+}
+
+.button-bottom {
+    border: none !important;
+    border-radius: 10px !important;
+    background-color: var(--dropdown-bg) !important;
+    color: var(--dropdown-text) !important;
+    transition: background-color 0.3s ease !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    cursor: pointer !important;
+    width: 250px !important;
+    box-shadow: 0 14px 35px 0 rgba(9, 9, 12, 0.4);
+}
+
+.custom-btn:hover {
+    background-color: var(--button-hover) !important;
+}
+
+.drop {
+    position :absolute;
+    top : 20px;
+    right:20px;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 10%;
+    min-height: 50px;
+    /* other styling if needed */
+}
+
+.bottom {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 7%;
+    min-height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.locked-table {
+    position: fixed;
+    top: 10%;
+    bottom: 7%;
+    left: 20px;
+    right: 20px;
+    overflow-y: auto;
+}
+
+/* Ensures the table stretches to fill its container */
+.ui-datatable table {
+    width: 100%;
+}
+
+.ui-datatable table .table-margin {
+    border: none !important;
+}
+
+
+
+

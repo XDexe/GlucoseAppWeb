@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public abstract class Personne {
+public class Personne {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idPersonne;
@@ -14,11 +14,13 @@ public abstract class Personne {
     private String nom;
     private String prenom;
     private String pseudo;
+    private String identifiant;
     private String motDePasse;
 
     public Personne() {
 
     }
+
 
     public int getIdPersonne() {
         return idPersonne;
@@ -60,5 +62,11 @@ public abstract class Personne {
         this.nom = nom;
     }
 
+    public String getIdentifiant() {
+        return identifiant;
+    }
 
+    public void setIdentifiant(String identifiant) {
+        this.identifiant = identifiant;
+    }
 }

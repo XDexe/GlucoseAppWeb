@@ -4,7 +4,9 @@ import fr.lamsoent.glucoseapplication.pojo.Activite;
 import fr.lamsoent.glucoseapplication.pojo.Activite;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpSession;
@@ -13,7 +15,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Named
-@RequestScoped
+@ViewScoped
 public class ActiviteController implements Serializable {
 
     @EJB
@@ -22,7 +24,15 @@ public class ActiviteController implements Serializable {
     @Inject
     private DonneeController donneeController;
 
-    private Activite activite = new Activite();
+    private Activite activite ;
+    public void loadActivite(){
+        activite = (Activite) FacesContext.getCurrentInstance().getExternalContext().getFlash().getOrDefault("activiter", new Activite());
+
+        if (activite.getId() == 0) {
+            activite =null;
+            System.out.println("Erreur activiter et 0");
+        }
+    }
 
     public void editActivite() {
         activiteModel.update(this.activite);
@@ -34,9 +44,9 @@ public class ActiviteController implements Serializable {
     }
 
     public String accesActivite(Activite activite) {
-        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
-        session.setAttribute("idActivite", activite.getId());
-        return "graphiqueClient.xhtml?faces-redirect=true";
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("activiter", activite);
+
+        return "graphiqueClient.html?faces-redirect=true";
     }
 
     public Activite getActivite() {
@@ -63,13 +73,5 @@ public class ActiviteController implements Serializable {
         this.activiteModel = activiteModel;
     }
 
-    public void GraphiqueClientController() {
-        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-        if (session != null) {
-            Object idParam = session.getAttribute("idActivite");
-            if (idParam != null) {
-                this.activite.setId((int) idParam);
-            }
-        }
-    }
+
 }

@@ -9,13 +9,17 @@
    <meta charset="UTF-8"/>
    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-</h:head>
 
+</h:head>
 <h:body>
+   <f:metadata>
+      <f:viewAction action="#{activiteController.loadActivite()}"/>
+   </f:metadata>
    <h:form id="formData">
-      <h:inputHidden id="isAlive" value="#{donneeController.activite.alive}"/>
-      <h:inputHidden id="idActivite" value="#{donneeController.activite.id}"/>
+      <h:inputHidden id="idActivite" value="#{activiteController.activite.id}"/>
+      <h:inputHidden id="isAlive" value="#{activiteController.activite.alive}"/>
    </h:form>
    <canvas id="line" width="1000" height="750"></canvas>
    <script>
@@ -27,7 +31,7 @@
       fetchData(idActivite);
 
       if (isAlive === "true") {
-         ws = new WebSocket("ws://192.168.223.240:8080/GlucoseApplication-1.0-SNAPSHOT/websocketdata");
+         ws = new WebSocket("ws://10.131.117.240:8080/GlucoseApplication-1.0-SNAPSHOT/websocketdata");
 
          ws.onopen = event => {
             ws.send("abonnement#" + idActivite);
@@ -130,7 +134,7 @@
       }
 
       function fetchData(idActivite) {
-         fetch('http://192.168.223.240:8080/GlucoseApplication-1.0-SNAPSHOT/api/activite/getDonneesAct?idActivite=' + idActivite, {
+         fetch('http://10.131.117.240:8080/GlucoseApplication-1.0-SNAPSHOT/api/activite/getDonneesAct?idActivite=' + idActivite, {
             mode: 'no-cors'
          })
                  .then(response => response.json())
