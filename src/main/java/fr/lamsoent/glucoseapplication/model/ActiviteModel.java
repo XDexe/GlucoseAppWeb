@@ -1,6 +1,7 @@
 package fr.lamsoent.glucoseapplication.model;
 
 import fr.lamsoent.glucoseapplication.pojo.Activite;
+import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -29,6 +30,12 @@ public class ActiviteModel {
     }
     public List<Activite> read(){
         Query query = em.createQuery("select activites from Activite as activites ", Activite.class);
+        return query.getResultList();
+    }
+
+    public List<Activite> getActivitesUtilisateur(Utilisateur utilisateur){
+        Query query = em.createQuery("select activites from Activite as activites where activites.utilisateur.idPersonne = :id", Activite.class);
+        query.setParameter("id",utilisateur.getIdPersonne());
         return query.getResultList();
     }
 

@@ -2,6 +2,7 @@ package fr.lamsoent.glucoseapplication.controller;
 import fr.lamsoent.glucoseapplication.model.ActiviteModel;
 import fr.lamsoent.glucoseapplication.pojo.Activite;
 import fr.lamsoent.glucoseapplication.pojo.Activite;
+import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.context.SessionScoped;
@@ -12,6 +13,7 @@ import jakarta.inject.Named;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Named
@@ -25,6 +27,10 @@ public class ActiviteController implements Serializable {
     private DonneeController donneeController;
 
     private Activite activite ;
+    @Named
+    @Inject
+    private UtilisateurController utilisateurController;
+
     public void loadActivite(){
         activite = (Activite) FacesContext.getCurrentInstance().getExternalContext().getFlash().getOrDefault("activiter", new Activite());
 
@@ -47,6 +53,15 @@ public class ActiviteController implements Serializable {
         FacesContext.getCurrentInstance().getExternalContext().getFlash().put("activiter", activite);
 
         return "graphiqueClient.html?faces-redirect=true";
+    }
+
+    public List<Activite> getActiviteUtilisateur(){
+        Utilisateur utilAlive=utilisateurController.getUtilisateur();
+
+        if (utilAlive.getIdPersonne()==0){
+            return new ArrayList<>();
+        }
+        return activiteModel.getActivitesUtilisateur(utilAlive);
     }
 
     public Activite getActivite() {

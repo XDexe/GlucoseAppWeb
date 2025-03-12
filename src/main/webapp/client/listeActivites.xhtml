@@ -14,7 +14,7 @@
    <div id="appContainer">
       <div class="table-wrapper">
          <h:form id="formActivites" style="display: flex; flex-direction: column; height: 100%;">
-            <p:dataTable value="#{activiteController.activites}"
+            <p:dataTable value="#{activiteController.getActiviteUtilisateur()}"
                          var="activite"
                          scrollable="true"
                          scrollHeight="500px"

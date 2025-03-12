@@ -73,6 +73,10 @@ public class ActiviteREST {
         Utilisateur u =null;
 
         for (Capteur capteur : lc) {
+            if(capteur.getMac() == null || capteur.getMac().isEmpty()){
+                continue;
+            }
+
             if (capteur.getMac().equalsIgnoreCase(mac)) {
                 System.out.println("Capteur trouver " + capteur.getMac());
                 c = capteur;
