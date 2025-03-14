@@ -42,6 +42,19 @@
     </script>
 
     <div id="appContainer">
+        <h:form enctype="multipart/form-data">
+            <p:growl id="messages" showDetail="true"/>
+            <p:fileUpload mode="advanced"
+                          update="messages"
+                          value="#{personneController.uploadedFile}"
+                          sizeLimit="100000000"
+                          allowTypes="/(\.|\/)(jpg|jpeg|png)$/"
+                          dragDropSupport="false" />
+            <p:commandButton value="Enregistrer"
+                             actionListener="#{personneController.saveImage(medecinController.medecin)}"
+                             update="messages"
+                             icon="pi pi-check"/>
+        </h:form>
         <div class="locked-table">
             <h:form id="formMedecins">
                 <div class="table-margin">

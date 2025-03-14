@@ -6,7 +6,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
@@ -23,6 +22,11 @@ public class PersonneModel {
         Query query = em.createQuery("select personnes from Personne as personnes ", Personne.class);
         return query.getResultList();
     }
+
+    public Personne update(Personne personne) {
+        return em.merge(personne);
+    }
+
 
     public EntityManager getEm() {
         return em;

@@ -1,9 +1,6 @@
 package fr.lamsoent.glucoseapplication.pojo;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Personne {
@@ -16,6 +13,10 @@ public class Personne {
     private String pseudo;
     private String identifiant;
     private String motDePasse;
+    private String photoDeProfilUrl;
+
+    @Transient
+    private String plainTextPassword;
 
     public Personne() {
 
@@ -68,5 +69,21 @@ public class Personne {
 
     public void setIdentifiant(String identifiant) {
         this.identifiant = identifiant;
+    }
+
+    public String getPhotoDeProfilUrl() {
+        return photoDeProfilUrl;
+    }
+
+    public void setPhotoDeProfilUrl(String photoDeProfilUrl) {
+        this.photoDeProfilUrl = photoDeProfilUrl;
+    }
+
+    public String getPlainTextPassword() {
+        return plainTextPassword;
+    }
+
+    public void setPlainTextPassword(String plainTextPassword) {
+        this.plainTextPassword = plainTextPassword;
     }
 }
