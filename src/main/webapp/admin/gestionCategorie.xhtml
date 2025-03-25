@@ -7,84 +7,96 @@
       xmlns:p="http://primefaces.org/ui">
 <h:head>
     <title>Gestion categorie</title>
-    <h:outputStylesheet library="css" name="glucoseApp.css"/>
+    <h:outputStylesheet library="css" name="cssTemp.css"/>
 </h:head>
 
-<h:body>
-<div id="appContainer">
-    <div class="table-wrapper">
-        <h:form id="formCategories" style="display: flex; flex-direction: column; height: 100%;">
-            <p:dataTable value="#{categorieController.categories}"
-                         var="categorie"
-                         scrollable="true"
-                         scrollHeight="500px"
-                         styleClass="table-container"
-                         style="width:100%; flex:1; border: none !important;">
-
-                <p:column headerText="Nom">
-                    <h:outputText value="#{categorie.nom}" />
-                </p:column>
-
-
-                <p:column headerText="Actions" style="width: 100px; text-align: center;">
-                    <p:commandButton icon="pi pi-pencil"
-                                     action="#{categorieController.loadCategorie(categorie)}"
-                                     update=":formAddCategorie"
-                                     oncomplete="PF('dlgAddCategorie').show()"
-                                     styleClass="iconButton"
-                                     title="Modifier"/>
-                    <p:commandButton icon="pi pi-trash"
-                                     action="#{categorieController.deleteCategorie(categorie)}"
-                                     update="formCategories"
-                                     styleClass="iconButton"
-                                     title="Supprimer"/>
-                </p:column>
-            </p:dataTable>
-
-            <p:commandButton value="Ajouter un médecin"
-                             icon="pi pi-plus"
-                             actionListener="#{categorieController.resetForm()}"
-                             update="formAddCategorie"
-                             style="margin:20px auto 0 auto;"
-                             oncomplete="PF('dlgAddCategorie').show()" />
-        </h:form>
+<h:body id="bodyElement">
+    <div class="header">
+        <div class="drop">
+            <input class="dropdown" type="checkbox" id="dropdown2" name="dropdown"/>
+            <label class="profile-image" for="dropdown2">
+                <h:graphicImage library="images" name="Screenshot 2023-11-29 160453.png" alt="Profile"/>
+            </label>
+            <div class="section-dropdown">
+                <div class="toggle-switch">
+                    <input type="checkbox" id="themeToggle" onchange="toggleTheme()"/>
+                    <label class="slider" for="themeToggle"></label>
+                </div>
+                <p:commandButton styleClass="custom-btn" value="Modifier votre profil"
+                                 actionListener="#{categorieController.resetForm()}"
+                                 update=""
+                                 oncomplete="PF('').show()"/>
+                <p:commandButton value="Contacter votre categorie"
+                                 actionListener="#{categorieController.resetForm()}"
+                                 update=""
+                                 styleClass="custom-btn"
+                                 oncomplete="PF('').show()"/>
+            </div>
+        </div>
     </div>
-</div>
-<p:dialog widgetVar="dlgAddCategorie"
-          modal="true"
-          resizable="false"
-          draggable="false"
-          closeOnEscape="true"
-          showEffect="fade"
-          hideEffect="fade"
-          width="650px"
-          bottom="0"
-          left="50%">
+    <script type="text/javascript">
+        function toggleTheme() {
+            var body = document.getElementById('bodyElement');
+            body.classList.toggle('light-theme');
+        }
+    </script>
 
-    <h:form id="formAddCategorie">
-        <h:inputHidden value="#{categorieController.categorie.id}"/>
+    <div id="appContainer">
+        <div class="locked-table">
+            <h:form id="formCategories">
 
-        <p:panelGrid columns="2" styleClass="grid">
+                <p:dataTable value="#{categorieController.categories}" var="categorie">
 
-            <h:outputLabel value="Nom :" />
-            <p:inputText value="#{categorieController.categorie.nom}" />
+                    <p:column headerText="Nom">
+                        <h:outputText value="#{categorie.nom}"/>
+                    </p:column>
+                    <p:column headerText="Actions">
+                        <p:commandButton icon="pi pi-pencil"
+                                         action="#{categorieController.loadCategorie(categorie)}"
+                                         update=":formAddCategorie" oncomplete="PF('dlgAddCategorie').show()"
+                                         title="Modifier"/>
+                        <p:commandButton icon="pi pi-trash"
+                                         action="#{categorieController.deleteCategorie(categorie)}"
+                                         update="formCategories" title="Supprimer"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </div>
+    </div>
+    <div class="bottom">
+        <p:commandButton value="Ajouter un categorie"
+                         actionListener="#{categorieController.resetForm()}"
+                         update="formAddCategorie"
+                         oncomplete="PF('dlgAddCategorie').show()"
+                         styleClass="button-bottom"/>
+    </div>
 
-        </p:panelGrid>
+    <p:dialog styleClass="dialog" widgetVar="dlgAddCategorie" modal="true" resizable="false" draggable="false"
+              closeOnEscape="true" showEffect="fade" hideEffect="fade" width="50%" bottom="0" left="50%">
 
-        <p:separator/>
+        <h:form id="formAddCategorie" enctype="multipart/form-data">
+            <h:inputHidden value="#{categorieController.categorie.id}"/>
 
-        <p:commandButton value="Enregistrer"
-                         actionListener="#{categorieController.editCategorie()}"
-                         oncomplete="PF('dlgAddCategorie').hide()"
-                         update="formCategories"
-                         icon="pi pi-check"/>
+            <p:panelGrid columns="2" styleClass="grid">
 
-        <p:commandButton value="Annuler"
-                         type="button"
-                         onclick="PF('dlgAddCategorie').hide()"
-                         icon="pi pi-times"/>
-    </h:form>
-</p:dialog>
+                <h:outputLabel value="Nom :"/>
+                <p:inputText value="#{categorieController.categorie.nom}"/>
 
+            </p:panelGrid>
+
+            <p:separator/>
+
+            <p:commandButton value="Enregistrer"
+                             actionListener="#{categorieController.editCategorie()}"
+                             oncomplete="PF('dlgAddCategorie').hide()"
+                             update="formCategories"
+                             icon="pi pi-check"/>
+
+            <p:commandButton value="Annuler"
+                             type="button"
+                             onclick="PF('dlgAddCategorie').hide()"
+                             icon="pi pi-times"/>
+        </h:form>
+    </p:dialog>
 </h:body>
 </html>

@@ -31,7 +31,7 @@
       fetchData(idActivite);
 
       if (isAlive === "true") {
-         ws = new WebSocket("ws://10.131.117.240:8080/GlucoseApplication-1.0-SNAPSHOT/websocketdata");
+         ws = new WebSocket("ws://10.173.163.240:8080/GlucoseApplication-1.0-SNAPSHOT/websocketdata");
 
          ws.onopen = event => {
             ws.send("abonnement#" + idActivite);
@@ -47,6 +47,7 @@
             lineChart.data.labels.push(temps);
             lineChart.data.datasets[0].data.push(glucoseConverted);
             lineChart.update();
+            console.log(txtJson);
          };
 
          ws.onerror = error => {
@@ -56,6 +57,7 @@
          ws.onclose = event => {
             console.log("WebSocket connection closed:", event);
          };
+
       }
 
       const labels = [];
@@ -66,7 +68,7 @@
             data: [],
             fill: false,
             borderColor: 'rgb(240,34,255)',
-            tension: 0.2
+            tension: 0.1
          }]
       };
 
@@ -104,8 +106,8 @@
                      text: 'Taux de glucose (mg/dL)'
                   },
                   beginAtZero: false,
-                  suggestedMin: 50,
-                  suggestedMax: 220
+                  suggestedMin: 60,
+                  suggestedMax: 170
                }
             }
          }
@@ -134,7 +136,7 @@
       }
 
       function fetchData(idActivite) {
-         fetch('http://10.131.117.240:8080/GlucoseApplication-1.0-SNAPSHOT/api/activite/getDonneesAct?idActivite=' + idActivite, {
+         fetch('http://10.173.163.240:8080/GlucoseApplication-1.0-SNAPSHOT/api/activite/getDonneesAct?idActivite=' + idActivite, {
             mode: 'no-cors'
          })
                  .then(response => response.json())

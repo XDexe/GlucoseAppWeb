@@ -12,21 +12,25 @@ import java.util.List;
 @Stateless
 public class MedecinModel {
 
-    @PersistenceContext(unitName = "default")
+    @PersistenceContext(unitName = "default") //@PersistenceContext veut
     private EntityManager em;
 
     public void create(Medecin medecin) {
         em.persist(medecin);
     }
+
     public Medecin update(Medecin medecin) {
         return  em.merge(medecin);
     }
+
     public void delete(Medecin medecin) {
         em.remove(em.merge(medecin));
     }
+
     public Medecin read(int id) {
         return em.find(Medecin.class, id);
     }
+
     public List<Medecin> read(){
         Query query = em.createQuery("select medecins from Medecin as medecins ", Medecin.class);
         return query.getResultList();

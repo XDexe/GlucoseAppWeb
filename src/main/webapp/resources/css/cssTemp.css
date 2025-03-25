@@ -1,25 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
 :root {
-    --page-bg: #1f2029;
-    --page-text: #fff;
-    --dropdown-bg: #1f2029;
-    --dropdown-text: #fff;
-    --button-hover: #2f303f;
+    --primary-color: #1f2029;
+    --secondary-color: #2f303f;
+    --tertiary-color: #494a57;
+    --page-text: #fcfcfc;
 }
 
-/* Light theme variables */
 body.light-theme {
-    --page-bg: #fff;
-    --page-text: #000;
-    --dropdown-bg: #fff;
-    --dropdown-text: #000;
-    --button-hover: #e5e5e5;
+    --primary-color: #fcfcfc;
+    --secondary-color: #DFDDDD;
+    --tertiary-color: #94949A;
+    --page-text: #1f2029;
 }
 
-/* Apply theme to entire page */
 body {
     font-family: "Roboto", sans-serif;
-    background-color: var(--page-bg);
+    background-color: var(--primary-color);
     color: var(--page-text);
     margin: 0;
     padding: 0;
@@ -33,14 +29,12 @@ body {
     transition: all 200ms linear;
 }
 
-/* Hide the checkbox off-screen */
 [type="checkbox"] {
     position: absolute;
     left: -9999px;
     opacity: 0;
 }
 
-/* Profile image styling */
 .profile-image {
     display: inline-block;
     width: 50px;
@@ -51,39 +45,35 @@ body {
     position: relative;
 }
 
-/* Force the contained image to fill the profile container */
 .profile-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-/* Dropdown menu styling with fixed width */
 .section-dropdown {
     position: absolute;
-    top: 60px;
-    right: 0;
+    top: 0;
+    right: 60px;
     width: 220px;
     padding: 5px;
-    background-color: var(--dropdown-bg);
-    color: var(--dropdown-text);
+    background-color: var(--secondary-color);
+    color: var(--page-text);
     border-radius: 10px;
     box-shadow: 0 14px 35px 0 rgba(9, 9, 12, 0.4);
     z-index: 2;
     opacity: 0;
     pointer-events: none;
-    transform: translateY(20px);
+    transform: translateX(20px);
     transition: all 200ms linear;
 }
 
-/* Show dropdown menu when checkbox is checked */
 .dropdown:checked ~ .section-dropdown {
     opacity: 1;
     pointer-events: auto;
     transform: translateY(0);
 }
 
-/* Theme switcher button styling */
 .toggle-switch {
     position: relative;
     display: inline-block;
@@ -129,8 +119,8 @@ input:checked + .slider:before {
 .custom-btn {
     border: none !important;
     border-radius: 10px !important;
-    background-color: var(--dropdown-bg) !important;
-    color: var(--dropdown-text) !important;
+    background-color: var(--secondary-color) !important;
+    color: var(--page-text) !important;
     transition: background-color 0.3s ease !important;
     padding-top: 10px !important;
     padding-bottom: 10px !important;
@@ -141,8 +131,8 @@ input:checked + .slider:before {
 .button-bottom {
     border: none;
     border-radius: 10px;
-    background-color: var(--dropdown-bg);
-    color: var(--dropdown-text);
+    background-color: var(--secondary-color);
+    color: var(--page-text);
     transition: background-color 0.3s ease;
     padding-top: 20px;
     padding-bottom: 20px;
@@ -152,8 +142,8 @@ input:checked + .slider:before {
     box-shadow: 0 14px 35px 0 rgba(9, 9, 12, 0.4);
 }
 
-.custom-btn:hover {
-    background-color: var(--button-hover) !important;
+.button-bottom:hover, .custom-btn:hover {
+    background-color: var(--tertiary-color) !important;
 }
 
 .drop {
@@ -168,7 +158,6 @@ input:checked + .slider:before {
     width: 100%;
     height: 10%;
     min-height: 50px;
-    /* other styling if needed */
 }
 
 .bottom {
@@ -189,16 +178,42 @@ input:checked + .slider:before {
     left: 20px;
     right: 20px;
     overflow-y: auto;
-
 }
+
 
 .ui-datatable table,
 .ui-datatable table th,
 .ui-datatable table td {
     border: none !important;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0 20px;
     border-radius: 10px;
-    background-color: var(--button-hover);
-    color: var(--dropdown-text);
+    background-color: var(--secondary-color);
+    color: var(--page-text);
     transition: background-color 0.3s ease;
+}
+
+
+.ui-datatable table thead th {
+    text-align: left;
+    padding-bottom: 20px;
+}
+
+.ui-datatable table tbody tr:not(:last-child) {
+    border-bottom: 1px solid var(--tertiary-color);
+}
+
+.ui-datatable table tbody tr {
+    height: 50px !important;
+    min-height: 50px !important;
+    max-height: 50px !important;
+    line-height: 50px !important;
+}
+
+.dialog {;
+    background-color: var(--secondary-color);
+    color: var(--page-text);
+    border-radius: 10px;
+    box-shadow: 0 14px 35px 0 rgba(9, 9, 12, 0.4);
+    z-index: 2;
 }

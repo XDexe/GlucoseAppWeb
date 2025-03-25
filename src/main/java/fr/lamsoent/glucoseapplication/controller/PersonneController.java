@@ -1,9 +1,8 @@
 package fr.lamsoent.glucoseapplication.controller;
 
 import fr.lamsoent.glucoseapplication.model.PersonneModel;
-import fr.lamsoent.glucoseapplication.pojo.Entraineur;
-import fr.lamsoent.glucoseapplication.pojo.Personne;
-import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
+import fr.lamsoent.glucoseapplication.pojo.*;
+import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
@@ -33,18 +32,31 @@ public class PersonneController implements Serializable {
     @Inject
     private UtilisateurController utilisateurController;
 
+
+
     @EJB
     private PersonneModel personneModel;
+    @Named
+    @Inject
+    private MedecinController medecinController;
+
+    @PostConstruct
+    public void init() {
+        Utilisateur utilisateur = new Utilisateur();
+        utilisateur.setIdentifiant("admin");
+        utilisateur.setPseudo("admin");
+        utilisateur.setMotDePasse("admin");
+        utilisateur.setDieteticien(null);
+        utilisateur.setMedecin(null);
+        utilisateur.setEntraineur(null);
+        utilisateur.setNom("test");
+        utilisateur.setPrenom("test");
+
+        //personneModel.update(utilisateur);
+    }
 
     public void saveImage(Personne personne) {
-        System.out.println("Entré méthode save image");
         if (uploadedFile != null) {
-
-            System.out.println("Uploaded file name: " + uploadedFile.getFileName());
-
-            if (personne == null) {
-                personne = personneModel.read(1);
-            }
             String fileName = uploadedFile.getFileName();
             String oldFileName = personne.getPhotoDeProfilUrl();
 
@@ -58,7 +70,7 @@ public class PersonneController implements Serializable {
                 return;
             }
             String extension = list[list.length - 1];
-            fileName = personne.getIdPersonne() + "_" + UUID.randomUUID() + "_" + extension;
+            fileName = "img" + "_" + UUID.randomUUID() + "." + extension;
 
             if (!(extension.equalsIgnoreCase("jpg") || extension.equalsIgnoreCase("jpeg") || extension.equalsIgnoreCase("png"))) {
                 FacesContext.getCurrentInstance().addMessage(null,
@@ -82,7 +94,6 @@ public class PersonneController implements Serializable {
 
                 // Met à jour le nom de fichier dans la base de données.
                 personne.setPhotoDeProfilUrl(fileName);
-                personneModel.update(personne);
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Image téléchargée avec succès !"));
 
             } catch (Exception e){
@@ -96,29 +107,32 @@ public class PersonneController implements Serializable {
         System.out.println("Authentification en cours");
         listPersonne = personneModel.read();
 
+        System.out.println("personne login " + personneLogin.getPlainTextPassword());
+        System.out.println("personne login " + personneLogin.getIdentifiant());
         boolean isLogged = false;
-
         for (Personne p : listPersonne) {
             if (p.getIdentifiant() == null || p.getIdentifiant().isEmpty() || p.getMotDePasse() == null || p.getMotDePasse().isEmpty()) {
-                System.out.println("id personne " + p.getIdPersonne());
-                continue;
-            }
-            if (p.getIdentifiant().equals(personneLogin.getIdentifiant()) && p.getMotDePasse().equals(personneLogin.getMotDePasse())) {
+                continue;}
+            boolean resultpass = Outil.verifyPasswordBcrypt(personneLogin.getPlainTextPassword(), p.getMotDePasse());
+            System.out.println("resultpass " + resultpass);
+            if (p.getIdentifiant().equals(personneLogin.getIdentifiant()) && resultpass) {
                 personneLogin = p;
                 isLogged = true;
                 break;
-            }
-        }
-
+            }}
         if (isLogged) {
             System.out.println("Authentification Réussi");
             if (personneLogin.getClass().equals(Utilisateur.class)) {
                 Utilisateur utilisateur = (Utilisateur) personneLogin;
                 utilisateurController.setUtilisateur(utilisateur);
                 System.out.println(utilisateurController.getUtilisateur().getIdPersonne());
-                return "listeActivites?faces-redirect=true";
-            }
+                return "client/listeActivites?faces-redirect=true";
+            } else if (personneLogin.getClass().equals(Medecin.class)) {
+                Medecin medecin = (Medecin) personneLogin;
+                medecinController.setMedecin(medecin);
+                return "admin/gestionMedecin?faces-redirect=true";}
         } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erreur", "Identifiant ou mot de passe incorrect"));
             System.out.println("Authentification échoué");
         }
         return "";

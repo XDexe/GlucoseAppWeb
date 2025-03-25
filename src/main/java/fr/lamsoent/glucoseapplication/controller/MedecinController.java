@@ -4,6 +4,7 @@ import fr.lamsoent.glucoseapplication.model.MedecinModel;
 import fr.lamsoent.glucoseapplication.pojo.Medecin;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
@@ -18,8 +19,12 @@ public class MedecinController implements Serializable {
 
     private Medecin medecin = new Medecin();
 
+    @Inject
+    private PersonneController personneController;
+
     public void editMedecin() {
-        medecinModel.update(this.medecin);
+        personneController.saveImage(medecin);
+        medecinModel.update(medecin);
         medecin = new Medecin();
     }
 

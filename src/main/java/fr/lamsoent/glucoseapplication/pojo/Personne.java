@@ -36,7 +36,15 @@ public class Personne {
     }
 
     public void setMotDePasse(String motDePasse) {
-        this.motDePasse = motDePasse;
+        System.out.println("mot de passe set " + motDePasse);
+        System.out.println("mot de passe actuelle "+getMotDePasse());
+
+        if(!motDePasse.equals(getMotDePasse()) && !motDePasse.isEmpty()) {
+            System.out.println("mot de passe mit");
+            this.motDePasse = Outil.hashPassWordBcrypt(motDePasse);
+        }
+        System.out.println("mot de passe actuelle hasher"+getMotDePasse());
+
     }
 
     public String getPseudo() {
