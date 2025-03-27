@@ -2,6 +2,7 @@ package fr.lamsoent.glucoseapplication.controller;
 import fr.lamsoent.glucoseapplication.model.ActiviteModel;
 import fr.lamsoent.glucoseapplication.pojo.Activite;
 import fr.lamsoent.glucoseapplication.pojo.Activite;
+import fr.lamsoent.glucoseapplication.pojo.Capteur;
 import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.RequestScoped;
@@ -26,6 +27,7 @@ public class ActiviteController implements Serializable {
     @Inject
     private DonneeController donneeController;
 
+    private Capteur capteur;
     private Activite activite ;
     @Named
     @Inject
@@ -88,5 +90,27 @@ public class ActiviteController implements Serializable {
         this.activiteModel = activiteModel;
     }
 
+    public DonneeController getDonneeController() {
+        return donneeController;
+    }
 
+    public void setDonneeController(DonneeController donneeController) {
+        this.donneeController = donneeController;
+    }
+
+    public Capteur getCapteur() {
+        return capteur;
+    }
+
+    public void setCapteur(Capteur capteur) {
+        this.capteur = capteur;
+    }
+
+    public UtilisateurController getUtilisateurController() {
+        return utilisateurController;
+    }
+
+    public void setUtilisateurController(UtilisateurController utilisateurController) {
+        this.utilisateurController = utilisateurController;
+    }
 }

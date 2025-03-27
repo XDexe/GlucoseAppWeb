@@ -22,6 +22,7 @@ public class UtilisateurController implements Serializable {
     public void editUtilisateur() {
         utilisateurModel.update(this.utilisateur);
         utilisateur = new Utilisateur();
+
     }
 
     public void deleteUtilisateur(Utilisateur utilisateur) {
@@ -43,9 +44,19 @@ public class UtilisateurController implements Serializable {
     public List<Utilisateur> getUtilisateurs() {
         return utilisateurModel.read();
     }
+    public List<Utilisateur> read() {
+        return utilisateurModel.read();
+    }
 
     public void resetForm() {
         this.utilisateur = new Utilisateur();
+    }
+
+    public Utilisateur update(Utilisateur utilisateur) {
+        return utilisateurModel.update(utilisateur);
+    }
+    public Utilisateur read(int id){
+        return utilisateurModel.read(id);
     }
 
 }

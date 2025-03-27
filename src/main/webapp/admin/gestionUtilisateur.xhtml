@@ -75,6 +75,22 @@
             <h:outputLabel value="Prénom :" />
             <p:inputText value="#{utilisateurController.utilisateur.prenom}" />
 
+            <h:outputLabel value="Identifiant :"/>
+            <p:inputText value="#{utilisateurController.utilisateur.identifiant}"/>
+
+            <h:outputLabel value="Mot de passe :"/>
+            <p:inputText value="#{utilisateurController.utilisateur.motDePasse}"/>
+
+            <h:outputLabel value="Seuil minimal de glucose :"/>
+            <p:inputText value="#{utilisateurController.utilisateur.seuilMin}"/>
+
+            <h:outputLabel value="Seuil maximal de glucose :"/>
+            <p:inputText value="#{utilisateurController.utilisateur.seuilMax}"/>
+
+            <h:outputLabel value="Remarque :"/>
+            <p:inputTextarea value="#{utilisateurController.utilisateur.remarque}" rows="5" cols="30"/>
+
+
         </p:panelGrid>
 
         <p:separator/>

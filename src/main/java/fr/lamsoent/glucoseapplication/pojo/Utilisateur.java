@@ -15,19 +15,19 @@ public class Utilisateur extends Personne {
     private String seuilMin;
 
     @ManyToOne
-    private Categorie categorie = new Categorie();
+    private Categorie categorie;
 
     @ManyToOne
-    private Medecin medecin = new Medecin();
+    private Medecin medecin;
 
     @ManyToOne
-    private Entraineur entraineur = new Entraineur();
+    private Entraineur entraineur;
 
     @ManyToOne
     private Capteur capteur = new Capteur();
 
     @ManyToOne
-    private Dieteticien dieteticien = new Dieteticien();
+    private Dieteticien dieteticien;
 
     @OneToMany
     private List<Activite> activite = new ArrayList<Activite>();

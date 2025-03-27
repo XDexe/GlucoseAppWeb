@@ -1,5 +1,6 @@
 package fr.lamsoent.glucoseapplication.model;
 
+import fr.lamsoent.glucoseapplication.pojo.Capteur;
 import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -30,6 +31,13 @@ public class UtilisateurModel {
     public List<Utilisateur> read(){
         Query query = em.createQuery("select utilisateurs from Utilisateur as utilisateurs ", Utilisateur.class);
         return query.getResultList();
+    }
+
+    public Utilisateur readByCapteur(Capteur capteur){
+
+        Query query = em.createQuery("select utilisateurs from Utilisateur  as utilisateurs where utilisateurs.capteur.mac = :capteur", Utilisateur.class);
+        query.setParameter("capteur",capteur.getMac());
+        return (Utilisateur) query.getSingleResult();
     }
 
     public EntityManager getEm() {

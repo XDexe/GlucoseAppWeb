@@ -32,28 +32,27 @@ public class PersonneController implements Serializable {
     @Inject
     private UtilisateurController utilisateurController;
 
-
-
     @EJB
     private PersonneModel personneModel;
+
     @Named
     @Inject
     private MedecinController medecinController;
 
-    @PostConstruct
-    public void init() {
-        Utilisateur utilisateur = new Utilisateur();
-        utilisateur.setIdentifiant("admin");
-        utilisateur.setPseudo("admin");
-        utilisateur.setMotDePasse("admin");
-        utilisateur.setDieteticien(null);
-        utilisateur.setMedecin(null);
-        utilisateur.setEntraineur(null);
-        utilisateur.setNom("test");
-        utilisateur.setPrenom("test");
-
-        //personneModel.update(utilisateur);
-    }
+//    @PostConstruct
+//    public void init() {
+//        Utilisateur utilisateur = new Utilisateur();
+//        utilisateur.setIdentifiant("admin");
+//        utilisateur.setPseudo("admin");
+//        utilisateur.setMotDePasse("admin");
+//        utilisateur.setDieteticien(null);
+//        utilisateur.setMedecin(null);
+//        utilisateur.setEntraineur(null);
+//        utilisateur.setNom("test");
+//        utilisateur.setPrenom("test");
+//
+//        //personneModel.update(utilisateur);
+//    }
 
     public void saveImage(Personne personne) {
         if (uploadedFile != null) {

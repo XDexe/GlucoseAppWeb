@@ -86,9 +86,13 @@ public class ActiviteREST {
             System.out.println("Le capteur c est nulle");
             return Response.noContent().build();
         }
+
+
         for (Utilisateur user : lu) {
-            if (user.getCapteur().getMac().equalsIgnoreCase(c.getMac())) {
+            if ( user.getCapteur() != null && user.getCapteur().getMac().equalsIgnoreCase(c.getMac())) {
                 System.out.println("Utilisateur trouver " + user.getNom());
+                System.out.println("Capteur lier utilisateur : " + user.getCapteur().getMac());
+                System.out.println("Capteur :" + c.getMac());
                 u=user;
             }
         }
@@ -122,12 +126,13 @@ public class ActiviteREST {
     @POST
     @Path("/envoiDonnee")
     @Produces(MediaType.APPLICATION_JSON)
-    public void envoyerDonnées(@QueryParam("dateData") String dateDebut,
+    public Response envoyerDonnees(@QueryParam("dateData") String dateDebut,
                                 @QueryParam("tauxGlucose") String tauxGlucose,
                                 @QueryParam("idActivite") int idActivite){
 
         if(activiteModel.read(idActivite)== null){
-            return ;
+
+            return Response.serverError().build();
         }
         Donnee donnee = new Donnee();
         donnee.setDateData(formatDate(dateDebut));
@@ -137,5 +142,7 @@ public class ActiviteREST {
 
         donnee = donneeModel.update(donnee);
         graphiqueWebServer.sendMessage(donnee);
+
+        return Response.ok().build();
     }
 }

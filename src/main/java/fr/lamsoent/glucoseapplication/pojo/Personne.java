@@ -15,6 +15,9 @@ public class Personne {
     private String motDePasse;
     private String photoDeProfilUrl;
 
+    @ManyToOne
+    private Role role;
+
     @Transient
     private String plainTextPassword;
 
@@ -93,5 +96,13 @@ public class Personne {
 
     public void setPlainTextPassword(String plainTextPassword) {
         this.plainTextPassword = plainTextPassword;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
