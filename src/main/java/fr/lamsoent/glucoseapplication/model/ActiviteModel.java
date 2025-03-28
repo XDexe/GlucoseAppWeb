@@ -34,7 +34,7 @@ public class ActiviteModel {
     }
 
     public List<Activite> getActivitesUtilisateur(Utilisateur utilisateur){
-        Query query = em.createQuery("select activites from Activite as activites where activites.utilisateur.idPersonne = :id", Activite.class);
+        Query query = em.createQuery("select activites from Activite as activites where activites.utilisateur.idPersonne = :id order by activites.dateDebut DESC ", Activite.class);
         query.setParameter("id",utilisateur.getIdPersonne());
         return query.getResultList();
     }

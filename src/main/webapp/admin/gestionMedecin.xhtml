@@ -101,11 +101,13 @@
                 <p:password value="#{medecinController.medecin.motDePasse}"/>
 
                 <h:outputLabel value="Utilisateur :"/>
-                <p:selectOneMenu  id="utilisateur" value="#{medecinController.utilisateurSelectionne.idPersonne}" required="true">
-                    <f:selectItem itemLabel="Choisir un utilisateur" itemValue="" />
-                    <f:selectItems value="#{utilisateurController.read()}" var="user"
-                                   itemLabel="#{user.nom}" itemValue="#{user.idPersonne}" />
-                </p:selectOneMenu>
+
+                <p:selectCheckboxMenu id="multiple"
+                                      multiple="true" emptyLabel="Please select..." updateLabel="true"
+                                      value="#{medecinController.utilisteursSelectionnesIds}">
+
+                    <f:selectItems value="#{utilisateurController.read()}" var="user" itemLabel="#{user.nom} #{user.prenom}" itemValue="#{user.idPersonne}"/>
+                </p:selectCheckboxMenu>
 
                 <p:fileUpload mode="simple"
                               value="#{personneController.uploadedFile}"

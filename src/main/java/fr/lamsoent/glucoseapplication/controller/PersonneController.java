@@ -39,20 +39,9 @@ public class PersonneController implements Serializable {
     @Inject
     private MedecinController medecinController;
 
-//    @PostConstruct
-//    public void init() {
-//        Utilisateur utilisateur = new Utilisateur();
-//        utilisateur.setIdentifiant("admin");
-//        utilisateur.setPseudo("admin");
-//        utilisateur.setMotDePasse("admin");
-//        utilisateur.setDieteticien(null);
-//        utilisateur.setMedecin(null);
-//        utilisateur.setEntraineur(null);
-//        utilisateur.setNom("test");
-//        utilisateur.setPrenom("test");
-//
-//        //personneModel.update(utilisateur);
-//    }
+    @Named
+    @Inject
+    private EntraineurController entraineurController;
 
     public void saveImage(Personne personne) {
         if (uploadedFile != null) {
@@ -60,16 +49,18 @@ public class PersonneController implements Serializable {
             String oldFileName = personne.getPhotoDeProfilUrl();
 
             if (fileName == null || fileName.isEmpty()) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erreur", "Veuillez choisir une image"));
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erreur", "Veuillez choisir une image"));
                 return;
             }
             String[] list = fileName.split("\\.");
             if (list.length < 2) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erreur", "Veuillez choisir une image"));
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erreur", "Veuillez choisir une image"));
                 return;
             }
             String extension = list[list.length - 1];
-            fileName = "img" + "_" + UUID.randomUUID() + "." + extension;
+            fileName = "img_" + UUID.randomUUID() + "." + extension;
 
             if (!(extension.equalsIgnoreCase("jpg") || extension.equalsIgnoreCase("jpeg") || extension.equalsIgnoreCase("png"))) {
                 FacesContext.getCurrentInstance().addMessage(null,
@@ -90,17 +81,39 @@ public class PersonneController implements Serializable {
                         Files.delete(deleteDestinationFile.toPath());
                     }
                 }
-
-                // Met à jour le nom de fichier dans la base de données.
+                // Update the picture URL
                 personne.setPhotoDeProfilUrl(fileName);
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Image téléchargée avec succès !"));
+                // Persist the change into the database
+                personneModel.update(personne);
 
-            } catch (Exception e){
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Image téléchargée avec succès !"));
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
+    public void deleteImage(Personne personne){
+        String oldFileName = personne.getPhotoDeProfilUrl();
+
+        if(oldFileName == null || oldFileName.isEmpty() || oldFileName.equals("default.png")){
+            return;
+        }
+
+        String deletePath = FacesContext.getCurrentInstance().getExternalContext()
+                .getRealPath("/resources/photo-profil") + File.separator + oldFileName;
+        try {
+            if (oldFileName != null && !oldFileName.isEmpty() && !oldFileName.equals("default.png")) {
+                File deleteDestinationFile = new File(deletePath);
+                if (deleteDestinationFile.exists()) {
+                    Files.delete(deleteDestinationFile.toPath());
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
 
     public String AuthPersonne() {
         System.out.println("Authentification en cours");

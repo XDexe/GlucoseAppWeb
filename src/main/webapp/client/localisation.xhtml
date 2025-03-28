@@ -22,22 +22,63 @@
     </h:form>
     <div id="map" style="width: 100%; height: 100%;"></div>
     <script type="application/javascript">
+        const mapCapteurMarker = new Map();
         let nomCapteur = document.getElementById('formGeoloc:nomCapteur').value;
         let idCapteur = document.getElementById('formGeoloc:idCapteur').value;
         let latitude = document.getElementById('formGeoloc:latitude').value;
         let longitude = document.getElementById('formGeoloc:longitude').value;
         let ws;
 
-        var map = L.map('map').setView([51.505, -0.09], 13);
+        var map = L.map('map').setView([35.92141712603127, 14.490457694342169], 15);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&lt;a href="https://www.openstreetmap.org/copyright">OpenStreetMap&lt;/a> contributors'
         }).addTo(map);
 
-        L.marker([51.5, -0.09]).addTo(map)
-            .bindPopup(capteur.)
-            .openPopup();
-    </script>
+            ws = new WebSocket("ws://10.173.163.240:8080/GlucoseApplication-1.0-SNAPSHOT/websocketlocate");
 
+            ws.onopen = event => {
+                ws.send("geolocaliser#");
+                console.log("WebSocket connection for map opened");
+            };
+
+            ws.onmessage = event => {
+                let txt = event.data;
+                let txtJson = JSON.parse(txt);
+                console.log("Message received");
+                console.log(txtJson);
+            };
+
+            ws.onerror = error => {
+                console.error("WebSocket error:", error);
+            };
+
+            ws.onclose = event => {
+                console.log("WebSocket connection closed:", event);
+
+        }
+
+        function placerPoint(mapCapteur,lat,long,nom){
+            console.log('Ajoute du point sur la carte ' + nom);
+            var marker = L.marker([lat, long]).addTo(mapCapteur).bindPopup(nom);;
+            mapCapteurMarker.set(1,marker);
+
+        }
+
+        function deplacerPoint(mapCapteur, idCapteur, lat, long){
+            console.log('Déplacement d\'un point sur la carte ' + idCapteur + ' ' + lat + ' ' + long);
+            var marker = mapCapteurMarker.get(idCapteur);
+            marker.setLatLng([lat, long]);
+
+        }
+
+        function supprimerPoint(mapCapteur,idCapteur){
+            console.log('Suppression captuer sur la carte ' + idCapteur);
+            var marker = mapCapteurMarker.get(idCapteur);
+            mapCapteurMarker.delete(marker);
+            mapCapteur.removeLayer(marker);
+        }
+
+    </script>
 </h:body>
 </html>

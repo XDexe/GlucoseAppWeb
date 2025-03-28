@@ -1,17 +1,13 @@
 package fr.lamsoent.glucoseapplication.controller;
 import fr.lamsoent.glucoseapplication.model.ActiviteModel;
 import fr.lamsoent.glucoseapplication.pojo.Activite;
-import fr.lamsoent.glucoseapplication.pojo.Activite;
 import fr.lamsoent.glucoseapplication.pojo.Capteur;
 import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
 import jakarta.ejb.EJB;
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.servlet.http.HttpSession;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -38,7 +34,7 @@ public class ActiviteController implements Serializable {
 
         if (activite.getId() == 0) {
             activite =null;
-            System.out.println("Erreur activiter et 0");
+            System.out.println("Erreur activité et 0");
         }
     }
 
@@ -63,7 +59,10 @@ public class ActiviteController implements Serializable {
         if (utilAlive.getIdPersonne()==0){
             return new ArrayList<>();
         }
-        return activiteModel.getActivitesUtilisateur(utilAlive);
+
+        List<Activite> list = activiteModel.getActivitesUtilisateur(utilAlive);
+
+        return list;
     }
 
     public Activite getActivite() {

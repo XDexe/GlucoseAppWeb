@@ -17,6 +17,7 @@ public class MedecinController implements Serializable {
 
     private Medecin medecin = new Medecin();
     private Utilisateur utilisateurSelectionne = new Utilisateur();
+    private List<Integer> utilisteursSelectionnesIds;
 
     @EJB
     private MedecinModel medecinModel;
@@ -35,16 +36,29 @@ public class MedecinController implements Serializable {
             medecin = medecinModel.update(medecin);
             personneController.saveImage(medecin);
 
-            if(utilisateurSelectionne.getIdPersonne() != 0 && medecin.getIdPersonne() != 0) {
-                utilisateurSelectionne = utilisateurController.read(utilisateurSelectionne.getIdPersonne());
-                utilisateurSelectionne.setMedecin(medecin);
-                utilisateurController.update(utilisateurSelectionne);
-                utilisateurSelectionne = new Utilisateur();
+            if(!utilisteursSelectionnesIds.isEmpty()) {
+                utilisteursSelectionnesIds.forEach(id -> {
+                    Utilisateur utilisateur;
+                    utilisateur = utilisateurController.read(id);
+
+                    if(utilisateur != null) {
+                        utilisateur.setMedecin(medecin);
+                        utilisateurController.update(utilisateur);
+                    }
+                });
             }
             medecin = new Medecin();
     }
 
     public void deleteMedecin(Medecin medecin) {
+        for (Utilisateur utilisateur : utilisateurController.getUtilisateurs()) {
+            if (utilisateur.getMedecin() != null &&
+                    utilisateur.getMedecin().getIdPersonne() == medecin.getIdPersonne()) {
+                utilisateur.setMedecin(null);
+                utilisateurController.update(utilisateur);
+            }
+        }
+        personneController.deleteImage(medecin);
         medecinModel.delete(medecin);
     }
 
@@ -99,4 +113,14 @@ public class MedecinController implements Serializable {
     public void setUtilisateurController(UtilisateurController utilisateurController) {
         this.utilisateurController = utilisateurController;
     }
+
+    public List<Integer> getUtilisteursSelectionnesIds() {
+        return utilisteursSelectionnesIds;
+    }
+
+    public void setUtilisteursSelectionnesIds(List<Integer> utilisteursSelectionnesIds) {
+        this.utilisteursSelectionnesIds = utilisteursSelectionnesIds;
+    }
+
+
 }

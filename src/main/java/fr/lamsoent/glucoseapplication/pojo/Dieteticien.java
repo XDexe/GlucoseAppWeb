@@ -10,8 +10,8 @@ import java.util.List;
 @Entity
 public class Dieteticien extends Personne{
 
-    @OneToMany(mappedBy = "dieteticien")
     @JsonbTransient
+    @OneToMany(mappedBy = "dieteticien")
     private List<Utilisateur> listUtilisateurs = new ArrayList<>();
 
     public Dieteticien(){

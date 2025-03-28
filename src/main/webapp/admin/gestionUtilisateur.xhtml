@@ -64,7 +64,7 @@
           bottom="0"
           left="50%">
 
-    <h:form id="formAddUtilisateur">
+    <h:form id="formAddUtilisateur" enctype="multipart/form-data">
         <h:inputHidden value="#{utilisateurController.utilisateur.idPersonne}"/>
 
         <p:panelGrid columns="2" styleClass="grid">
@@ -90,6 +90,30 @@
             <h:outputLabel value="Remarque :"/>
             <p:inputTextarea value="#{utilisateurController.utilisateur.remarque}" rows="5" cols="30"/>
 
+            <h:outputLabel value="Medecin : "/>
+            <p:selectOneMenu id="medecin" value="#{utilisateurController.medecinSelectionne.idPersonne}">
+                <f:selectItem itemLabel="Choisir un médecin" itemValue="#{null}"/>
+                <f:selectItems value="#{utilisateurController.medecins}" var="medecin" itemLabel="#{medecin.nom} #{medecin.prenom}" itemValue="#{medecin.idPersonne}"/>
+            </p:selectOneMenu>
+
+            <h:outputLabel value="Dieteticien : "/>
+            <p:selectOneMenu id="dieteticien" value="#{utilisateurController.dieteticienSelectionne.idPersonne}">
+                <f:selectItem itemLabel="Choisir un dieteticien" itemValue="#{null}"/>
+                <f:selectItems value="#{utilisateurController.dieteticiens}" var="dieteticien" itemLabel="#{dieteticien.nom} #{dieteticien.prenom}" itemValue="#{dieteticien.idPersonne}"/>
+            </p:selectOneMenu>
+
+            <h:outputLabel value="Entraineur : "/>
+            <p:selectOneMenu id="entraineur" value="#{utilisateurController.entraineurSelectionne.idPersonne}">
+                <f:selectItem itemLabel="Choisir un entraineur" itemValue="#{null}"/>
+                <f:selectItems value="#{utilisateurController.entraineurs}" var="entraineur" itemLabel="#{entraineur.nom} #{entraineur.prenom}" itemValue="#{entraineur.idPersonne}"/>
+            </p:selectOneMenu>
+
+            <h:outputLabel value="Photo de profil :"/>
+            <p:fileUpload mode="simple"
+                          value="#{personneController.uploadedFile}"
+                          sizeLimit="100000000"
+                          allowTypes="/(\.|\/)(jpg|jpeg|png)$/"
+                          dragDropSupport="false"/>
 
         </p:panelGrid>
 

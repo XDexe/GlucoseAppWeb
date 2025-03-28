@@ -100,6 +100,14 @@
                 <h:outputLabel value="Mot de passe:"/>
                 <p:password value="#{entraineurController.entraineur.motDePasse}"/>
 
+                <p:selectCheckboxMenu id="multiple"
+                                      multiple="true" emptyLabel="Please select..." updateLabel="true"
+                                      value="#{entraineurController.utilisteursSelectionnesIds}">
+
+                    <f:selectItems value="#{utilisateurController.read()}" var="user" itemLabel="#{user.nom} #{user.prenom}" itemValue="#{user.idPersonne}"/>
+                </p:selectCheckboxMenu>
+
+                <h:outputLabel value="Photo de profil :"/>
                 <p:fileUpload mode="simple"
                               value="#{personneController.uploadedFile}"
                               sizeLimit="100000000"

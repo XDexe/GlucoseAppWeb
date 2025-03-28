@@ -1,7 +1,9 @@
 package fr.lamsoent.glucoseapplication.websocket;
 
 import fr.lamsoent.glucoseapplication.model.ActiviteModel;
+import fr.lamsoent.glucoseapplication.model.CapteurModel;
 import fr.lamsoent.glucoseapplication.pojo.Activite;
+import fr.lamsoent.glucoseapplication.pojo.Capteur;
 import fr.lamsoent.glucoseapplication.pojo.Donnee;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
@@ -24,6 +26,8 @@ public class Localiser {
     @EJB
     private ActiviteModel activiteModel;
 
+    @EJB
+    private CapteurModel capteurModel;
 
     @OnOpen
     public void onOpen(Session session) {
@@ -32,33 +36,36 @@ public class Localiser {
         }
     }
 
-
     @OnMessage
     public void onMessage(String message, Session session) {
         String[] args = message.split("#");
-
         switch (args[0]){
+            case "geolocaliser":
+                getAllCapteurs();
+                sendMessage(getAllCapteurs(), session);
             case "abonnement":
                 System.out.println("Debug 01 abonnement");
                 abonnementClient(args, session);
             default:
                 break;
         }
-
-
     }
 
     @OnClose
     public void onClose(Session session) {
         anonyme.remove(session);
-
         clientAbonnes.values().forEach(sessions -> {
             if (sessions.contains(session)){
                 sessions.remove(session);
             }
         });
-
     }
+
+    public List<Capteur> getAllCapteurs(){
+        return capteurModel.read();
+    }
+
+
 
     @OnError
     public void onError(Session session, Throwable throwable) {
@@ -83,6 +90,18 @@ public class Localiser {
         }
     }
 
+    public void sendMessage(List<Capteur> listCap, Session session){
+
+        try (Jsonb jsonb = JsonbBuilder.create()) {
+            String dataString = jsonb.toJson(listCap);
+            session.getAsyncRemote().sendText(dataString);
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la sérialisation des données : " + e.getMessage());
+            e.printStackTrace();
+            return;
+        }
+
+    }
 
     public void abonnementClient(String[] args,Session session){
         int idActivite;

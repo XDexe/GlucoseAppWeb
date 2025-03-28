@@ -89,7 +89,7 @@ public class ActiviteREST {
 
 
         for (Utilisateur user : lu) {
-            if ( user.getCapteur() != null && user.getCapteur().getMac().equalsIgnoreCase(c.getMac())) {
+            if ( user.getCapteur() != null && user.getCapteur().getMac() !=null &&!user.getCapteur().getMac().isEmpty() && user.getCapteur().getMac().equalsIgnoreCase(c.getMac())) {
                 System.out.println("Utilisateur trouver " + user.getNom());
                 System.out.println("Capteur lier utilisateur : " + user.getCapteur().getMac());
                 System.out.println("Capteur :" + c.getMac());
@@ -106,7 +106,6 @@ public class ActiviteREST {
         a1.setCapteur(c);
         a1.setDateDebut(formatDate(dateDebut));
         a1=activiteModel.update(a1);
-        a1 = activiteModel.update(a1);
         System.out.println(a1.getId());
         return  Response.ok(a1.getId()).build();
     }
@@ -124,6 +123,28 @@ public class ActiviteREST {
     }
 
     @POST
+    @Path("/stopAct")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response stopActivite(@QueryParam("dateFin") String dateFin,
+                                   @QueryParam("idActivite") int idActivite) {
+        System.out.println("Declenchement");
+        System.out.println(idActivite);
+        System.out.println(dateFin);
+        if(activiteModel.read(idActivite) == null)
+        {
+            System.out.println("act pas trouvé");
+            return Response.noContent().build();
+        }else {
+            System.out.println("actTrouvé");
+            Activite activiteStop = activiteModel.read(idActivite);
+            activiteStop.setAlive(false);
+            activiteStop.setDateFin(formatDate(dateFin));
+            activiteModel.update(activiteStop);
+            return  Response.ok(activiteStop.getId()).build();
+        }
+    }
+
+    @POST
     @Path("/envoiDonnee")
     @Produces(MediaType.APPLICATION_JSON)
     public Response envoyerDonnees(@QueryParam("dateData") String dateDebut,
@@ -131,7 +152,6 @@ public class ActiviteREST {
                                 @QueryParam("idActivite") int idActivite){
 
         if(activiteModel.read(idActivite)== null){
-
             return Response.serverError().build();
         }
         Donnee donnee = new Donnee();

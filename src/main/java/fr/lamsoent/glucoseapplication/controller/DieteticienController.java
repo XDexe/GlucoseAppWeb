@@ -3,8 +3,10 @@ package fr.lamsoent.glucoseapplication.controller;
 import fr.lamsoent.glucoseapplication.model.DieteticienModel;
 import fr.lamsoent.glucoseapplication.pojo.Dieteticien;
 import fr.lamsoent.glucoseapplication.pojo.Medecin;
+import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
@@ -14,17 +16,50 @@ import java.util.List;
 @SessionScoped
 public class DieteticienController implements Serializable {
 
+    private Dieteticien dieteticien = new Dieteticien();
+    private Utilisateur utilisateurSelectionne = new Utilisateur();
+    private List<Integer> utilisteursSelectionnesIds;
+
     @EJB
     private DieteticienModel dieteticienModel;
 
-    private Dieteticien dieteticien = new Dieteticien();
+    @Inject
+    private PersonneController personneController;
+
+    @Inject
+    private UtilisateurController utilisateurController;
+
+    public List<Utilisateur> getUtilisateurs() {
+        return utilisateurController.getUtilisateurs();
+    }
 
     public void editDieteticien() {
-        dieteticienModel.update(this.dieteticien);
+        dieteticien = dieteticienModel.update(dieteticien);
+        personneController.saveImage(dieteticien);
+
+        if(!utilisteursSelectionnesIds.isEmpty()) {
+            utilisteursSelectionnesIds.forEach(id -> {
+                Utilisateur utilisateur;
+                utilisateur = utilisateurController.read(id);
+
+                if(utilisateur != null) {
+                    utilisateur.setDieteticien(dieteticien);
+                    utilisateurController.update(utilisateur);
+                }
+            });
+        }
         dieteticien = new Dieteticien();
     }
 
     public void deleteDieteticien(Dieteticien dieteticien) {
+        for (Utilisateur utilisateur : utilisateurController.getUtilisateurs()) {
+            if (utilisateur.getDieteticien() != null &&
+                    utilisateur.getDieteticien().getIdPersonne() == dieteticien.getIdPersonne()) {
+                utilisateur.setDieteticien(null);
+                utilisateurController.update(utilisateur);
+            }
+        }
+        personneController.deleteImage(dieteticien);
         dieteticienModel.delete(dieteticien);
     }
 
@@ -48,4 +83,43 @@ public class DieteticienController implements Serializable {
         this.dieteticien = new Dieteticien();
     }
 
+    public Utilisateur getUtilisateurSelectionne() {
+        return utilisateurSelectionne;
+    }
+
+    public void setUtilisateurSelectionne(Utilisateur utilisateurSelectionne) {
+        this.utilisateurSelectionne = utilisateurSelectionne;
+    }
+
+    public List<Integer> getUtilisteursSelectionnesIds() {
+        return utilisteursSelectionnesIds;
+    }
+
+    public void setUtilisteursSelectionnesIds(List<Integer> utilisteursSelectionnesIds) {
+        this.utilisteursSelectionnesIds = utilisteursSelectionnesIds;
+    }
+
+    public DieteticienModel getDieteticienModel() {
+        return dieteticienModel;
+    }
+
+    public void setDieteticienModel(DieteticienModel dieteticienModel) {
+        this.dieteticienModel = dieteticienModel;
+    }
+
+    public PersonneController getPersonneController() {
+        return personneController;
+    }
+
+    public void setPersonneController(PersonneController personneController) {
+        this.personneController = personneController;
+    }
+
+    public UtilisateurController getUtilisateurController() {
+        return utilisateurController;
+    }
+
+    public void setUtilisateurController(UtilisateurController utilisateurController) {
+        this.utilisateurController = utilisateurController;
+    }
 }
