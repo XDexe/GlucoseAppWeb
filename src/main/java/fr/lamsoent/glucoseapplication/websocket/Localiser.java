@@ -5,6 +5,7 @@ import fr.lamsoent.glucoseapplication.model.CapteurModel;
 import fr.lamsoent.glucoseapplication.pojo.Activite;
 import fr.lamsoent.glucoseapplication.pojo.Capteur;
 import fr.lamsoent.glucoseapplication.pojo.Donnee;
+import fr.lamsoent.glucoseapplication.pojo.Personne;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -22,7 +23,6 @@ import java.util.List;
 @ApplicationScoped
 public class Localiser {
     private List<Session> anonyme = new ArrayList<>();
-    private HashMap<Integer, List<Session>> clientAbonnes = new HashMap<>();
     @EJB
     private ActiviteModel activiteModel;
 
@@ -41,11 +41,7 @@ public class Localiser {
         String[] args = message.split("#");
         switch (args[0]){
             case "geolocaliser":
-                getAllCapteurs();
                 sendMessage(getAllCapteurs(), session);
-            case "abonnement":
-                System.out.println("Debug 01 abonnement");
-                abonnementClient(args, session);
             default:
                 break;
         }
@@ -54,11 +50,7 @@ public class Localiser {
     @OnClose
     public void onClose(Session session) {
         anonyme.remove(session);
-        clientAbonnes.values().forEach(sessions -> {
-            if (sessions.contains(session)){
-                sessions.remove(session);
-            }
-        });
+
     }
 
     public List<Capteur> getAllCapteurs(){
@@ -71,23 +63,22 @@ public class Localiser {
     public void onError(Session session, Throwable throwable) {
     }
 
-    public void sendMessage(Donnee donnee){
-        Activite activite = donnee.getActivite();
+    public void sendMessage(Capteur capteur){
 
         String dataString;
         try (Jsonb jsonb = JsonbBuilder.create()) {
-            dataString = jsonb.toJson(donnee);
+            dataString = jsonb.toJson(capteur);
+            for(Session s : anonyme) {
+                s.getAsyncRemote().sendText(dataString);
+            }
         } catch (Exception e) {
             System.err.println("Erreur lors de la sérialisation des données : " + e.getMessage());
             e.printStackTrace();
             return;
         }
 
-        if(clientAbonnes.get(activite.getId())!= null && !clientAbonnes.get(activite.getId()).isEmpty()){
-            clientAbonnes.get(activite.getId()).forEach(session -> {
-                session.getAsyncRemote().sendText(dataString);
-            });
-        }
+
+
     }
 
     public void sendMessage(List<Capteur> listCap, Session session){
@@ -98,38 +89,7 @@ public class Localiser {
         } catch (Exception e) {
             System.err.println("Erreur lors de la sérialisation des données : " + e.getMessage());
             e.printStackTrace();
-            return;
         }
-
-    }
-
-    public void abonnementClient(String[] args,Session session){
-        int idActivite;
-
-        System.out.println("Debug 02 abonnement");
-        try {
-            idActivite = Integer.parseInt(args[1]);
-        }catch (NumberFormatException  e){
-            e.printStackTrace();
-            idActivite =0;
-        }
-
-        System.out.println("Debug 03 abonnement");
-        if(activiteModel.read(idActivite) == null) {
-            return;
-        }
-
-        System.out.println("Debug 04 abonnement");
-        if(!clientAbonnes.containsKey(idActivite)){
-            clientAbonnes.put(idActivite, new ArrayList<Session>());
-        }
-        System.out.println("Debug 05 abonnement");
-        if (!clientAbonnes.get(idActivite).contains(session)){
-            clientAbonnes.get(idActivite).add(session);
-        }
-
-        System.out.println("nouvel abonné :" + idActivite );
-
     }
 
 }

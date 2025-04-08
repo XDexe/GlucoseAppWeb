@@ -1,7 +1,9 @@
 package fr.lamsoent.glucoseapplication.controller;
 
 import fr.lamsoent.glucoseapplication.model.EntraineurModel;
+import fr.lamsoent.glucoseapplication.model.RoleModel;
 import fr.lamsoent.glucoseapplication.pojo.Entraineur;
+import fr.lamsoent.glucoseapplication.pojo.Role;
 import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
@@ -22,26 +24,36 @@ public class EntraineurController implements Serializable {
     @EJB
     private EntraineurModel entraineurModel;
 
+    @EJB
+    private RoleModel roleModel;
+
     @Inject
     private PersonneController personneController;
 
     @Inject
     private UtilisateurController utilisateurController;
+    @Named
+    @Inject
+    private ImageController imageController;
 
     public List<Utilisateur> getUtilisateurs() {
         return utilisateurController.getUtilisateurs();
     }
 
     public void editEntraineur() {
+
+        Role roleDefaut = roleModel.getRoleByName("DEFAUT");
+        entraineur.setRole(roleDefaut);
+
         entraineur = entraineurModel.update(entraineur);
-        personneController.saveImage(entraineur);
+        imageController.saveImage(entraineur);
 
         if(!utilisteursSelectionnesIds.isEmpty()) {
             utilisteursSelectionnesIds.forEach(id -> {
                 Utilisateur utilisateur;
                 utilisateur = utilisateurController.read(id);
 
-                if(utilisateur != null) {;
+                if(utilisateur != null) {
                     utilisateur.setEntraineur(entraineur);
                     utilisateurController.update(utilisateur);
                 }
@@ -58,7 +70,7 @@ public class EntraineurController implements Serializable {
                 utilisateurController.update(utilisateur);
             }
         }
-        personneController.deleteImage(entraineur);
+        imageController.deleteImage(entraineur);
         entraineurModel.delete(entraineur);
     }
 

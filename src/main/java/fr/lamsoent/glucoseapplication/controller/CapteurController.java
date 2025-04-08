@@ -16,6 +16,7 @@ public class CapteurController implements Serializable {
     @EJB
     private CapteurModel capteurModel;
 
+
     private Capteur capteur = new Capteur();
 
     public void editCapteur() {
@@ -50,5 +51,13 @@ public class CapteurController implements Serializable {
             capteur =null;
             System.out.println("Erreur activiter et 0");
         }
+    }
+
+    public CapteurModel getCapteurModel() {
+        return capteurModel;
+    }
+
+    public void setCapteurModel(CapteurModel capteurModel) {
+        this.capteurModel = capteurModel;
     }
 }

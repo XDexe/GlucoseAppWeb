@@ -40,6 +40,30 @@ public class UtilisateurModel {
         return (Utilisateur) query.getSingleResult();
     }
 
+    public List<Utilisateur> readByRole(String roleName) {
+        Query query = em.createQuery("SELECT u FROM Utilisateur u WHERE u.role.nomRole = :roleName", Utilisateur.class);
+        query.setParameter("roleName", roleName);
+        return query.getResultList();
+    }
+
+    public List<Utilisateur> readByMedecin(int medecinId) {
+        Query query = em.createQuery("SELECT u FROM Utilisateur u WHERE u.medecin.idPersonne = :medecinId", Utilisateur.class);
+        query.setParameter("medecinId", medecinId);
+        return query.getResultList();
+    }
+
+    public List<Utilisateur> readByDieteticien(int dieteticienId) {
+        Query query = em.createQuery("SELECT u FROM Utilisateur u WHERE u.dieteticien.idPersonne = :dieteticienId", Utilisateur.class);
+        query.setParameter("dieteticienId", dieteticienId);
+        return query.getResultList();
+    }
+
+    public List<Utilisateur> readByEntraineur(int entraineurId) {
+        Query query = em.createQuery("SELECT u FROM Utilisateur u WHERE u.entraineur.idPersonne = :entraineurId", Utilisateur.class);
+        query.setParameter("entraineurId", entraineurId);
+        return query.getResultList();
+    }
+
     public EntityManager getEm() {
         return em;
     }

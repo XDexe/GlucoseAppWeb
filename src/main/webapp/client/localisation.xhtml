@@ -2,59 +2,117 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 <h:head>
-<title>Test Geolocalisation Capteurs </title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Test Geolocalisation Capteurs </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" type="application/javascript"></script>
 </h:head>
 
 <h:body>
-    <f:metadata>
-        <f:viewAction action="#{capteurController.loadLocaliser()}"/>
-    </f:metadata>
+
     <h:form id="formGeoloc">
-        <h:inputHidden id="nomCapteur" value="#{activiteController.capteur.nom}"/>
         <h:inputHidden id="idCapteur" value="#{activiteController.capteur.id}"/>
-        <h:inputHidden id="latitude" value="#{activiteController.capteur.latitude}"/>
-        <h:inputHidden id="longitude" value="#{activiteController.capteur.longitude}"/>
     </h:form>
-    <div id="map" style="width: 100%; height: 100%;"></div>
+    <div id="map" style="width: 80%; height: 80%;"></div>
+    <div id="controles" style="padding: 10px; background-color: #f8f9fa;">
+        <h:form id="formSelecteur">
+            <p:selectOneMenu id="selecteurCapteurs" style="width: 100%;"
+                             widgetVar="capteurWidget"
+            >
+                <f:selectItem itemLabel="-- Sélectionner un capteur --" itemValue="" />
+                <f:selectItems  value="#{capteurController.capteurModel.read()}"
+                                var="capteur"
+                                itemLabel="#{capteur.nom}"
+                                itemValue="#{capteur.id}" >
+                </f:selectItems>
+                <p:ajax update="formGeoloc:idCapteur" event="change" oncomplete="centraliser();" />
+
+            </p:selectOneMenu>
+        </h:form>
+    </div>
     <script type="application/javascript">
         const mapCapteurMarker = new Map();
-        let nomCapteur = document.getElementById('formGeoloc:nomCapteur').value;
-        let idCapteur = document.getElementById('formGeoloc:idCapteur').value;
-        let latitude = document.getElementById('formGeoloc:latitude').value;
-        let longitude = document.getElementById('formGeoloc:longitude').value;
         let ws;
 
-        var map = L.map('map').setView([35.92141712603127, 14.490457694342169], 15);
+        var map = L.map('map').setView([47.32, 9.27],4);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&lt;a href="https://www.openstreetmap.org/copyright">OpenStreetMap&lt;/a> contributors'
         }).addTo(map);
 
-            ws = new WebSocket("ws://10.173.163.240:8080/GlucoseApplication-1.0-SNAPSHOT/websocketlocate");
+        function centraliser() {
+            console.log("Appel méthode centraliser");
 
-            ws.onopen = event => {
-                ws.send("geolocaliser#");
-                console.log("WebSocket connection for map opened");
-            };
+            const capteurId = PF('capteurWidget').getSelectedValue();
+            console.log("Capteur id : " + capteurId);
 
-            ws.onmessage = event => {
-                let txt = event.data;
-                let txtJson = JSON.parse(txt);
-                console.log("Message received");
-                console.log(txtJson);
-            };
+            const marker = mapCapteurMarker.get(parseInt(capteurId));
 
-            ws.onerror = error => {
-                console.error("WebSocket error:", error);
-            };
+            if (marker != null) {
+                map.setView(marker.getLatLng(), 15);
+                marker.openPopup(); // facultatif : ouvrir le popup du capteur
+            } else {
+                console.warn("Aucun marqueur trouvé pour l'ID : " + capteurId);
+            }
+        }
 
-            ws.onclose = event => {
-                console.log("WebSocket connection closed:", event);
+        /*function selectionnerCapteur() {
+            const capteurId = PF('capteurWidget').getSelectedValue();
+            if (capteurId &amp;&amp; capteurs.has(parseInt(capteurId))) {
+                const capteur = capteurs.get(parseInt(capteurId));
+                map.setView([capteur.latitude, capteur.longitude], 17);
+
+                // Ouvrir le popup du marqueur sélectionné
+                const marker = mapCapteurMarker.get(parseInt(capteurId));
+                if (marker) {
+                    marker.openPopup();
+                }
+            }
+        }*/
+        ws = new WebSocket("ws://10.173.163.240:8080/GlucoseApplication-1.0-SNAPSHOT/websocketlocate");
+
+        ws.onopen = event => {
+            ws.send("geolocaliser#");
+            console.log("WebSocket connection for map opened");
+        };
+
+        ws.onmessage = event => {
+            let txt = event.data;
+            let txtJson = JSON.parse(txt);
+            console.log("Message received");
+
+            if(Array.isArray(txtJson)){
+                for (let i = 0; i &lt; txtJson.length; i++) {
+                    let capteur = txtJson[i];
+
+                    if(mapCapteurMarker.has(capteur.id)){
+                        deplacerPoint(map,capteur.id,capteur.latitude,capteur.longitude);
+                    }else{
+                        placerPoint(map,capteur.latitude,capteur.longitude,capteur.nom);
+                    }
+
+                }
+            }else {
+                let capteur = txtJson;
+
+                if(mapCapteurMarker.has(capteur.id)){
+                    deplacerPoint(map,capteur.id,capteur.latitude,capteur.longitude);
+                }else{
+                    placerPoint(map,capteur.latitude,capteur.longitude,capteur.nom);
+                }
+            }
+            console.log(txtJson);
+        };
+
+        ws.onerror = error => {
+            console.error("WebSocket error:", error);
+        };
+
+        ws.onclose = event => {
+            console.log("WebSocket connection closed:", event);
 
         }
 

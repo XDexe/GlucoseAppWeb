@@ -1,8 +1,10 @@
 package fr.lamsoent.glucoseapplication.controller;
 
 import fr.lamsoent.glucoseapplication.model.DieteticienModel;
+import fr.lamsoent.glucoseapplication.model.RoleModel;
 import fr.lamsoent.glucoseapplication.pojo.Dieteticien;
 import fr.lamsoent.glucoseapplication.pojo.Medecin;
+import fr.lamsoent.glucoseapplication.pojo.Role;
 import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
@@ -23,19 +25,29 @@ public class DieteticienController implements Serializable {
     @EJB
     private DieteticienModel dieteticienModel;
 
+    @EJB
+    private RoleModel roleModel;
+
     @Inject
     private PersonneController personneController;
 
     @Inject
     private UtilisateurController utilisateurController;
 
+    @Named
+    @Inject
+    private ImageController imageController;
+
     public List<Utilisateur> getUtilisateurs() {
         return utilisateurController.getUtilisateurs();
     }
 
     public void editDieteticien() {
+        Role roleDieteticien = roleModel.getOrCreateRoleByName("DEFAUT");
+        dieteticien.setRole(roleDieteticien);
+
         dieteticien = dieteticienModel.update(dieteticien);
-        personneController.saveImage(dieteticien);
+        imageController.saveImage(dieteticien);
 
         if(!utilisteursSelectionnesIds.isEmpty()) {
             utilisteursSelectionnesIds.forEach(id -> {
@@ -48,6 +60,7 @@ public class DieteticienController implements Serializable {
                 }
             });
         }
+
         dieteticien = new Dieteticien();
     }
 
@@ -59,7 +72,7 @@ public class DieteticienController implements Serializable {
                 utilisateurController.update(utilisateur);
             }
         }
-        personneController.deleteImage(dieteticien);
+        imageController.deleteImage(dieteticien);
         dieteticienModel.delete(dieteticien);
     }
 

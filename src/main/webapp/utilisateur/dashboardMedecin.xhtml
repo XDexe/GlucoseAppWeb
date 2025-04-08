@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+   <title>Dashboard Médecin</title>
+   <h:outputStylesheet library="css" name="cssTemp.css"/>
+</h:head>
+
+<h:body id="bodyElement">
+   <div class="header">
+      <div class="drop">
+         <input class="dropdown" type="checkbox" id="dropdown2" name="dropdown"/>
+         <label class="profile-image" for="dropdown2">
+            <h:graphicImage library="photo-profil"
+                            name="#{medecinController.medecin.photoDeProfilUrl}"
+                            alt="Profile"/>
+         </label>
+         <div class="section-dropdown">
+            <div class="toggle-switch">
+               <input type="checkbox" id="themeToggle" onchange="toggleTheme()"/>
+               <label class="slider" for="themeToggle"></label>
+            </div>
+            <p:commandButton styleClass="custom-btn" value="Modifier votre profil"
+                             update="formProfile"
+                             oncomplete="PF('dlgProfile').show()"/>
+            <p:commandButton value="Déconnexion"
+                             action="#{authentificationController.logout()}"
+                             styleClass="custom-btn"/>
+         </div>
+      </div>
+   </div>
+   <script type="text/javascript">
+      function toggleTheme() {
+         var body = document.getElementById('bodyElement');
+         body.classList.toggle('light-theme');
+      }
+   </script>
+
+   <div id="appContainer">
+      <h2>Bienvenue #{medecinController.medecin.prenom} #{medecinController.medecin.nom}</h2>
+
+      <div class="locked-table">
+         <h:form id="formPatients">
+            <h3>Vos patients</h3>
+            <p:dataTable value="#{utilisateurController.readByMedecin(medecinController.medecin.idPersonne)}"
+                         var="patient"
+                         emptyMessage="Aucun patient associé">
+               <p:column headerText="Photo">
+                  <h:graphicImage library="photo-profil"
+                                  name="#{patient.photoDeProfilUrl}"
+                                  alt="Photo du patient"
+                                  style="max-height:50px; width:auto; height:auto;"/>
+               </p:column>
+               <p:column headerText="Nom">
+                  <h:outputText value="#{patient.nom}"/>
+               </p:column>
+               <p:column headerText="Prénom">
+                  <h:outputText value="#{patient.prenom}"/>
+               </p:column>
+               <p:column headerText="Seuil Min">
+                  <h:outputText value="#{patient.seuilMin}"/>
+               </p:column>
+               <p:column headerText="Seuil Max">
+                  <h:outputText value="#{patient.seuilMax}"/>
+               </p:column>
+               <p:column headerText="Remarques">
+                  <h:outputText value="#{patient.remarque}"/>
+               </p:column>
+               <p:column headerText="Actions">
+                  <p:commandButton icon="pi pi-eye"
+                                   action="patientDetails?faces-redirect=true"
+                                   title="Voir détails">
+                     <f:setPropertyActionListener value="#{patient}"
+                                                  target="#{utilisateurController.utilisateur}"/>
+                  </p:commandButton>
+               </p:column>
+            </p:dataTable>
+         </h:form>
+      </div>
+   </div>
+
+   <!-- Profile dialog -->
+   <p:dialog styleClass="dialog" widgetVar="dlgProfile" modal="true" resizable="false" draggable="false"
+             closeOnEscape="true" showEffect="fade" hideEffect="fade" width="50%" bottom="0" left="50%">
+      <h:form id="formProfile" enctype="multipart/form-data">
+         <h:inputHidden value="#{medecinController.medecin.idPersonne}"/>
+
+         <p:panelGrid columns="2" styleClass="grid">
+            <h:outputLabel value="Nom :"/>
+            <p:inputText value="#{medecinController.medecin.nom}"/>
+
+            <h:outputLabel value="Prénom :"/>
+            <p:inputText value="#{medecinController.medecin.prenom}"/>
+
+            <h:outputLabel value="Identifiant :"/>
+            <p:inputText value="#{medecinController.medecin.identifiant}"/>
+
+            <h:outputLabel value="Nouveau mot de passe :"/>
+            <p:password value="#{medecinController.medecin.motDePasse}"/>
+
+            <h:outputLabel value="Photo de profil :"/>
+            <p:fileUpload mode="simple"
+                          value="#{imageController.uploadedFile}"
+                          sizeLimit="100000000"
+                          allowTypes="/(\.|\/)(jpg|jpeg|png)$/"
+                          dragDropSupport="false"/>
+         </p:panelGrid>
+
+         <p:separator/>
+
+         <p:commandButton value="Enregistrer"
+                          actionListener="#{medecinController.editMedecin()}"
+                          oncomplete="PF('dlgProfile').hide()"
+                          update="@form"
+                          icon="pi pi-check"/>
+
+         <p:commandButton value="Annuler"
+                          type="button"
+                          onclick="PF('dlgProfile').hide()"
+                          icon="pi pi-times"/>
+      </h:form>
+   </p:dialog>
+</h:body>
+</html>

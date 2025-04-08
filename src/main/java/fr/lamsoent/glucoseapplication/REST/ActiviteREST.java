@@ -9,6 +9,7 @@ import fr.lamsoent.glucoseapplication.pojo.Capteur;
 import fr.lamsoent.glucoseapplication.pojo.Donnee;
 import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
 import fr.lamsoent.glucoseapplication.websocket.Graphique;
+import fr.lamsoent.glucoseapplication.websocket.Localiser;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Init;
@@ -17,13 +18,14 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import javax.swing.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Path("/activite")
-public class ActiviteREST {
+public class  ActiviteREST {
 
     @EJB
     private ActiviteModel activiteModel;
@@ -32,9 +34,12 @@ public class ActiviteREST {
 
     @EJB
     private DonneeModel donneeModel;
-    
+
     @Inject
     private Graphique graphiqueWebServer;
+
+    @Inject
+    private Localiser localiserWebsocket;
 
     @EJB
     private UtilisateurModel utilisateurModel;
@@ -48,14 +53,14 @@ public class ActiviteREST {
     @Produces(MediaType.APPLICATION_JSON)
     public Response lireActivite(@QueryParam("idActivite") int idActivite){
         Activite actSelect=activiteModel.read(idActivite);
-    return Response.accepted(actSelect).build();
+        return Response.accepted(actSelect).build();
     }
 
 
     @GET
     @Path("/getDonneesAct")
     public Response getData(@QueryParam("idActivite") int idActivite){
-               List<Donnee> datas = donneeModel.donneeListWithIdActivite(idActivite);
+        List<Donnee> datas = donneeModel.donneeListWithIdActivite(idActivite);
         return Response.accepted(datas).build();
     }
 
@@ -64,7 +69,7 @@ public class ActiviteREST {
     @Path("/create")
     @Produces(MediaType.APPLICATION_JSON)
     public Response createActivite(@QueryParam("dateDebut") String dateDebut,
-                                 @QueryParam("mac") String mac) {
+                                   @QueryParam("mac") String mac) {
 
         List<Capteur> lc = capteurModel.read();
         List<Utilisateur> lu = utilisateurModel.read();
@@ -126,7 +131,7 @@ public class ActiviteREST {
     @Path("/stopAct")
     @Produces(MediaType.APPLICATION_JSON)
     public Response stopActivite(@QueryParam("dateFin") String dateFin,
-                                   @QueryParam("idActivite") int idActivite) {
+                                 @QueryParam("idActivite") int idActivite) {
         System.out.println("Declenchement");
         System.out.println(idActivite);
         System.out.println(dateFin);
@@ -148,21 +153,40 @@ public class ActiviteREST {
     @Path("/envoiDonnee")
     @Produces(MediaType.APPLICATION_JSON)
     public Response envoyerDonnees(@QueryParam("dateData") String dateDebut,
-                                @QueryParam("tauxGlucose") String tauxGlucose,
-                                @QueryParam("idActivite") int idActivite){
+                                   @QueryParam("tauxGlucose") String tauxGlucose,
+                                   @QueryParam("idActivite") int idActivite,
+                                   @QueryParam("latitude") String latitude,
+                                   @QueryParam("longitude") String longitude){
+
+
 
         if(activiteModel.read(idActivite)== null){
             return Response.serverError().build();
         }
+
+        if(activiteModel.read(idActivite).getDateFin() != null){
+            return Response.serverError().build();
+        }
+
+        if(latitude == null || latitude.isEmpty()){
+            latitude = "0";
+        }
+
+        if (longitude == null || longitude.isEmpty()){
+            longitude = "0";
+        }
+
+        Activite activite =activiteModel.read(idActivite);
+        activite.getCapteur().setLatitude(latitude);
+        activite.getCapteur().setLongitude(longitude);
+        capteurModel.update(activite.getCapteur());
         Donnee donnee = new Donnee();
         donnee.setDateData(formatDate(dateDebut));
         donnee.setGlucose(tauxGlucose);
         donnee.getActivite().setId(idActivite);
-
-
         donnee = donneeModel.update(donnee);
         graphiqueWebServer.sendMessage(donnee);
-
+        localiserWebsocket.sendMessage(activite.getCapteur());
         return Response.ok().build();
     }
 }

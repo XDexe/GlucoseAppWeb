@@ -36,10 +36,13 @@ public class UtilisateurController implements Serializable {
 
     @Inject
     private EntraineurController entraineurController;
+    @Named
+    @Inject
+    private ImageController imageController;
 
     public void editUtilisateur() {
         utilisateur = utilisateurModel.update(utilisateur);
-        personneController.saveImage(utilisateur);
+        imageController.saveImage(utilisateur);
 
         if(medecinSelectionne.getIdPersonne() == 0){
             System.out.println(medecinSelectionne.getIdPersonne());
@@ -77,12 +80,24 @@ public class UtilisateurController implements Serializable {
     }
 
     public void deleteUtilisateur(Utilisateur utilisateur) {
-        personneController.deleteImage(utilisateur);
+        imageController.deleteImage(utilisateur);
         utilisateurModel.delete(utilisateur);
     }
 
     public void loadUtilisateur(Utilisateur utilisateur) {
         this.utilisateur=utilisateur;
+    }
+
+    public List<Utilisateur> readByMedecin(int medecinId) {
+        return utilisateurModel.readByMedecin(medecinId);
+    }
+
+    public List<Utilisateur> readByDieteticien(int dieteticienId) {
+        return utilisateurModel.readByDieteticien(dieteticienId);
+    }
+
+    public List<Utilisateur> readByEntraineur(int entraineurId) {
+        return utilisateurModel.readByEntraineur(entraineurId);
     }
 
     public Utilisateur getUtilisateur() {

@@ -1,7 +1,9 @@
 package fr.lamsoent.glucoseapplication.controller;
 
 import fr.lamsoent.glucoseapplication.model.MedecinModel;
+import fr.lamsoent.glucoseapplication.model.RoleModel;
 import fr.lamsoent.glucoseapplication.pojo.Medecin;
+import fr.lamsoent.glucoseapplication.pojo.Role;
 import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
@@ -22,32 +24,40 @@ public class MedecinController implements Serializable {
     @EJB
     private MedecinModel medecinModel;
 
+    @EJB
+    private RoleModel roleModel;
+
     @Inject
     private PersonneController personneController;
 
     @Inject
     private UtilisateurController utilisateurController;
 
+    @Named
+    @Inject
+    private ImageController imageController;
+
     public List<Utilisateur> getUtilisateurs() {
         return utilisateurController.getUtilisateurs();
     }
 
     public void editMedecin() {
-            medecin = medecinModel.update(medecin);
-            personneController.saveImage(medecin);
+        Role roleMDefaut = roleModel.getOrCreateRoleByName("DEFAUT");
+        medecin.setRole(roleMDefaut);
 
-            if(!utilisteursSelectionnesIds.isEmpty()) {
-                utilisteursSelectionnesIds.forEach(id -> {
-                    Utilisateur utilisateur;
-                    utilisateur = utilisateurController.read(id);
+        medecin = medecinModel.update(medecin);
+        imageController.saveImage(medecin);
 
-                    if(utilisateur != null) {
-                        utilisateur.setMedecin(medecin);
-                        utilisateurController.update(utilisateur);
-                    }
-                });
-            }
-            medecin = new Medecin();
+        if (!utilisteursSelectionnesIds.isEmpty()) {
+            utilisteursSelectionnesIds.forEach(id -> {
+                Utilisateur utilisateur = utilisateurController.read(id);
+                if (utilisateur != null) {
+                    utilisateur.setMedecin(medecin);
+                    utilisateurController.update(utilisateur);
+                }
+            });
+        }
+        medecin = new Medecin();
     }
 
     public void deleteMedecin(Medecin medecin) {
@@ -58,7 +68,7 @@ public class MedecinController implements Serializable {
                 utilisateurController.update(utilisateur);
             }
         }
-        personneController.deleteImage(medecin);
+        imageController.deleteImage(medecin);
         medecinModel.delete(medecin);
     }
 
