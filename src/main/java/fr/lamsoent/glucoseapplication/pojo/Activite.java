@@ -26,7 +26,7 @@ public class Activite {
     private List<Donnee> listDonnees = new ArrayList<>();
 
     @ManyToOne
-    private Utilisateur utilisateur= new Utilisateur();
+    private Utilisateur utilisateur;
 
     @ManyToOne
     private Capteur capteur = new Capteur();

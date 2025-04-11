@@ -100,6 +100,12 @@ public class AuthentificationController implements Serializable {
         return "/index?faces-redirect=true";
     }
 
+    public boolean isUserAuthenticated() {
+        return personneLogin != null && personneLogin.getIdentifiant() != null &&
+                personneLogin.getIdentifiant() != null && !personneLogin.getIdentifiant().isEmpty();
+    }
+
+
     public List<Personne> getListPersonne() {
         return listPersonne;
     }

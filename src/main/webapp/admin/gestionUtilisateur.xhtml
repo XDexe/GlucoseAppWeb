@@ -108,6 +108,13 @@
                 <f:selectItems value="#{utilisateurController.entraineurs}" var="entraineur" itemLabel="#{entraineur.nom} #{entraineur.prenom}" itemValue="#{entraineur.idPersonne}"/>
             </p:selectOneMenu>
 
+            <h:outputLabel value="Catégorie : "/>
+            <p:selectOneMenu id="categorie" value="#{utilisateurController.categorieSelectionnee.id}">
+                <f:selectItem itemLabel="Choisir une catégorie" itemValue="#{null}"/>
+                <f:selectItems value="#{utilisateurController.categories}" var="categorie"
+                               itemLabel="#{categorie.nom}" itemValue="#{categorie.id}"/>
+            </p:selectOneMenu>
+
             <h:outputLabel value="Photo de profil :"/>
             <p:fileUpload mode="simple"
                           value="#{imageController.uploadedFile}"

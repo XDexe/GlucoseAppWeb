@@ -1,10 +1,8 @@
 package fr.lamsoent.glucoseapplication.controller;
 
+import fr.lamsoent.glucoseapplication.model.RoleModel;
 import fr.lamsoent.glucoseapplication.model.UtilisateurModel;
-import fr.lamsoent.glucoseapplication.pojo.Dieteticien;
-import fr.lamsoent.glucoseapplication.pojo.Entraineur;
-import fr.lamsoent.glucoseapplication.pojo.Medecin;
-import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
+import fr.lamsoent.glucoseapplication.pojo.*;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
@@ -21,6 +19,7 @@ public class UtilisateurController implements Serializable {
     private Medecin medecinSelectionne = new Medecin();
     private Entraineur entraineurSelectionne = new Entraineur();
     private Dieteticien dieteticienSelectionne = new Dieteticien();
+    private Categorie categorieSelectionnee = new Categorie();
 
     @EJB
     private UtilisateurModel utilisateurModel;
@@ -40,7 +39,19 @@ public class UtilisateurController implements Serializable {
     @Inject
     private ImageController imageController;
 
+    @EJB
+    private RoleModel roleModel;
+
+    @Inject
+    private CategorieController categorieController;
+
     public void editUtilisateur() {
+        Role roleUtilisateur = roleModel.getRoleByName("DEFAUT");
+        if (roleUtilisateur == null) {
+            roleUtilisateur = new Role();
+            roleUtilisateur.setNomRole("DEFAUT");
+        }
+        utilisateur.setRole(roleUtilisateur);
         utilisateur = utilisateurModel.update(utilisateur);
         imageController.saveImage(utilisateur);
 
@@ -71,12 +82,16 @@ public class UtilisateurController implements Serializable {
             utilisateur.setDieteticien(dieteticienSelectionne);
         }
 
+        if(categorieSelectionnee.getId() == 0){
+            utilisateur.setCategorie(null);
+        }
+        else{
+            utilisateur.setCategorie(categorieSelectionnee);
+        }
+
         utilisateurModel.update(utilisateur);
 
-        utilisateur = new Utilisateur();
-        medecinSelectionne = new Medecin();
-        entraineurSelectionne = new Entraineur();
-        dieteticienSelectionne = new Dieteticien();
+        resetForm();
     }
 
     public void deleteUtilisateur(Utilisateur utilisateur) {
@@ -109,7 +124,7 @@ public class UtilisateurController implements Serializable {
     }
 
     public List<Utilisateur> getUtilisateurs() {
-        return utilisateurModel.read();
+        return utilisateurModel.readByRole("DEFAUT");
     }
     public List<Utilisateur> read() {
         return utilisateurModel.read();
@@ -117,6 +132,10 @@ public class UtilisateurController implements Serializable {
 
     public void resetForm() {
         this.utilisateur = new Utilisateur();
+        this.medecinSelectionne = new Medecin();
+        this.entraineurSelectionne = new Entraineur();
+        this.dieteticienSelectionne = new Dieteticien();
+        this.categorieSelectionnee = new Categorie();
     }
 
     public Utilisateur update(Utilisateur utilisateur) {
@@ -132,6 +151,26 @@ public class UtilisateurController implements Serializable {
 
     public List<Dieteticien> getDieteticiens() {
         return dieteticienController.getDieteticiens();
+    }
+
+    public Categorie getCategorieSelectionnee() {
+        return categorieSelectionnee;
+    }
+
+    public void setCategorieSelectionnee(Categorie categorieSelectionnee) {
+        this.categorieSelectionnee = categorieSelectionnee;
+    }
+
+    public List<Categorie> getCategories() {
+        return categorieController.getCategories();
+    }
+
+    public CategorieController getCategorieController() {
+        return categorieController;
+    }
+
+    public void setCategorieController(CategorieController categorieController) {
+        this.categorieController = categorieController;
     }
 
     public List<Entraineur> getEntraineurs() {
@@ -160,6 +199,14 @@ public class UtilisateurController implements Serializable {
 
     public void setDieteticienSelectionne(Dieteticien dieteticienSelectionne) {
         this.dieteticienSelectionne = dieteticienSelectionne;
+    }
+
+    public ImageController getImageController() {
+        return imageController;
+    }
+
+    public void setImageController(ImageController imageController) {
+        this.imageController = imageController;
     }
 
     public UtilisateurModel getUtilisateurModel() {

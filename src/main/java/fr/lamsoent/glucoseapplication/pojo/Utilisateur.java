@@ -15,6 +15,9 @@ public class Utilisateur extends Personne {
     private String seuilMax;
     private String seuilMin;
 
+    @OneToMany(mappedBy = "utilisateur")
+    private List<Alerte> listAlertes = new ArrayList<>();
+
     @ManyToOne
     private Categorie categorie;
 
@@ -30,7 +33,7 @@ public class Utilisateur extends Personne {
     @ManyToOne
     private Dieteticien dieteticien;
 
-    @OneToMany
+    @OneToMany(mappedBy = "utilisateur")
     private List<Activite> activite = new ArrayList<Activite>();
 
     public Utilisateur(){

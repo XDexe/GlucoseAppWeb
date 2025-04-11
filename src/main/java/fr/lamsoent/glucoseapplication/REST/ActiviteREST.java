@@ -176,6 +176,7 @@ public class  ActiviteREST {
             longitude = "0";
         }
 
+
         Activite activite =activiteModel.read(idActivite);
         activite.getCapteur().setLatitude(latitude);
         activite.getCapteur().setLongitude(longitude);
