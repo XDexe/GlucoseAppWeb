@@ -22,11 +22,11 @@
                     <input type="checkbox" id="themeToggle" onchange="toggleTheme()"/>
                     <label class="slider" for="themeToggle"></label>
                 </div>
-                <p:commandButton styleClass="custom-btn" value="Modifier votre profil"
+                <p:commandButton id="modifProfileDieteticien" styleClass="custom-btn" value="Modifier votre profil"
                                  actionListener="#{categorieController.resetForm()}"
                                  update=""
                                  oncomplete="PF('').show()"/>
-                <p:commandButton value="Contacter votre dieteticien"
+                <p:commandButton id="contactDieteticien" value="Contacter votre dieteticien"
                                  actionListener="#{categorieController.resetForm()}"
                                  update=""
                                  styleClass="custom-btn"
@@ -45,7 +45,7 @@
         <div class="locked-table">
             <h:form id="formDieteticiens">
 
-                <p:dataTable value="#{dieteticienController.dieteticiens}" var="dieteticien">
+                <p:dataTable id="listDieteticien" value="#{dieteticienController.dieteticiens}" var="dieteticien">
 
                     <p:column headerText="Photo">
                         <h:graphicImage library="photo-profil"
@@ -59,12 +59,14 @@
                     <p:column headerText="Prénom">
                         <h:outputText value="#{dieteticien.prenom}"/>
                     </p:column>
-                    <p:column headerText="Actions">
+                    <p:column id="actionColoneAction" headerText="Actions">
                         <p:commandButton icon="pi pi-pencil"
+                                         id="chargerDieteticien"
                                          action="#{dieteticienController.loadDieteticien(dieteticien)}"
                                          update=":formAddDieteticien" oncomplete="PF('dlgAddDieteticien').show()"
                                          title="Modifier"/>
                         <p:commandButton icon="pi pi-trash"
+                                         id="suppressionDieteticien"
                                          action="#{dieteticienController.deleteDieteticien(dieteticien)}"
                                          update="formDieteticiens" title="Supprimer"/>
                     </p:column>
@@ -74,13 +76,14 @@
     </div>
     <div class="bottom">
         <p:commandButton value="Ajouter un dieteticien"
+                         id="ajoutDieteticien"
                          actionListener="#{dieteticienController.resetForm()}"
                          update="formAddDieteticien"
                          oncomplete="PF('dlgAddDieteticien').show()"
                          styleClass="button-bottom"/>
     </div>
 
-    <p:dialog styleClass="dialog" widgetVar="dlgAddDieteticien" modal="true" resizable="false" draggable="false"
+    <p:dialog id="dialogDieteticen" styleClass="dialog" widgetVar="dlgAddDieteticien" modal="true" resizable="false" draggable="false"
               closeOnEscape="true" showEffect="fade" hideEffect="fade" width="50%" bottom="0" left="50%">
 
         <h:form id="formAddDieteticien" enctype="multipart/form-data">
@@ -89,18 +92,18 @@
             <p:panelGrid columns="2" styleClass="grid">
 
                 <h:outputLabel value="Nom :"/>
-                <p:inputText value="#{dieteticienController.dieteticien.nom}"/>
+                <p:inputText id="deteticienNom" value="#{dieteticienController.dieteticien.nom}"/>
 
                 <h:outputLabel value="Prénom :"/>
-                <p:inputText value="#{dieteticienController.dieteticien.prenom}"/>
+                <p:inputText id="deteticienPrenom" value="#{dieteticienController.dieteticien.prenom}"/>
 
                 <h:outputLabel value="Identifiant:"/>
-                <p:inputText value="#{dieteticienController.dieteticien.identifiant}"/>
+                <p:inputText id="deteticienIdentifiant" value="#{dieteticienController.dieteticien.identifiant}"/>
 
                 <h:outputLabel value="Mot de passe:"/>
-                <p:password value="#{dieteticienController.dieteticien.motDePasse}"/>
+                <p:password id="deteticienMdp" value="#{dieteticienController.dieteticien.motDePasse}"/>
 
-                <p:selectCheckboxMenu id="multiple"
+                <p:selectCheckboxMenu  id="multiple"
                                       multiple="true" emptyLabel="Please select..." updateLabel="true"
                                       value="#{dieteticienController.utilisteursSelectionnesIds}">
 
@@ -118,12 +121,14 @@
             <p:separator/>
 
             <p:commandButton value="Enregistrer"
+                             id="saveDeteticien"
                              actionListener="#{dieteticienController.editDieteticien()}"
                              oncomplete="PF('dlgAddDieteticien').hide()"
                              update="formDieteticiens"
                              icon="pi pi-check"/>
 
             <p:commandButton value="Annuler"
+                             id="cancelDeteticien"
                              type="button"
                              onclick="PF('dlgAddDieteticien').hide()"
                              icon="pi pi-times"/>

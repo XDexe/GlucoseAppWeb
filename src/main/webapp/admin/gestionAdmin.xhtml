@@ -35,7 +35,7 @@
    <div id="appContainer">
       <div class="locked-table">
          <h:form id="formAdmins">
-            <p:dataTable value="#{administrateurController.administrateurs}" var="admin">
+            <p:dataTable id="tabAdmin" value="#{administrateurController.administrateurs}" var="admin">
                <p:column headerText="Photo">
                   <h:graphicImage library="photo-profil"
                                   name="#{admin.photoDeProfilUrl}"
@@ -52,11 +52,11 @@
                   <h:outputText value="#{admin.identifiant}"/>
                </p:column>
                <p:column headerText="Actions">
-                  <p:commandButton icon="pi pi-pencil"
+                  <p:commandButton id="modifier" icon="pi pi-pencil"
                                    action="#{administrateurController.loadAdministrateur(admin)}"
                                    update=":formAddAdmin" oncomplete="PF('dlgAddAdmin').show()"
                                    title="Modifier"/>
-                  <p:commandButton icon="pi pi-trash"
+                  <p:commandButton id="supprimer" icon="pi pi-trash"
                                    action="#{administrateurController.deleteAdministrateur(admin)}"
                                    update="formAdmins" title="Supprimer"/>
                </p:column>
@@ -66,7 +66,7 @@
    </div>
 
    <div class="bottom">
-      <p:commandButton value="Ajouter un administrateur"
+      <p:commandButton id="ajoutAdmin" value="Ajouter un administrateur"
                        actionListener="#{administrateurController.resetForm()}"
                        update="formAddAdmin"
                        oncomplete="PF('dlgAddAdmin').show()"
@@ -81,19 +81,19 @@
 
          <p:panelGrid columns="2" styleClass="grid">
             <h:outputLabel value="Nom :"/>
-            <p:inputText value="#{administrateurController.administrateur.nom}"/>
+            <p:inputText id="nom" value="#{administrateurController.administrateur.nom}"/>
 
             <h:outputLabel value="Prénom :"/>
-            <p:inputText value="#{administrateurController.administrateur.prenom}"/>
+            <p:inputText id="prenom" value="#{administrateurController.administrateur.prenom}"/>
 
             <h:outputLabel value="Identifiant :"/>
-            <p:inputText value="#{administrateurController.administrateur.identifiant}"/>
+            <p:inputText id="identifiant" value="#{administrateurController.administrateur.identifiant}"/>
 
             <h:outputLabel value="Mot de passe :"/>
-            <p:password value="#{administrateurController.administrateur.motDePasse}"/>
+            <p:password id="mdp" value="#{administrateurController.administrateur.motDePasse}"/>
 
             <h:outputLabel value="Photo de profil :"/>
-            <p:fileUpload mode="simple"
+            <p:fileUpload id="photoProfil" mode="simple"
                           value="#{imageController.uploadedFile}"
                           sizeLimit="100000000"
                           allowTypes="/(\.|\/)(jpg|jpeg|png)$/"
@@ -102,13 +102,13 @@
 
          <p:separator/>
 
-         <p:commandButton value="Enregistrer"
+         <p:commandButton id="enregistrer" value="Enregistrer"
                           actionListener="#{administrateurController.editAdministrateur()}"
                           oncomplete="PF('dlgAddAdmin').hide()"
                           update="formAdmins"
                           icon="pi pi-check"/>
 
-         <p:commandButton value="Annuler"
+         <p:commandButton id="annuler" value="Annuler"
                           type="button"
                           onclick="PF('dlgAddAdmin').hide()"
                           icon="pi pi-times"/>

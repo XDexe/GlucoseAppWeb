@@ -1,6 +1,7 @@
 package fr.lamsoent.glucoseapplication.model;
 
 import fr.lamsoent.glucoseapplication.pojo.Donnee;
+import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -37,6 +38,13 @@ public class DonneeModel {
         query.setParameter("idActivite", idActivite);
         return query.getResultList();
     }
+
+    public List<Donnee> donneeWithUser(Utilisateur utilisateur) {
+        Query query = em.createQuery("select d from Donnee d where d.activite.utilisateur.idPersonne = :idPersonne");
+        query.setParameter("idPersonne", utilisateur.getIdPersonne());
+        return query.getResultList();
+    }
+
     public EntityManager getEm() {
         return em;
     }

@@ -31,7 +31,7 @@
       fetchData(idActivite);
 
       if (isAlive === "true") {
-         ws = new WebSocket("ws://10.18.185.240:8080/GlucoseApplication-1.0-SNAPSHOT/websocketdata");
+         ws = new WebSocket("ws://10.249.55.240:8080/GlucoseApplication-1.0-SNAPSHOT/websocketdata");
 
          ws.onopen = event => {
             ws.send("abonnement#" + idActivite);
@@ -118,7 +118,7 @@
                   },
                   title: {
                      display: true,
-                     text: 'Date et heure'
+                     text: 'Temps (s)'
                   }
                },
                y: {
@@ -127,8 +127,8 @@
                      text: 'Taux de glucose (mg/dL)'
                   },
                   beginAtZero: false,
-                  suggestedMin: 20,
-                  suggestedMax: 400
+                  suggestedMin: 60,
+                  suggestedMax: 170
                }
             }
          }
@@ -162,8 +162,6 @@
          datas.forEach((data) => {
             let date = data.dateData;
             let glucose = data.glucose;
-            let seuilmax = data.seuilmax;
-            let seuilmin = data.seuilmin;
             let id = data.id;
             let temps = new Date(date);
             let glucoseConverted = parseFloat(glucose);
@@ -180,7 +178,7 @@
       }
 
       function fetchData(idActivite) {
-         fetch('http://10.18.185.240:8080/GlucoseApplication-1.0-SNAPSHOT/api/activite/getDonneesAct?idActivite=' + idActivite, {
+         fetch('http://10.249.55.240:8080/GlucoseApplication-1.0-SNAPSHOT/api/activite/getDonneesAct?idActivite=' + idActivite, {
             mode: 'no-cors'
          })
                  .then(response => response.json())

@@ -16,6 +16,7 @@ public class Utilisateur extends Personne {
     private String seuilMin;
 
     @OneToMany(mappedBy = "utilisateur")
+    @JsonbTransient
     private List<Alerte> listAlertes = new ArrayList<>();
 
     @ManyToOne
@@ -34,11 +35,20 @@ public class Utilisateur extends Personne {
     private Dieteticien dieteticien;
 
     @OneToMany(mappedBy = "utilisateur")
+    @JsonbTransient
     private List<Activite> activite = new ArrayList<Activite>();
 
     public Utilisateur(){
     }
 
+    @JsonbTransient
+    public List<Alerte> getListAlertes(){
+        return listAlertes;
+    }
+
+    public void setListAlertes(List<Alerte> listAlertes){
+        this.listAlertes =listAlertes;
+    }
     public String getRemarque() {
         return remarque;
     }
@@ -93,6 +103,7 @@ public class Utilisateur extends Personne {
         this.capteur = capteur;
     }
 
+    @JsonbTransient
     public List<Activite> getActivite() {
         return activite;
     }

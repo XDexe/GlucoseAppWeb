@@ -1,19 +1,15 @@
 package fr.lamsoent.glucoseapplication.REST;
 
-import fr.lamsoent.glucoseapplication.model.ActiviteModel;
-import fr.lamsoent.glucoseapplication.model.CapteurModel;
-import fr.lamsoent.glucoseapplication.model.DonneeModel;
-import fr.lamsoent.glucoseapplication.model.UtilisateurModel;
-import fr.lamsoent.glucoseapplication.pojo.Activite;
-import fr.lamsoent.glucoseapplication.pojo.Capteur;
-import fr.lamsoent.glucoseapplication.pojo.Donnee;
-import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
+import fr.lamsoent.glucoseapplication.controller.UtilisateurController;
+import fr.lamsoent.glucoseapplication.model.*;
+import fr.lamsoent.glucoseapplication.pojo.*;
 import fr.lamsoent.glucoseapplication.websocket.Graphique;
 import fr.lamsoent.glucoseapplication.websocket.Localiser;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Init;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -35,6 +31,9 @@ public class  ActiviteREST {
     @EJB
     private DonneeModel donneeModel;
 
+    @EJB
+    private AlerteModel alerteModel ;
+
     @Inject
     private Graphique graphiqueWebServer;
 
@@ -43,6 +42,10 @@ public class  ActiviteREST {
 
     @EJB
     private UtilisateurModel utilisateurModel;
+    @Named
+    @Inject
+    private UtilisateurController utilisateurController;
+
     @GET
     public Response deploy(){
         return Response.ok("deploiement ok").build();
@@ -115,6 +118,58 @@ public class  ActiviteREST {
         return  Response.ok(a1.getId()).build();
     }
 
+
+    //Créer
+    @POST
+    @Path("/createsn")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createActiviteWithSn(@QueryParam("dateDebut") String dateDebut, @QueryParam("sn") String sn) {
+
+        List<Capteur> lc = capteurModel.read();
+        List<Utilisateur> lu = utilisateurModel.read();
+
+        Capteur c =null;
+        Utilisateur u =null;
+
+        for (Capteur capteur : lc) {
+            if(capteur.getNumeroSerie() == null || capteur.getNumeroSerie().isEmpty()){
+                continue;
+            }
+
+            if (capteur.getNumeroSerie().equalsIgnoreCase(sn)) {
+                System.out.println("Capteur trouver " + capteur.getNumeroSerie());
+                c = capteur;
+            }
+        }
+        if (c==null){
+            System.out.println("Le capteur c est nulle");
+            return Response.noContent().build();
+        }
+
+
+        for (Utilisateur user : lu) {
+            if ( user.getCapteur() != null && user.getCapteur().getNumeroSerie() !=null &&!user.getCapteur().getNumeroSerie().isEmpty() && user.getCapteur().getNumeroSerie().equalsIgnoreCase(c.getMac())) {
+                System.out.println("Utilisateur trouver " + user.getNom());
+                System.out.println("Capteur lier utilisateur : " + user.getCapteur().getNumeroSerie());
+                System.out.println("Capteur :" + c.getNumeroSerie());
+                u=user;
+            }
+        }
+        if (u==null){
+            System.out.println("L' utilisateur u est nulle");
+            return Response.noContent().build();
+        }
+        Activite a1 = new Activite();
+        a1.setAlive(true);
+        a1.setUtilisateur(u);
+        a1.setCapteur(c);
+        a1.setDateDebut(formatDate(dateDebut));
+        a1=activiteModel.update(a1);
+        System.out.println(a1.getId());
+
+        return  Response.ok(a1.getId()).build();
+    }
+
     public Date formatDate(String date){
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
 
@@ -181,13 +236,31 @@ public class  ActiviteREST {
         activite.getCapteur().setLatitude(latitude);
         activite.getCapteur().setLongitude(longitude);
         capteurModel.update(activite.getCapteur());
+
         Donnee donnee = new Donnee();
         donnee.setDateData(formatDate(dateDebut));
         donnee.setGlucose(tauxGlucose);
         donnee.getActivite().setId(idActivite);
         donnee = donneeModel.update(donnee);
+
+        if (Double.parseDouble(activite.getUtilisateur().getSeuilMax()) < Double.parseDouble(donnee.getGlucose()) ||
+            Double.parseDouble(activite.getUtilisateur().getSeuilMin()) > Double.parseDouble(donnee.getGlucose())){
+
+            Alerte alerte = new Alerte();
+            alerte.setUtilisateur(activite.getUtilisateur());
+            alerte.setDonnee(donnee);
+
+            if (Double.parseDouble(activite.getUtilisateur().getSeuilMax()) < Double.parseDouble(donnee.getGlucose())){
+                alerte.setEstAuDessusTaux(true);
+            }else {
+                alerte.setEstAuDessusTaux(false);
+            }
+            alerteModel.update(alerte);
+        }
+
+
         graphiqueWebServer.sendMessage(donnee);
         localiserWebsocket.sendMessage(activite.getCapteur());
-        return Response.ok().build();
+        return Response.ok(activite.getUtilisateur()).build();
     }
 }

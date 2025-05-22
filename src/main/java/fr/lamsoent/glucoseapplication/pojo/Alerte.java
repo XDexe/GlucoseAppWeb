@@ -9,7 +9,6 @@ public class Alerte  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idAlerte;
-    private Date dateAlerte;
     private boolean estAuDessusTaux;
 
     @OneToOne
@@ -26,14 +25,6 @@ public class Alerte  {
 
     public void setIdAlerte(int idAlerte) {
         this.idAlerte = idAlerte;
-    }
-
-    public Date getDateAlerte() {
-        return dateAlerte;
-    }
-
-    public void setDateAlerte(Date dateAlerte) {
-        this.dateAlerte = dateAlerte;
     }
 
     public boolean isEstAuDessusTaux() {

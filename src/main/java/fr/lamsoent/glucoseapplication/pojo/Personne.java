@@ -10,10 +10,11 @@ public class Personne {
 
     private String nom;
     private String prenom;
-    private String pseudo;
     private String identifiant;
     private String motDePasse;
     private String photoDeProfilUrl;
+    private String telephone;
+    private String email;
 
     @ManyToOne
     private Role role;
@@ -24,8 +25,6 @@ public class Personne {
     public Personne() {
 
     }
-
-
     public int getIdPersonne() {
         return idPersonne;
     }
@@ -48,14 +47,6 @@ public class Personne {
         }
         System.out.println("mot de passe actuelle hasher"+getMotDePasse());
 
-    }
-
-    public String getPseudo() {
-        return pseudo;
-    }
-
-    public void setPseudo(String pseudo) {
-        this.pseudo = pseudo;
     }
 
     public String getPrenom() {
@@ -104,5 +95,21 @@ public class Personne {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

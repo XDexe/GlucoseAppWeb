@@ -32,6 +32,17 @@ public class CapteurModel {
         return query.getResultList();
     }
 
+    public Capteur findBySn(String sn) {
+        Query query = em.createQuery("SELECT c FROM Capteur c WHERE c.numeroSerie = :sn", Capteur.class);
+        query.setParameter("sn", sn);
+        List<Capteur> capteurs = query.getResultList();
+        if (capteurs.isEmpty()) {
+            return null;
+        } else {
+            return capteurs.get(0);
+        }
+    }
+
     public EntityManager getEm() {
         return em;
     }

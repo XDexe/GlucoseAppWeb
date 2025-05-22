@@ -10,7 +10,8 @@
     <h:outputStylesheet library="css" name="glucoseApp.css"/>
 </h:head>
 <h:body>
-    <p:growl id="messages"/>
+    <ui:include src="menu.xhtml" />
+
 
     <div class="header">
         <div class="logo">
@@ -23,65 +24,65 @@
     </div>
 
     <p:panelGrid columns="3">
-        <p:card>
+        <p:card id="gestionMedecin">
             <f:facet name="title">
                 Gestion des médecins
             </f:facet>
             <p>Ajouter, modifier ou supprimer des médecins.</p>
-            <h:form>
-                <p:button value="Aller" outcome="gestionMedecin.html" ajax="false"/>
+            <h:form id="formGestionMedecin">
+                <p:button id="buttonMedecin" value="Aller" outcome="gestionMedecin.html" ajax="false"/>
             </h:form>
         </p:card>
 
-        <p:card>
+        <p:card id="gestionDieteticien">
             <f:facet name="title">
                 Gestion des diététiciens
             </f:facet>
             <p>Ajouter, modifier ou supprimer des diététiciens.</p>
-            <h:form>
-                <p:button value="Aller" outcome="gestionDieteticien.html" ajax="false"/>
+            <h:form id="formGestionDeteticien">
+                <p:button id="buttonDieteticien" value="Aller" outcome="gestionDieteticien.html" ajax="false"/>
             </h:form>
         </p:card>
 
-        <p:card>
+        <p:card id="gestionEntraineur">
             <f:facet name="title">
                 Gestion des entraineurs
             </f:facet>
             <p>Ajouter, modifier ou supprimer des entraineurs.</p>
-            <h:form>
-                <p:button value="Aller" outcome="gestionEntraineur.html" ajax="false"/>
+            <h:form id="formGestionEntraineur">
+                <p:button id="buttonEntraineur" value="Aller" outcome="gestionEntraineur.html" ajax="false"/>
             </h:form>
         </p:card>
     </p:panelGrid>
 
     <p:panelGrid columns="3">
-        <p:card>
+        <p:card id="gestionUtilisateur">
             <f:facet name="title">
                 Gestion des utilisateurs
             </f:facet>
             <p>Ajouter, modifier ou supprimer des utilisateurs.</p>
-            <h:form>
-                <p:button value="Aller" outcome="gestionUtilisateur.html" ajax="false"/>
+            <h:form id="formGestionUtilisateur">
+                <p:button id="utilisateur" value="Aller" outcome="gestionUtilisateur.html" ajax="false"/>
             </h:form>
         </p:card>
 
-        <p:card>
+        <p:card id="gestionCategorie">
             <f:facet name="title">
                 Gestion des catégories
             </f:facet>
             <p>Ajouter, modifier ou supprimer des catégories.</p>
-            <h:form>
-                <p:button value="Aller" outcome="gestionCategorie.html" ajax="false"/>
+            <h:form id="formGestionCategorie">
+                <p:button id="categorie" value="Aller" outcome="gestionCategorie.html" ajax="false"/>
             </h:form>
         </p:card>
 
-        <p:card>
+        <p:card id="gestionAdmin">
             <f:facet name="title">
                 Gestion des administrateurs
             </f:facet>
             <p>Ajouter, modifier ou supprimer des administrateurs.</p>
-            <h:form>
-                <p:commandButton value="Aller" action="gestionAdmin.html" ajax="false"/>
+            <h:form id="formGestionAdmin">
+                <p:commandButton id="admin" value="Aller" action="gestionAdmin.html" ajax="false"/>
             </h:form>
         </p:card>
     </p:panelGrid>

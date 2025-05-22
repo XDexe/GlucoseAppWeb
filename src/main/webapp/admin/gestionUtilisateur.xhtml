@@ -30,13 +30,13 @@
                 </p:column>
 
                 <p:column headerText="Actions" style="width: 100px; text-align: center;">
-                    <p:commandButton icon="pi pi-pencil"
+                    <p:commandButton id="modifier" icon="pi pi-pencil"
                                      action="#{utilisateurController.loadUtilisateur(utilisateur)}"
                                      update=":formAddUtilisateur"
                                      oncomplete="PF('dlgAddUtilisateur').show()"
                                      styleClass="iconButton"
                                      title="Modifier"/>
-                    <p:commandButton icon="pi pi-trash"
+                    <p:commandButton id="supprimer" icon="pi pi-trash"
                                      action="#{utilisateurController.deleteUtilisateur(utilisateur)}"
                                      update="formUtilisateurs"
                                      styleClass="iconButton"
@@ -44,7 +44,7 @@
                 </p:column>
             </p:dataTable>
 
-            <p:commandButton value="Ajouter un médecin"
+            <p:commandButton id="ajoutMedecin" value="Ajouter un médecin"
                              icon="pi pi-plus"
                              actionListener="#{utilisateurController.resetForm()}"
                              update="formAddUtilisateur"
@@ -70,25 +70,25 @@
         <p:panelGrid columns="2" styleClass="grid">
 
             <h:outputLabel value="Nom :" />
-            <p:inputText value="#{utilisateurController.utilisateur.nom}" />
+            <p:inputText id="nom" value="#{utilisateurController.utilisateur.nom}" />
 
             <h:outputLabel value="Prénom :" />
-            <p:inputText value="#{utilisateurController.utilisateur.prenom}" />
+            <p:inputText id="prenom" value="#{utilisateurController.utilisateur.prenom}" />
 
             <h:outputLabel value="Identifiant :"/>
-            <p:inputText value="#{utilisateurController.utilisateur.identifiant}"/>
+            <p:inputText id="identifiant" value="#{utilisateurController.utilisateur.identifiant}"/>
 
             <h:outputLabel value="Mot de passe :"/>
-            <p:inputText value="#{utilisateurController.utilisateur.motDePasse}"/>
+            <p:inputText id="mdp" value="#{utilisateurController.utilisateur.motDePasse}"/>
 
             <h:outputLabel value="Seuil minimal de glucose :"/>
-            <p:inputText value="#{utilisateurController.utilisateur.seuilMin}"/>
+            <p:inputText id="seuiMin" value="#{utilisateurController.utilisateur.seuilMin}"/>
 
             <h:outputLabel value="Seuil maximal de glucose :"/>
-            <p:inputText value="#{utilisateurController.utilisateur.seuilMax}"/>
+            <p:inputText id="seuilMax" value="#{utilisateurController.utilisateur.seuilMax}"/>
 
             <h:outputLabel value="Remarque :"/>
-            <p:inputTextarea value="#{utilisateurController.utilisateur.remarque}" rows="5" cols="30"/>
+            <p:inputTextarea id="rq" value="#{utilisateurController.utilisateur.remarque}" rows="5" cols="30"/>
 
             <h:outputLabel value="Medecin : "/>
             <p:selectOneMenu id="medecin" value="#{utilisateurController.medecinSelectionne.idPersonne}">
@@ -116,7 +116,7 @@
             </p:selectOneMenu>
 
             <h:outputLabel value="Photo de profil :"/>
-            <p:fileUpload mode="simple"
+            <p:fileUpload id="photo" mode="simple"
                           value="#{imageController.uploadedFile}"
                           sizeLimit="100000000"
                           allowTypes="/(\.|\/)(jpg|jpeg|png)$/"
@@ -126,13 +126,13 @@
 
         <p:separator/>
 
-        <p:commandButton value="Enregistrer"
+        <p:commandButton id="enregistrer" value="Enregistrer"
                          actionListener="#{utilisateurController.editUtilisateur()}"
                          oncomplete="PF('dlgAddUtilisateur').hide()"
                          update="formUtilisateurs"
                          icon="pi pi-check"/>
 
-        <p:commandButton value="Annuler"
+        <p:commandButton id="annuler" value="Annuler"
                          type="button"
                          onclick="PF('dlgAddUtilisateur').hide()"
                          icon="pi pi-times"/>

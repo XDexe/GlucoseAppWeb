@@ -22,11 +22,11 @@
                     <input type="checkbox" id="themeToggle" onchange="toggleTheme()"/>
                     <label class="slider" for="themeToggle"></label>
                 </div>
-                <p:commandButton styleClass="custom-btn" value="Modifier votre profil"
+                <p:commandButton id="modifProfilMedecin"  styleClass="custom-btn" value="Modifier votre profil"
                                  actionListener="#{categorieController.resetForm()}"
                                  update=""
                                  oncomplete="PF('').show()"/>
-                <p:commandButton value="Contacter votre medecin"
+                <p:commandButton id="contactMedecin" value="Contacter votre medecin"
                                  actionListener="#{categorieController.resetForm()}"
                                  update=""
                                  styleClass="custom-btn"
@@ -45,7 +45,7 @@
         <div class="locked-table">
             <h:form id="formMedecins">
 
-                <p:dataTable value="#{medecinController.medecins}" var="medecin">
+                <p:dataTable id="listMedecin" value="#{medecinController.medecins}" var="medecin">
 
                     <p:column headerText="Photo">
                         <h:graphicImage library="photo-profil"
@@ -59,12 +59,14 @@
                     <p:column headerText="Prénom">
                         <h:outputText value="#{medecin.prenom}"/>
                     </p:column>
-                    <p:column headerText="Actions">
+                    <p:column id="actionColoneMedecin" headerText="Actions">
                         <p:commandButton icon="pi pi-pencil"
+                                         id="chargerMedecin"
                                          action="#{medecinController.loadMedecin(medecin)}"
                                          update=":formAddMedecin" oncomplete="PF('dlgAddMedecin').show()"
                                          title="Modifier"/>
                         <p:commandButton icon="pi pi-trash"
+                                         id="deleteMedecin"
                                          action="#{medecinController.deleteMedecin(medecin)}"
                                          update="formMedecins" title="Supprimer"/>
                     </p:column>
@@ -74,13 +76,14 @@
     </div>
     <div class="bottom">
         <p:commandButton value="Ajouter un médecin"
+                         id="addMedecin"
                          actionListener="#{medecinController.resetForm()}"
                          update="formAddMedecin"
                          oncomplete="PF('dlgAddMedecin').show()"
                          styleClass="button-bottom"/>
     </div>
 
-    <p:dialog styleClass="dialog" widgetVar="dlgAddMedecin" modal="true" resizable="false" draggable="false"
+    <p:dialog id="dialogModifOrCreateMedecin" styleClass="dialog" widgetVar="dlgAddMedecin" modal="true" resizable="false" draggable="false"
               closeOnEscape="true" showEffect="fade" hideEffect="fade" width="50%" bottom="0" left="50%">
 
         <h:form id="formAddMedecin" enctype="multipart/form-data">
@@ -89,16 +92,16 @@
             <p:panelGrid columns="2" styleClass="grid">
 
                 <h:outputLabel value="Nom :"/>
-                <p:inputText value="#{medecinController.medecin.nom}"/>
+                <p:inputText id="medecinNom" value="#{medecinController.medecin.nom}"/>
 
                 <h:outputLabel value="Prénom :"/>
-                <p:inputText value="#{medecinController.medecin.prenom}"/>
+                <p:inputText id="medecinPrenom" value="#{medecinController.medecin.prenom}"/>
 
                 <h:outputLabel value="Identifiant:"/>
-                <p:inputText value="#{medecinController.medecin.identifiant}"/>
+                <p:inputText id="medecinIdentifiant" value="#{medecinController.medecin.identifiant}"/>
 
                 <h:outputLabel value="Mot de passe:"/>
-                <p:password value="#{medecinController.medecin.motDePasse}"/>
+                <p:password id="medecinMdp" value="#{medecinController.medecin.motDePasse}"/>
 
                 <h:outputLabel value="Utilisateur :"/>
 
@@ -122,10 +125,12 @@
                              actionListener="#{medecinController.editMedecin()}"
                              oncomplete="PF('dlgAddMedecin').hide()"
                              update="formMedecins"
+                             id="medecinSave"
                              icon="pi pi-check"/>
 
             <p:commandButton value="Annuler"
                              type="button"
+                             id="medecinCancel"
                              onclick="PF('dlgAddMedecin').hide()"
                              icon="pi pi-times"/>
         </h:form>

@@ -13,6 +13,7 @@ public class Capteur {
     private int id;
 
     private String nom;
+    private String numeroSerie;
     private String mac;
     private String longitude;
     private String latitude;
@@ -20,6 +21,14 @@ public class Capteur {
     @JsonbTransient
     @OneToMany(mappedBy = "capteur")
     private List<Activite> listActivites = new ArrayList<Activite>();
+
+    public String getNumeroSerie(){
+        return numeroSerie;
+    }
+
+    public void setNumeroSerie(String numeroSerie){
+        this.numeroSerie = numeroSerie;
+    }
 
     public int getId() {
         return id;

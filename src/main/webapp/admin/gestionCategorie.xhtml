@@ -22,11 +22,11 @@
                     <input type="checkbox" id="themeToggle" onchange="toggleTheme()"/>
                     <label class="slider" for="themeToggle"></label>
                 </div>
-                <p:commandButton styleClass="custom-btn" value="Modifier votre profil"
+                <p:commandButton id="modifProfileButton" styleClass="custom-btn" value="Modifier votre profil"
                                  actionListener="#{categorieController.resetForm()}"
                                  update=""
                                  oncomplete="PF('').show()"/>
-                <p:commandButton value="Contacter votre categorie"
+                <p:commandButton id="contacterVotreCategorie" value="Contacter votre categorie"
                                  actionListener="#{categorieController.resetForm()}"
                                  update=""
                                  styleClass="custom-btn"
@@ -50,12 +50,12 @@
                     <p:column headerText="Nom">
                         <h:outputText value="#{categorie.nom}"/>
                     </p:column>
-                    <p:column headerText="Actions">
-                        <p:commandButton icon="pi pi-pencil"
+                    <p:column id="actionColum" headerText="Actions">
+                        <p:commandButton id="chargerCategorieButton" icon="pi pi-pencil"
                                          action="#{categorieController.loadCategorie(categorie)}"
                                          update=":formAddCategorie" oncomplete="PF('dlgAddCategorie').show()"
                                          title="Modifier"/>
-                        <p:commandButton icon="pi pi-trash"
+                        <p:commandButton id="supprimerCategorieButton" icon="pi pi-trash"
                                          action="#{categorieController.deleteCategorie(categorie)}"
                                          update="formCategories" title="Supprimer"/>
                     </p:column>
@@ -65,6 +65,7 @@
     </div>
     <div class="bottom">
         <p:commandButton value="Ajouter un categorie"
+                         id="addCategorieButton"
                          actionListener="#{categorieController.resetForm()}"
                          update="formAddCategorie"
                          oncomplete="PF('dlgAddCategorie').show()"
@@ -80,19 +81,21 @@
             <p:panelGrid columns="2" styleClass="grid">
 
                 <h:outputLabel value="Nom :"/>
-                <p:inputText value="#{categorieController.categorie.nom}"/>
+                <p:inputText id="nomCategorie" value="#{categorieController.categorie.nom}"/>
 
             </p:panelGrid>
 
             <p:separator/>
 
             <p:commandButton value="Enregistrer"
+                             id="saveCategorie"
                              actionListener="#{categorieController.editCategorie()}"
                              oncomplete="PF('dlgAddCategorie').hide()"
                              update="formCategories"
                              icon="pi pi-check"/>
 
             <p:commandButton value="Annuler"
+                             id="cancelCreateOrUpdateCategorie"
                              type="button"
                              onclick="PF('dlgAddCategorie').hide()"
                              icon="pi pi-times"/>

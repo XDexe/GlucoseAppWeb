@@ -72,7 +72,7 @@
                 }
             }
         }*/
-        ws = new WebSocket("ws://10.173.163.240:8080/GlucoseApplication-1.0-SNAPSHOT/websocketlocate");
+        ws = new WebSocket("ws://10.18.185.240:8080/GlucoseApplication-1.0-SNAPSHOT/websocketlocate");
 
         ws.onopen = event => {
             ws.send("geolocaliser#");

@@ -19,6 +19,8 @@ public class Activite {
     @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private Date dateFin;
 
+    private String commentaire;
+
     private boolean isAlive;
 
 

@@ -22,11 +22,11 @@
                     <input type="checkbox" id="themeToggle" onchange="toggleTheme()"/>
                     <label class="slider" for="themeToggle"></label>
                 </div>
-                <p:commandButton styleClass="custom-btn" value="Modifier votre profil"
+                <p:commandButton id="mofiier" styleClass="custom-btn" value="Modifier votre profil"
                                  actionListener="#{categorieController.resetForm()}"
                                  update=""
                                  oncomplete="PF('').show()"/>
-                <p:commandButton value="Contacter votre entraineur"
+                <p:commandButton id="contact" value="Contacter votre entraineur"
                                  actionListener="#{categorieController.resetForm()}"
                                  update=""
                                  styleClass="custom-btn"
@@ -60,11 +60,11 @@
                         <h:outputText value="#{entraineur.prenom}"/>
                     </p:column>
                     <p:column headerText="Actions">
-                        <p:commandButton icon="pi pi-pencil"
+                        <p:commandButton id="modifier" icon="pi pi-pencil"
                                          action="#{entraineurController.loadEntraineur(entraineur)}"
                                          update=":formAddEntraineur" oncomplete="PF('dlgAddEntraineur').show()"
                                          title="Modifier"/>
-                        <p:commandButton icon="pi pi-trash"
+                        <p:commandButton id="supprimer" icon="pi pi-trash"
                                          action="#{entraineurController.deleteEntraineur(entraineur)}"
                                          update="formEntraineurs" title="Supprimer"/>
                     </p:column>
@@ -73,7 +73,7 @@
         </div>
     </div>
     <div class="bottom">
-        <p:commandButton value="Ajouter un entraineur"
+        <p:commandButton id="ajoutEntraineur" value="Ajouter un entraineur"
                          actionListener="#{entraineurController.resetForm()}"
                          update="formAddEntraineur"
                          oncomplete="PF('dlgAddEntraineur').show()"
@@ -89,16 +89,16 @@
             <p:panelGrid columns="2" styleClass="grid">
 
                 <h:outputLabel value="Nom :"/>
-                <p:inputText value="#{entraineurController.entraineur.nom}"/>
+                <p:inputText id="nom" value="#{entraineurController.entraineur.nom}"/>
 
                 <h:outputLabel value="Prénom :"/>
-                <p:inputText value="#{entraineurController.entraineur.prenom}"/>
+                <p:inputText id="prenom" value="#{entraineurController.entraineur.prenom}"/>
 
                 <h:outputLabel value="Identifiant:"/>
-                <p:inputText value="#{entraineurController.entraineur.identifiant}"/>
+                <p:inputText id="identifiant" value="#{entraineurController.entraineur.identifiant}"/>
 
                 <h:outputLabel value="Mot de passe:"/>
-                <p:password value="#{entraineurController.entraineur.motDePasse}"/>
+                <p:password id="mdp" value="#{entraineurController.entraineur.motDePasse}"/>
 
                 <p:selectCheckboxMenu id="multiple"
                                       multiple="true" emptyLabel="Please select..." updateLabel="true"
@@ -108,7 +108,7 @@
                 </p:selectCheckboxMenu>
 
                 <h:outputLabel value="Photo de profil :"/>
-                <p:fileUpload mode="simple"
+                <p:fileUpload id="photoProfil" mode="simple"
                               value="#{imageController.uploadedFile}"
                               sizeLimit="100000000"
                               allowTypes="/(\.|\/)(jpg|jpeg|png)$/"
@@ -117,13 +117,13 @@
 
             <p:separator/>
 
-            <p:commandButton value="Enregistrer"
+            <p:commandButton id="enregistrer" value="Enregistrer"
                              actionListener="#{entraineurController.editEntraineur()}"
                              oncomplete="PF('dlgAddEntraineur').hide()"
                              update="formEntraineurs"
                              icon="pi pi-check"/>
 
-            <p:commandButton value="Annuler"
+            <p:commandButton id="annuler" value="Annuler"
                              type="button"
                              onclick="PF('dlgAddEntraineur').hide()"
                              icon="pi pi-times"/>
