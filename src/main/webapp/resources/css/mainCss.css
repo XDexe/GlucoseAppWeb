@@ -1,0 +1,210 @@
+/* === Variables de Thème et Polices === */
+/* Assurez-vous que ces polices sont disponibles. Si ce sont des fichiers, utilisez @font-face */
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap'); */
+/* Pour LEMON MILK Pro FTR, vous devrez l'héberger ou trouver une alternative si elle n'est pas libre */
+
+:root {
+    --header-bg-light: #FFFBE7;
+    --header-text-light: black;
+    --header-avatar-border-light: black;
+    --header-radius: 10px;
+    --dropdown-radius: 40px; /* Tel que vu dans le Figma du popup */
+
+    /* Couleurs pour le thème clair */
+    --app-header-bg: var(--header-bg-light);
+    --app-header-text: var(--header-text-light);
+    --app-header-link-hover: #007bff; /* Exemple */
+    --app-avatar-border: var(--header-avatar-border-light);
+    --app-dropdown-bg: var(--header-bg-light); /* Le popup a le même fond */
+    --app-dropdown-text: var(--header-text-light);
+    --app-dropdown-item-hover-bg: #f0eada; /* Un peu plus foncé que FFFBE7 */
+
+    /* Polices (Valeurs par défaut si les polices Figma ne sont pas chargées) */
+    --font-inter: 'Inter', sans-serif;
+    --font-lemon-milk: 'LEMON MILK Pro FTR', 'Arial Black', sans-serif; /* Fallback pour LEMON MILK */
+}
+
+html[data-theme="dark"] {
+    --app-header-bg: #2c2a23; /* Fond sombre pour #FFFBE7 */
+    --app-header-text: #f0eada; /* Texte clair */
+    --app-header-link-hover: #87ceeb; /* Bleu clair pour hover */
+    --app-avatar-border: #f0eada; /* Bordure claire */
+    --app-dropdown-bg: #2c2a23;
+    --app-dropdown-text: #f0eada;
+    --app-dropdown-item-hover-bg: #3d3a31;
+}
+
+/* === Styles pour la Barre de Navigation Horizontale === */
+.app-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 120px;
+    padding: 0 40px; /* Padding gauche/droite comme vu pour "Accueil" */
+    background-color: var(--app-header-bg);
+    border-radius: var(--header-radius);
+    font-family: var(--font-inter);
+    color: var(--app-header-text);
+    position: relative; /* Pour le positionnement du dropdown */
+    /* La largeur sera 100% du conteneur parent, ou vous pouvez la fixer si besoin */
+    /* width: 1620px; /* Non recommandé pour le responsive */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Optionnel: petite ombre */
+}
+
+.app-header-left .app-accueil-link,
+.app-header-left .app-accueil-link.ui-link {
+    color: var(--app-header-text);
+    font-size: 20px;
+    font-weight: 400;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+.app-header-left .app-accueil-link.ui-link:hover {
+    color: var(--app-header-link-hover);
+}
+
+.app-header-right {
+    position: relative; /* Contexte pour le positionnement absolu du dropdown */
+    display: flex; /* Pour aligner potentiels futurs éléments à droite */
+    align-items: center;
+}
+
+/* Déclencheur du profil (Nom + Avatar) */
+.app-profil-trigger {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px; /* Espace cliquable */
+    border-radius: 60px; /* Tel que dans Figma pour la section profil */
+    transition: background-color 0.2s;
+}
+.app-header-right:hover .app-profil-trigger {
+    background-color: var(--app-dropdown-item-hover-bg); /* Léger feedback au survol */
+}
+
+.app-user-name {
+    font-size: 20px;
+    font-weight: 400;
+    margin-right: 20px; /* Espace entre nom et avatar (ajuster depuis left:188px, left:320px) */
+    color: var(--app-header-text);
+}
+
+.app-avatar-wrapper {
+    position: relative; /* Pour la bordure 'Ellipse 1' */
+}
+.app-user-avatar,
+.app-user-avatar.ui-avatar, /* Pour p:avatar */
+.app-user-avatar img { /* Pour p:graphicImage */
+    width: 70px !important;
+    height: 70px !important;
+    border-radius: 50%; /* Pour l'image elle-même */
+    display: block;
+    border: 1px solid var(--app-avatar-border); /* La bordure 'Ellipse 1' */
+    box-sizing: border-box;
+}
+.app-user-avatar.default-avatar.ui-avatar { /* Spécifique pour p:avatar avec icône */
+    background-color: var(--app-avatar-border); /* Fond pour l'icône */
+    color: var(--app-header-bg); /* Couleur de l'icône */
+    font-size: 35px !important; /* Taille de l'icône dans l'avatar */
+}
+
+
+/* Menu Déroulant (Pop-up) */
+.app-profil-dropdown {
+    position: absolute;
+    top: calc(100% - 20px); /* S'aligne avec le bas du header - ajuster pour chevauchement désiré */
+    right: 0; /* S'aligne à droite du .app-header-right */
+    width: 410px; /* Largeur du pop-up Figma */
+    background: var(--app-dropdown-bg);
+    border-radius: var(--dropdown-radius);
+    box-shadow: 0px 5px 15px rgba(0,0,0,0.2);
+    z-index: 100;
+    padding: 20px; /* Padding interne du dropdown */
+    box-sizing: border-box;
+    font-family: var(--font-lemon-milk); /* Police spécifique pour le contenu du dropdown */
+
+    display: none; /* Caché par défaut */
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+.app-header-right:hover .app-profil-dropdown {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.app-dropdown-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Aligne les éléments à droite comme dans le Figma */
+    padding-bottom: 20px; /* Espace avant la liste d'items */
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--app-avatar-border); /* Séparateur léger */
+    font-family: var(--font-inter); /* Le header du dropdown utilise Inter */
+}
+.app-user-name-dropdown {
+    font-size: 20px;
+    font-weight: 400;
+    margin-right: 20px;
+    color: var(--app-dropdown-text);
+}
+.app-avatar-wrapper-dropdown .app-user-avatar-dropdown,
+.app-avatar-wrapper-dropdown .app-user-avatar-dropdown.ui-avatar,
+.app-avatar-wrapper-dropdown .app-user-avatar-dropdown img {
+    width: 70px !important;
+    height: 70px !important;
+    border-radius: 50%;
+    display: block;
+    border: 1px solid var(--app-avatar-border);
+}
+.app-avatar-wrapper-dropdown .app-user-avatar-dropdown.default-avatar.ui-avatar {
+    background-color: var(--app-avatar-border);
+    color: var(--app-dropdown-bg);
+    font-size: 35px !important;
+}
+
+
+.app-dropdown-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.app-dropdown-list li {
+    margin-bottom: 15px; /* Espace entre les items du dropdown */
+}
+.app-dropdown-list li:last-child {
+    margin-bottom: 0;
+}
+
+.app-dropdown-item,
+.app-dropdown-item.ui-link,
+.app-dropdown-item.ui-commandlink {
+    display: flex;
+    justify-content: space-between; /* Pour l'icône de thème à droite */
+    align-items: center;
+    padding: 10px 15px; /* Padding pour chaque item */
+    color: var(--app-dropdown-text);
+    font-size: 20px; /* Figma indique 24px, mais cela peut paraître grand. Ajuster. */
+    font-family: var(--font-lemon-milk); /* Police pour les items */
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.2s, color 0.2s;
+}
+.app-dropdown-item:hover,
+.app-dropdown-item.ui-link:hover,
+.app-dropdown-item.ui-commandlink:hover {
+    background-color: var(--app-dropdown-item-hover-bg);
+    /* color: var(--app-dropdown-text); /* Le texte ne change pas de couleur au survol dans Figma */
+}
+
+.app-dropdown-icon {
+    font-size: 24px; /* Taille de l'icône thème (31x31px dans Figma) */
+    /* margin-left: auto; /* Pousse l'icône à droite si flex et justify-content: flex-start */
+}
+
+.app-dropdown-form {
+    margin:0;
+    padding:0;
+    display: contents; /* Pour que le form ne casse pas le layout flex de l'item */
+}

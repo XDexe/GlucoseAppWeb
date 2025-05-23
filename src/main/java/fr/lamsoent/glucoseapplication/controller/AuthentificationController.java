@@ -20,6 +20,7 @@ public class AuthentificationController implements Serializable {
     private List<Personne> listPersonne = new ArrayList<Personne>();
     private Personne personneLogin = new Personne();
 
+
     @Named
     @Inject
     private MedecinController medecinController;
@@ -50,6 +51,8 @@ public class AuthentificationController implements Serializable {
             }
 
             boolean resultpass = Outil.verifyPasswordBcrypt(personneLogin.getPlainTextPassword(), p.getMotDePasse());
+            System.out.println(resultpass);
+
             if (p.getIdentifiant().equals(personneLogin.getIdentifiant()) && resultpass) {
                 personneLogin = p;
                 isLogged = true;
@@ -161,4 +164,6 @@ public class AuthentificationController implements Serializable {
     public void setPersonneModel(PersonneModel personneModel) {
         this.personneModel = personneModel;
     }
+
+
 }

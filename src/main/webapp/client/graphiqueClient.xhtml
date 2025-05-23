@@ -13,19 +13,50 @@
    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
 </h:head>
-<h:body>
-   <f:metadata>
-      <f:viewAction action="#{activiteController.loadActivite()}"/>
-   </f:metadata>
-   <h:form id="formData">
-      <h:inputHidden id="idActivite" value="#{activiteController.activite.id}"/>
-      <h:inputHidden id="isAlive" value="#{activiteController.activite.alive}"/>
-   </h:form>
-   <canvas id="line" width="1000" height="750"></canvas>
-   <script>
-      let idActivite = document.getElementById('formData:idActivite').value;
-      let isAlive = document.getElementById('formData:isAlive').value;
-      let ws;
+<h:body onload="seuilmax(); seuilmin();">
+    <p:remoteCommand name="seuilmax"
+                     action="#{activiteController.getSeuilMax()}"
+                     oncomplete="window.seuilMax = args.seuilMax; console.log('Seuil max:', args.seuilMax); checkStart('seuilmax')"/>
+
+    <p:remoteCommand  name="seuilmin"
+                     action="#{activiteController.getSeuilMin()}"
+                     oncomplete="window.seuilMin = args.seuilMin; console.log('Seuil min:', args.seuilMin); checkStart('seuilmin')"/>
+<script>
+    var isSeuilMax=false;
+    var isSeuilMin=false;
+    function checkStart(seuil){
+        if (seuil.equals('seuilmax')) {
+            isSeuilMax = true;
+        }
+        else if (seuil.equals('seuilmin')) {
+            isSeuilMin = true;
+        }
+        if (isSeuilMax &amp;&amp; isSeuilMin) {
+            let activite =document.getElementById('formData:idActivite').value;
+            fetchData(activite);
+        )
+        } else {
+            console.log("Waiting for both seuils to be ready");
+        }
+    }
+</script>
+    <f:metadata>
+        <f:viewAction action="#{activiteController.loadActivite()}"/>
+    </f:metadata>
+    <f:metadata>
+        <f:viewAction action="seuilmin();"/>
+        <f:viewAction action="seuilmax();"/>
+    </f:metadata>
+    <h:form id="formData">
+        <h:inputHidden id="idActivite" value="#{activiteController.activite.id}"/>
+        <h:inputHidden id="isAlive" value="#{activiteController.activite.alive}"/>
+    </h:form>
+    <canvas id="line" width="1000" height="750"></canvas>
+
+    <script>
+        let idActivite = document.getElementById('formData:idActivite').value;
+        let isAlive = document.getElementById('formData:isAlive').value;
+        let ws;
 
       console.log(idActivite);
       fetchData(idActivite);

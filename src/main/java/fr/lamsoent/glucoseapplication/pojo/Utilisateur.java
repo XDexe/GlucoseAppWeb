@@ -119,4 +119,6 @@ public class Utilisateur extends Personne {
     public Categorie getCategorie(){
         return categorie;
     }
+
+
 }
