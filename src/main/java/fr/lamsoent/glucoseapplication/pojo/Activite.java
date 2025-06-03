@@ -2,8 +2,6 @@ package fr.lamsoent.glucoseapplication.pojo;
 
 import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.*;
-
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,20 +16,16 @@ public class Activite {
     private Date dateDebut;
     @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private Date dateFin;
-
-    private String commentaire;
-
     private boolean isAlive;
 
-
-    @OneToMany(mappedBy = "activite")
+    @OneToMany(mappedBy = "activite", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Donnee> listDonnees = new ArrayList<>();
 
     @ManyToOne
-    private Utilisateur utilisateur;
+    private Utilisateur utilisateur ;
 
     @ManyToOne
-    private Capteur capteur = new Capteur();
+    private Capteur capteur ;
 
     public int getId() {
         return id;
@@ -56,15 +50,6 @@ public class Activite {
     public void setDateFin(Date dateFin) {
         this.dateFin = dateFin;
     }
-
-    public List<Donnee> getListDatas() {
-        return listDonnees;
-    }
-
-    public void setListDatas(List<Donnee> listDonnees) {
-        this.listDonnees = listDonnees;
-    }
-
     public Utilisateur getUtilisateur() {
         return utilisateur;
     }

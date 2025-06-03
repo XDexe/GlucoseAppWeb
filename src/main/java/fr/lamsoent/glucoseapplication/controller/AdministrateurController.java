@@ -4,8 +4,10 @@ import fr.lamsoent.glucoseapplication.model.RoleModel;
 import fr.lamsoent.glucoseapplication.model.UtilisateurModel;
 import fr.lamsoent.glucoseapplication.pojo.Role;
 import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
+import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
@@ -30,6 +32,7 @@ public class AdministrateurController implements Serializable {
     @Inject
     private ImageController imageController;
 
+    
     public void editAdministrateur() {
         Role roleAdmin = roleModel.getRoleByName("ADMINISTRATEUR");
         if (roleAdmin == null) {

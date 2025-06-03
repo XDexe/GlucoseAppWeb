@@ -5,8 +5,6 @@ import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
 
 import java.util.Date;
-
-
 @Entity
 public class Donnee {
 
@@ -22,6 +20,9 @@ public class Donnee {
     @ManyToOne
     private Activite activite = new Activite();
 
+    @OneToOne(cascade = CascadeType.REMOVE)
+    private Alerte alerte;
+
     public int getId() {
         return id;
     }
@@ -34,6 +35,13 @@ public class Donnee {
         return glucose;
     }
 
+    public void setAlerte( Alerte alerte) {
+        this.alerte = alerte;
+    }
+
+    public Alerte getAlerte() {
+        return alerte;
+    }
     public void setGlucose(String glucose) {
         this.glucose = glucose;
     }

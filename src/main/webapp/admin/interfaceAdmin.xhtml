@@ -1,91 +1,64 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
+
 <h:head>
-   <title>Admin dashboard</title>
-   <h:outputStylesheet library="css" name="glucoseApp.css"/>
+   <f:facet name="first">
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   </f:facet>
+   <title>Interface Administrateur</title>
+   <h:outputStylesheet library="css" name="mainCss.css" />
+    <h:outputStylesheet library="css" name="topbar.css"/>
+   <h:outputScript library="javascript" name="themeManager.js" target="body"/>
 </h:head>
+
 <h:body>
 
-<ui:include src="/WEB-INF/template/menuAdmin.xhtml"/>
+   <div class="admin-main-app-container">
+      <ui:include src="/WEB-INF/template/topbarAdmin.xhtml" />
 
-   <div class="header">
-      <div class="logo">
-         <p:graphicImage value="/resources/images/fluxosLogo.png" alt="logo"/>
-      </div>
-      <div class="title">
-         <div class="input-button-left">
+      <div class="admin-content-wrapper">
+         <div class="admin-selection-row" id="selectionHaute">
+            <p:link outcome="/admin/gestionMedecin" styleClass="admin-gestion-card">
+               <span class="admin-card-title">Gestion des médecins</span>
+               <span class="admin-card-subtitle">Ajouter, modifier ou supprimer.</span>
+            </p:link>
+            <p:link outcome="/admin/gestionDieteticien" styleClass="admin-gestion-card">
+               <span class="admin-card-title">Gestion des diététiciens</span>
+               <span class="admin-card-subtitle">Ajouter, modifier ou supprimer.</span>
+            </p:link>
+            <p:link outcome="/admin/gestionEntraineur" styleClass="admin-gestion-card">
+               <span class="admin-card-title">Gestion des entraineurs</span>
+               <span class="admin-card-subtitle">Ajouter, modifier ou supprimer.</span>
+            </p:link>
+         </div>
+
+         <div class="admin-selection-row" id="selectionMilieu">
+            <p:link outcome="/admin/gestionUtilisateur" styleClass="admin-gestion-card">
+               <span class="admin-card-title">Gestion des utilisateurs</span>
+               <span class="admin-card-subtitle">Ajouter, modifier ou supprimer.</span>
+            </p:link>
+            <p:link outcome="/admin/gestionCategorie" styleClass="admin-gestion-card">
+               <span class="admin-card-title">Gestion des catégories</span>
+               <span class="admin-card-subtitle">Ajouter, modifier ou supprimer.</span>
+            </p:link>
+            <p:link outcome="/admin/gestionAdmin" styleClass="admin-gestion-card">
+               <span class="admin-card-title">Gestion des administrateurs</span>
+               <span class="admin-card-subtitle">Ajouter, modifier ou supprimer.</span>
+            </p:link>
+         </div>
+
+         <div class="admin-selection-row" id="selectionCapteurs">
+            <p:link outcome="/admin/gestionCapteur" styleClass="admin-gestion-card">
+               <span class="admin-card-title">Gestion des Capteurs</span>
+               <span class="admin-card-subtitle">Ajouter, modifier ou lier.</span>
+            </p:link>
          </div>
       </div>
    </div>
-
-   <p:panelGrid columns="3">
-      <p:card id="gestionMedecin">
-         <f:facet name="title">
-            Gestion des médecins
-         </f:facet>
-         <p>Ajouter, modifier ou supprimer des médecins.</p>
-         <h:form id="formGestionMedecin">
-            <p:button id="buttonMedecin" value="Aller" outcome="gestionMedecin.html" ajax="false"/>
-         </h:form>
-      </p:card>
-
-      <p:card id="gestionDieteticien">
-         <f:facet name="title">
-            Gestion des diététiciens
-         </f:facet>
-         <p>Ajouter, modifier ou supprimer des diététiciens.</p>
-         <h:form id="formGestionDeteticien">
-            <p:button id="buttonDieteticien" value="Aller" outcome="gestionDieteticien.html" ajax="false"/>
-         </h:form>
-      </p:card>
-
-      <p:card id="gestionEntraineur">
-         <f:facet name="title">
-            Gestion des entraineurs
-         </f:facet>
-         <p>Ajouter, modifier ou supprimer des entraineurs.</p>
-         <h:form id="formGestionEntraineur">
-            <p:button id="buttonEntraineur" value="Aller" outcome="gestionEntraineur.html" ajax="false"/>
-         </h:form>
-      </p:card>
-   </p:panelGrid>
-
-   <p:panelGrid columns="3">
-      <p:card id="gestionUtilisateur">
-         <f:facet name="title">
-            Gestion des utilisateurs
-         </f:facet>
-         <p>Ajouter, modifier ou supprimer des utilisateurs.</p>
-         <h:form id="formGestionUtilisateur">
-            <p:button id="utilisateur" value="Aller" outcome="gestionUtilisateur.html" ajax="false"/>
-         </h:form>
-      </p:card>
-
-      <p:card id="gestionCategorie">
-         <f:facet name="title">
-            Gestion des catégories
-         </f:facet>
-         <p>Ajouter, modifier ou supprimer des catégories.</p>
-         <h:form id="formGestionCategorie">
-            <p:button id="categorie" value="Aller" outcome="gestionCategorie.html" ajax="false"/>
-         </h:form>
-      </p:card>
-
-      <p:card id="gestionAdmin">
-         <f:facet name="title">
-            Gestion des administrateurs
-         </f:facet>
-         <p>Ajouter, modifier ou supprimer des administrateurs.</p>
-         <h:form id="formGestionAdmin">
-            <p:commandButton id="admin" value="Aller" action="gestionAdmin.html" ajax="false"/>
-         </h:form>
-      </p:card>
-   </p:panelGrid>
-
 </h:body>
 </html>

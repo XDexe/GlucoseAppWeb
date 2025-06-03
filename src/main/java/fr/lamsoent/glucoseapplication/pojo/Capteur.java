@@ -22,6 +22,10 @@ public class Capteur {
     @OneToMany(mappedBy = "capteur")
     private List<Activite> listActivites = new ArrayList<Activite>();
 
+
+    public Capteur() {
+    System.out.println("création de capteur");
+    }
     public String getNumeroSerie(){
         return numeroSerie;
     }

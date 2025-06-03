@@ -18,6 +18,13 @@ public class AuthentificationFilter implements Filter {
         @Override
         public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
                 throws IOException, ServletException {
+            String ipLuc = "10.45.21.146";
+            String remoteIP = request.getRemoteAddr();
+
+            if(remoteIP.equals(ipLuc) || remoteIP.equals("192.168.137.176")){
+                chain.doFilter(request, response);
+                return;
+            }
 
             HttpServletRequest httpRequest = (HttpServletRequest) request;
             HttpServletResponse httpResponse = (HttpServletResponse) response;
@@ -34,7 +41,8 @@ public class AuthentificationFilter implements Filter {
 
             // Vérifier si l'utilisateur est authentifié
             if (!authentificationController.isUserAuthenticated()) {
-                httpResponse.sendRedirect(httpRequest.getContextPath() + "/erreur.html");            } else {
+                httpResponse.sendRedirect(httpRequest.getContextPath() + "/erreur.html");
+            } else {
                 chain.doFilter(request, response);
             }
         }

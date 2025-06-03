@@ -42,12 +42,13 @@ public class Personne {
         System.out.println("mot de passe actuelle "+getMotDePasse());
 
         if(!motDePasse.equals(getMotDePasse()) && !motDePasse.isEmpty()) {
-            System.out.println("mot de passe mit");
+            System.out.println("mot de passe mis");
             this.motDePasse = Outil.hashPassWordBcrypt(motDePasse);
         }
         System.out.println("mot de passe actuelle hasher"+getMotDePasse());
 
     }
+
 
     public String getPrenom() {
         return prenom;

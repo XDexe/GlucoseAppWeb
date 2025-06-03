@@ -11,6 +11,11 @@
 </h:head>
 
 <h:body>
+   <p:commandButton style="font-size: 20px; padding: 12px 24px;"
+                    icon="pi pi-home"
+                    action="#{authentificationController.logout()}"
+                    styleClass="iconButton"
+                    title="Déconnexion"/>
    <div id="appContainer">
       <div class="table-wrapper">
          <h:form id="formActivites" style="display: flex; flex-direction: column; height: 100%;">
@@ -33,7 +38,7 @@
                   <p:commandButton icon="pi pi-chart-line"
                                    action="#{activiteController.accesActivite(activite)}"
                                    styleClass="iconButton"
-                                   title="Modifier"/>
+                                   title="Accéder"/>
 
                   <p:commandButton icon="pi pi-trash"
                                    action="#{activiteController.deleteActivite(activite)}"

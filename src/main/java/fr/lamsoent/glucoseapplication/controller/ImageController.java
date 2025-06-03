@@ -95,6 +95,14 @@ public class ImageController implements Serializable {
         }
     }
 
+    public void resetUploadedFile() {
+        this.uploadedFile = null;
+    }
+
+    public boolean hasUploadedFile() {
+        return uploadedFile != null;
+    }
+
     public UploadedFile getUploadedFile() {
         return uploadedFile;
     }
@@ -110,4 +118,6 @@ public class ImageController implements Serializable {
     public void setPersonneModel(PersonneModel personneModel) {
         this.personneModel = personneModel;
     }
+
+
 }

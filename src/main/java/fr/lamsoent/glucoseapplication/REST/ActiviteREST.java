@@ -46,6 +46,7 @@ public class  ActiviteREST {
     @Inject
     private UtilisateurController utilisateurController;
 
+
     @GET
     public Response deploy(){
         return Response.ok("deploiement ok").build();
@@ -56,6 +57,8 @@ public class  ActiviteREST {
     @Produces(MediaType.APPLICATION_JSON)
     public Response lireActivite(@QueryParam("idActivite") int idActivite){
         Activite actSelect=activiteModel.read(idActivite);
+        List<Donnee> donnees = donneeModel.donneeListWithIdActivite(idActivite);
+        actSelect.setListDonnees(donnees);
         return Response.accepted(actSelect).build();
     }
 
@@ -66,6 +69,7 @@ public class  ActiviteREST {
         List<Donnee> datas = donneeModel.donneeListWithIdActivite(idActivite);
         return Response.accepted(datas).build();
     }
+
 
     //Créer
     @POST
@@ -148,7 +152,7 @@ public class  ActiviteREST {
 
 
         for (Utilisateur user : lu) {
-            if ( user.getCapteur() != null && user.getCapteur().getNumeroSerie() !=null &&!user.getCapteur().getNumeroSerie().isEmpty() && user.getCapteur().getNumeroSerie().equalsIgnoreCase(c.getMac())) {
+            if ( user.getCapteur() != null && user.getCapteur().getNumeroSerie() !=null &&!user.getCapteur().getNumeroSerie().isEmpty() && user.getCapteur().getNumeroSerie().equalsIgnoreCase(c.getNumeroSerie())) {
                 System.out.println("Utilisateur trouver " + user.getNom());
                 System.out.println("Capteur lier utilisateur : " + user.getCapteur().getNumeroSerie());
                 System.out.println("Capteur :" + c.getNumeroSerie());
@@ -159,6 +163,7 @@ public class  ActiviteREST {
             System.out.println("L' utilisateur u est nulle");
             return Response.noContent().build();
         }
+
         Activite a1 = new Activite();
         a1.setAlive(true);
         a1.setUtilisateur(u);
@@ -244,7 +249,7 @@ public class  ActiviteREST {
         donnee = donneeModel.update(donnee);
 
         if (Double.parseDouble(activite.getUtilisateur().getSeuilMax()) < Double.parseDouble(donnee.getGlucose()) ||
-            Double.parseDouble(activite.getUtilisateur().getSeuilMin()) > Double.parseDouble(donnee.getGlucose())){
+                Double.parseDouble(activite.getUtilisateur().getSeuilMin()) > Double.parseDouble(donnee.getGlucose())){
 
             Alerte alerte = new Alerte();
             alerte.setUtilisateur(activite.getUtilisateur());

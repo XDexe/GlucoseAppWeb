@@ -1,0 +1,55 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <div class="app-header-bar">
+        <div class="app-header-left">
+            <p:link outcome="/admin/interfaceAdmin.xhtml" styleClass="app-accueil-link">
+                Accueil
+            </p:link>
+        </div>
+        <div class="app-header-right">
+            <div class="app-profil-trigger">
+                <span class="app-user-name">
+                    <h:outputText value="#{administrateurController.administrateur.prenom} #{administrateurController.administrateur.nom}"
+                                  rendered="#{not empty administrateurController.administrateur.nom or not empty administrateurController.administrateur.prenom}"/>
+                    <h:outputText value="Administrateur"
+                                  rendered="#{empty administrateurController.administrateur.nom and empty administrateurController.administrateur.prenom}"/>
+                </span>
+                <div class="app-avatar-wrapper">
+                    <p:graphicImage library="photo-profil"
+                                    id="adminProfilePicHeader"
+                                    name="#{administrateurController.administrateur.photoDeProfilUrl}"
+                                    styleClass="app-user-avatar"
+                                    rendered="#{not empty administrateurController.administrateur.photoDeProfilUrl}"
+                                    alt="Photo de profil"/>
+                    <p:avatar id="adminProfileAvatarHeader"
+                              icon="fas fa-user-shield"
+                              styleClass="app-user-avatar default-avatar"
+                              shape="circle"
+                              rendered="#{empty administrateurController.administrateur.photoDeProfilUrl}"/>
+                </div>
+            </div>
+
+            <div class="app-profil-dropdown">
+                <ul class="app-dropdown-list">
+                    <li>
+                        <a href="#" id="themeToggleLinkAdminPage" class="app-dropdown-item">
+                            <span id="themeToggleTextAdminPage" class="app-dropdown-text">Passer en mode sombre</span>
+                            <i id="themeToggleIconAdminPage" class="fas fa-moon app-dropdown-icon"></i>
+                        </a>
+                    </li>
+
+                    <li>
+                        <h:form styleClass="app-dropdown-form">
+                            <p:commandLink action="#{authentificationController.logout()}" process="@this" ajax="false" styleClass="app-dropdown-item">
+                                <span class="app-dropdown-text">Se déconnecter</span>
+                            </p:commandLink>
+                        </h:form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</ui:composition>

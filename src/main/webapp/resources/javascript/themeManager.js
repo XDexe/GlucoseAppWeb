@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const themeToggleLink = document.getElementById('themeToggleLink');
+    const themeButton = document.getElementById('themeToggleTextAdminPage'); // Le bouton dans le dropdown
     const themeToggleText = document.getElementById('themeToggleText');
     const themeToggleIcon = document.getElementById('themeToggleIcon'); // L'icône dans le dropdown
     const htmlElement = document.documentElement;
@@ -25,12 +26,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const savedTheme = localStorage.getItem('theme') || 'light';
     applyTheme(savedTheme);
 
-    if (themeToggleLink) {
-        themeToggleLink.addEventListener('click', function (event) {
-            event.preventDefault(); // Empêche le comportement par défaut du lien <a>
-            const currentTheme = htmlElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            applyTheme(newTheme);
-        });
-    }
+
+    themeButton.addEventListener('click', function (event) {
+        console.log('Click');
+        event.preventDefault(); // Empêche le comportement par défaut du lien <a>
+        const currentTheme = htmlElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        applyTheme(newTheme);
+    });
+
 });

@@ -8,6 +8,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import org.primefaces.PrimeFaces;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -38,6 +39,17 @@ public class ActiviteController implements Serializable {
         }
     }
 
+    public String getSeuilMax(){
+        activite=activiteModel.read(activite.getId());
+        PrimeFaces.current().ajax().addCallbackParam("seuilMax", activite.getUtilisateur().getSeuilMax());
+        return activite.getUtilisateur().getSeuilMax();
+    }
+
+    public String getSeuilMin(){
+        activite=activiteModel.read(activite.getId());
+        PrimeFaces.current().ajax().addCallbackParam("seuilMin", activite.getUtilisateur().getSeuilMin());
+        return activite.getUtilisateur().getSeuilMin();
+    }
     public void editActivite() {
         activiteModel.update(this.activite);
         activite = new Activite();

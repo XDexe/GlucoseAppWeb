@@ -3,12 +3,14 @@ package fr.lamsoent.glucoseapplication.controller;
 import fr.lamsoent.glucoseapplication.model.MedecinModel;
 import fr.lamsoent.glucoseapplication.model.RoleModel;
 import fr.lamsoent.glucoseapplication.pojo.Medecin;
+import fr.lamsoent.glucoseapplication.pojo.Personne;
 import fr.lamsoent.glucoseapplication.pojo.Role;
 import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.faces.context.FacesContext;
 
 import java.io.Serializable;
 import java.util.List;
@@ -20,6 +22,7 @@ public class MedecinController implements Serializable {
     private Medecin medecin = new Medecin();
     private Utilisateur utilisateurSelectionne = new Utilisateur();
     private List<Integer> utilisteursSelectionnesIds;
+    private boolean addMode = false;
 
     @EJB
     private MedecinModel medecinModel;
@@ -45,10 +48,21 @@ public class MedecinController implements Serializable {
         Role roleMDefaut = roleModel.getOrCreateRoleByName("DEFAUT");
         medecin.setRole(roleMDefaut);
 
-        medecin = medecinModel.update(medecin);
-        imageController.saveImage(medecin);
+        if (medecin.getIdPersonne() != 0 &&
+                (medecin.getPlainTextPassword() == null || medecin.getPlainTextPassword().isEmpty())) {
+            Medecin existingMedecin = medecinModel.read(medecin.getIdPersonne());
+            if (existingMedecin != null) {
+                medecin.setMotDePasse(existingMedecin.getMotDePasse());
+            }
+        }
 
-        if (!utilisteursSelectionnesIds.isEmpty()) {
+        if (imageController.hasUploadedFile()) {
+            imageController.saveImage(medecin);
+        }
+
+        medecin = medecinModel.update(medecin);
+
+        if (utilisteursSelectionnesIds != null && !utilisteursSelectionnesIds.isEmpty()) {
             utilisteursSelectionnesIds.forEach(id -> {
                 Utilisateur utilisateur = utilisateurController.read(id);
                 if (utilisateur != null) {
@@ -57,7 +71,8 @@ public class MedecinController implements Serializable {
                 }
             });
         }
-        medecin = new Medecin();
+
+        resetForm();
     }
 
     public void deleteMedecin(Medecin medecin) {
@@ -74,6 +89,7 @@ public class MedecinController implements Serializable {
 
     public void loadMedecin(Medecin medecin) {
         this.medecin=medecin;
+        this.addMode = false;
     }
 
     public Medecin getMedecin() {
@@ -90,6 +106,9 @@ public class MedecinController implements Serializable {
 
     public void resetForm() {
         this.medecin = new Medecin();
+        this.addMode = true;
+
+        imageController.resetUploadedFile();
     }
 
     public Utilisateur getUtilisateurSelectionne() {
@@ -132,5 +151,27 @@ public class MedecinController implements Serializable {
         this.utilisteursSelectionnesIds = utilisteursSelectionnesIds;
     }
 
+    public boolean isAddMode() {
+        return addMode;
+    }
 
+    public void setAddMode(boolean addMode) {
+        this.addMode = addMode;
+    }
+
+    public RoleModel getRoleModel() {
+        return roleModel;
+    }
+
+    public void setRoleModel(RoleModel roleModel) {
+        this.roleModel = roleModel;
+    }
+
+    public ImageController getImageController() {
+        return imageController;
+    }
+
+    public void setImageController(ImageController imageController) {
+        this.imageController = imageController;
+    }
 }

@@ -36,6 +36,9 @@ public class AuthentificationController implements Serializable {
     @Inject
     private UtilisateurController utilisateurController;
 
+    @Inject
+    private AdministrateurController administrateurController;
+
     @EJB
     private PersonneModel personneModel;
 
@@ -49,6 +52,9 @@ public class AuthentificationController implements Serializable {
                     p.getMotDePasse() == null || p.getMotDePasse().isEmpty()) {
                 continue;
             }
+
+            System.out.println(p.getIdentifiant() + " " + p.getMotDePasse());
+            System.out.println(personneLogin.getIdentifiant() + " " + personneLogin.getMotDePasse());
 
             boolean resultpass = Outil.verifyPasswordBcrypt(personneLogin.getPlainTextPassword(), p.getMotDePasse());
             System.out.println(resultpass);
@@ -64,9 +70,11 @@ public class AuthentificationController implements Serializable {
             System.out.println("Authentification Réussie");
             String role = personneLogin.getRole() != null ? personneLogin.getRole().getNomRole() : null;
 
+            System.out.println(role);
+
             if (role != null && role.equals("ADMINISTRATEUR")) {
                 Utilisateur admin = (Utilisateur) personneLogin;
-                utilisateurController.setUtilisateur(admin);
+                administrateurController.setAdministrateur(admin);
                 return "admin/interfaceAdmin?faces-redirect=true";
             } else if (personneLogin instanceof Utilisateur) {
                 Utilisateur utilisateur = (Utilisateur) personneLogin;
@@ -95,17 +103,34 @@ public class AuthentificationController implements Serializable {
     }
 
     public String logout() {
+        System.out.println("Déconnexion en cours");
+
         // Reset the personneLogin
         personneLogin = new Personne();
+
+        // Get the external context to manipulate response
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        jakarta.servlet.http.HttpServletResponse response =
+                (jakarta.servlet.http.HttpServletResponse) facesContext.getExternalContext().getResponse();
+
+        // Set cache control headers to prevent caching
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Expires", "0");
+
         // Invalidate the session
-        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-        // Redirect to login page
-        return "/index?faces-redirect=true";
+        facesContext.getExternalContext().invalidateSession();
+
+        // Add a random parameter to prevent browser caching
+        return "/authentification.html?faces-redirect=true&nocache=" + System.currentTimeMillis();
     }
 
     public boolean isUserAuthenticated() {
+        //System.out.println(personneLogin != null && personneLogin.getIdentifiant() != null &&
+          //      personneLogin.getIdentifiant() != null && !personneLogin.getIdentifiant().isEmpty() && personneLogin.getIdPersonne() !=0);
+  
         return personneLogin != null && personneLogin.getIdentifiant() != null &&
-                personneLogin.getIdentifiant() != null && !personneLogin.getIdentifiant().isEmpty();
+                personneLogin.getIdentifiant() != null && !personneLogin.getIdentifiant().isEmpty() && personneLogin.getIdPersonne() !=0;
     }
 
 

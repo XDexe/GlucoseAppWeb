@@ -72,7 +72,7 @@
                 }
             }
         }*/
-        ws = new WebSocket("ws://10.18.185.240:8080/GlucoseApplication-1.0-SNAPSHOT/websocketlocate");
+        ws = new WebSocket("ws://10.45.21.240:8080/GlucoseApplication-1.0-SNAPSHOT/websocketlocate");
 
         ws.onopen = event => {
             ws.send("geolocaliser#");
@@ -91,7 +91,7 @@
                     if(mapCapteurMarker.has(capteur.id)){
                         deplacerPoint(map,capteur.id,capteur.latitude,capteur.longitude);
                     }else{
-                        placerPoint(map,capteur.latitude,capteur.longitude,capteur.nom);
+                        placerPoint(map,capteur.latitude,capteur.longitude,capteur.nom,capteur.id);
                     }
 
                 }
@@ -101,7 +101,7 @@
                 if(mapCapteurMarker.has(capteur.id)){
                     deplacerPoint(map,capteur.id,capteur.latitude,capteur.longitude);
                 }else{
-                    placerPoint(map,capteur.latitude,capteur.longitude,capteur.nom);
+                    placerPoint(map,capteur.latitude,capteur.longitude,capteur.nom,capteur.id);
                 }
             }
             console.log(txtJson);
@@ -113,13 +113,12 @@
 
         ws.onclose = event => {
             console.log("WebSocket connection closed:", event);
-
         }
 
-        function placerPoint(mapCapteur,lat,long,nom){
+        function placerPoint(mapCapteur,lat,long,nom,idCapteur){
             console.log('Ajoute du point sur la carte ' + nom);
             var marker = L.marker([lat, long]).addTo(mapCapteur).bindPopup(nom);;
-            mapCapteurMarker.set(1,marker);
+            mapCapteurMarker.set(idCapteur,marker);
 
         }
 
@@ -131,7 +130,7 @@
         }
 
         function supprimerPoint(mapCapteur,idCapteur){
-            console.log('Suppression captuer sur la carte ' + idCapteur);
+            console.log('Suppression capteur sur la carte ' + idCapteur);
             var marker = mapCapteurMarker.get(idCapteur);
             mapCapteurMarker.delete(marker);
             mapCapteur.removeLayer(marker);
