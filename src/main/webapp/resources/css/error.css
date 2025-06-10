@@ -1,0 +1,67 @@
+/*
+ * Feuille de style pour la page d'erreur
+ */
+
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'LEMON MILK Pro FTR', sans-serif; /* Utilisation de la police du site */
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #F4F1DF; /* Fond de page clair du thème */
+}
+
+/* Le conteneur principal sous forme de carte */
+.error-container {
+    width: 100%;
+    max-width: 500px; /* Largeur de la carte d'erreur */
+    padding: 3rem;
+    background-color: #FBF9F3; /* Fond de la carte */
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    box-sizing: border-box;
+    margin: 1rem;
+}
+
+/* Style du titre "Accès refusé" */
+.error-title {
+    font-size: 2.2rem;
+    font-weight: 500;
+    color: #d9534f; /* On peut garder une couleur rouge pour signifier l'erreur */
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+
+/* Style du message d'explication */
+.error-message {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+}
+
+/* Style du bouton de retour */
+.error-button {
+    display: inline-block !important;
+    padding: 15px 35px !important;
+    border: none !important;
+    border-radius: 10px !important;
+    background-color: #23252E !important; /* Couleur sombre du site */
+    color: #ffffff !important;
+    font-family: 'LEMON MILK Pro FTR', sans-serif !important;
+    font-weight: 500 !important;
+    font-size: 1rem !important;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.error-button:hover {
+    background-color: #444654 !important; /* Couleur de survol */
+}

@@ -2,6 +2,7 @@ package fr.lamsoent.glucoseapplication.pojo;
 
 import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
+import org.eclipse.persistence.annotations.CascadeOnDelete;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,8 @@ public class Capteur {
     private String latitude;
 
     @JsonbTransient
-    @OneToMany(mappedBy = "capteur")
+    @OneToMany(mappedBy = "capteur", cascade = CascadeType.ALL)
+    @CascadeOnDelete
     private List<Activite> listActivites = new ArrayList<Activite>();
 
 

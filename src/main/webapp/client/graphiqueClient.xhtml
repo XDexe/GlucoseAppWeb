@@ -1,61 +1,78 @@
-<html
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:h="http://xmlns.jcp.org/jsf/html"
-        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-        xmlns:f="http://xmlns.jcp.org/jsf/core"
-        xmlns:p="http://primefaces.org/ui">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 <h:head>
-    <title>Test Line Chart</title>
-    <meta charset="UTF-8"/>
+    <title>Graphique d'Activité</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <h:outputStylesheet library="css" name="mainCss.css"/>
+    <h:outputStylesheet library="css" name="topbar.css"/>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
 
-
+    <h:outputStylesheet library="css" name="graph.css"/>
 </h:head>
-<h:body onload="seuilmax(); seuilmin();">
-    <p:remoteCommand name="seuilmax"
-                     action="#{activiteController.getSeuilMax()}"
-                     oncomplete="window.seuilMax = args.seuilMax; console.log('Seuil max:', args.seuilMax); "/>
 
-    <p:remoteCommand  name="seuilmin"
-                     action="#{activiteController.getSeuilMin()}"
-                     oncomplete="window.seuilMin = args.seuilMin; console.log('Seuil min:', args.seuilMin); "/>
+<h:body>
 
-    <p:link outcome="/client/listeActivites.html" styleClass="admin-gestion-card">
-        <span class="admin-card-title">Retour</span>
-    </p:link>
+    <ui:include src="/WEB-INF/template/topbarClient.xhtml"/>
 
+    <main>
+        <div class="graph-page-container">
+            <div class="graph-card">
+                <canvas id="line"></canvas>
+            </div>
 
-    <f:metadata>
-        <f:viewAction action="#{activiteController.loadActivite()}"/>
-    </f:metadata>
-    <f:metadata>
-        <f:viewAction action="seuilmin();"/>
-        <f:viewAction action="seuilmax();"/>
-    </f:metadata>
+            <div class="graph-actions">
+                <p:commandButton value="Réinitialiser le zoom" styleClass="graph-button" type="button" onclick="if(window.lineChart) window.lineChart.resetZoom();"/>
+                <p:link outcome="/client/listeActivites.html" value="Retour à la liste" styleClass="graph-button"/>
+            </div>
+        </div>
+    </main>
+
     <h:form id="formData">
         <h:inputHidden id="idActivite" value="#{activiteController.activite.id}"/>
         <h:inputHidden id="isAlive" value="#{activiteController.activite.alive}"/>
     </h:form>
-    <canvas id="line" width="1000" height="750"></canvas>
 
-    <script>
+    <p:remoteCommand name="seuilmax" action="#{activiteController.getSeuilMax()}" oncomplete="window.seuilMax = args.seuilMax;"/>
+    <p:remoteCommand name="seuilmin" action="#{activiteController.getSeuilMin()}" oncomplete="window.seuilMin = args.seuilMin;"/>
+
+    <f:metadata>
+        <f:viewAction action="#{activiteController.loadActivite()}"/>
+        <f:viewAction action="seuilmax()"/>
+        <f:viewAction action="seuilmin()"/>
+    </f:metadata>
+
+    <h:outputScript>
         let idActivite = document.getElementById('formData:idActivite').value;
         let isAlive = document.getElementById('formData:isAlive').value;
         let ws;
+        var lineChart; // Déclarer lineChart dans une portée globale
 
-        console.log(idActivite);
-        fetchData(idActivite);
+        const themeColors = {
+            background: '#FBF9F3',
+            text: '#333',
+            grid: '#E8E6D6',
+            glucoseLine: '#23252E',
+            maxLine: '#d9534f',
+            minLine: '#5cb85c'
+        };
+        Chart.defaults.font.family = "'LEMON MILK Pro FTR', sans-serif";
+        Chart.defaults.color = themeColors.text;
 
         if (isAlive === "true") {
-            ws = new WebSocket("ws://10.45.21.240:8080/GlucoseApplication-1.0-SNAPSHOT/websocketdata");
+            ws = new WebSocket("ws://10.117.2.240:8080/GlucoseApplication-1.0-SNAPSHOT/websocketdata");
 
             ws.onopen = event => {
                 ws.send("abonnement#" + idActivite);
-                console.log("WebSocket connection opened");
             };
 
             ws.onmessage = event => {
@@ -63,41 +80,31 @@
                 let txtJson = JSON.parse(txt);
                 let temps = new Date(txtJson.dateData);
                 let glucoseConverted = txtJson.glucose;
-                console.log("Message received");
-                lineChart.data.labels.push(temps);
-                lineChart.data.datasets[0].data.push(glucoseConverted);
 
-                lineChart.data.datasets[1].data.push(window.seuilMax);
-                lineChart.data.datasets[2].data.push(window.seuilMin);
-
-                lineChart.update();
-                console.log(txtJson);
+                if (lineChart) {
+                    lineChart.data.labels.push(temps);
+                    lineChart.data.datasets[0].data.push(glucoseConverted);
+                    lineChart.data.datasets[1].data.push(window.seuilMax);
+                    lineChart.data.datasets[2].data.push(window.seuilMin);
+                    lineChart.update();
+                }
             };
-
-            ws.onerror = error => {
-                console.error("WebSocket error:", error);
-            };
-
-            ws.onclose = event => {
-                console.log("WebSocket connection closed:", event);
-            };
-
         }
 
-        const labels = [];
         const data = {
-            labels: labels,
+            labels: [],
             datasets: [{
-                label: 'Taux de glucose dans le sang (mg/dL)',
+                label: 'Taux de glucose (mg/dL)',
                 data: [],
                 fill: false,
-                borderColor: 'rgb(240,34,255)',
-                tension: 0.1
+                borderColor: themeColors.glucoseLine,
+                backgroundColor: themeColors.glucoseLine,
+                tension: 0.2
             },
                 {
                     label: 'Taux Max',
                     data: [],
-                    borderColor: 'rgb(200,0,0)',
+                    borderColor: themeColors.maxLine,
                     borderDash: [5, 5],
                     pointRadius: 0,
                     fill: false
@@ -105,151 +112,79 @@
                 {
                     label: 'Taux Min',
                     data: [],
-                    borderColor: 'rgb(67,200,0)',
+                    borderColor: themeColors.minLine,
                     borderDash: [5, 5],
                     pointRadius: 0,
                     fill: false
-                }
-            ]
+                }]
         };
-
-        const zoomOptions = {
-            pan: {
-                enabled: true,
-                mode: 'xy',
-            },
-            zoom: {
-                wheel: {
-                    enabled: true,
-                },
-                pinch: {
-                    enabled: true
-                },
-                mode:"x"
-            },
-            limits: {
-                x: {
-                    minRange: 1000 * 60 * 5
-                },
-                y: {
-                    min: 0,   // Glucose minimum
-                    max: 400   // Glucose maximum
-                }
-            }
-        };
-
 
         const config = {
             type: 'line',
             data: data,
             options: {
-                responsive: false,
+                responsive: true,
+                maintainAspectRatio: true,
                 animation: false,
                 plugins: {
-                    zoom: zoomOptions,
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Taux de glucose'
+                    zoom: {
+                        pan: { enabled: true, mode: 'x' },
+                        zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: "xy" }
                     }
                 },
                 scales: {
                     x: {
                         type: 'time',
-                        time: {
-                            tooltipFormat: 'yyyy-MM-dd HH:mm:ss',
-                            unit: 'minute',
-                            displayFormats: {minute: 'yyyy-MM-dd HH:mm'}
-                        },
-                        title: {
-                            display: true,
-                            text: 'Date et heure'
-                        }
+                        time: { tooltipFormat: 'yyyy-MM-dd HH:mm:ss', unit: 'minute', displayFormats: {minute: 'HH:mm'} },
+                        grid: { color: themeColors.grid }
                     },
                     y: {
-                        title: {
-                            display: true,
-                            text: 'Taux de glucose (mg/dL)'
-                        },
                         beginAtZero: false,
-                        suggestedMin: 20,
-                        suggestedMax: 400
+                        grid: { color: themeColors.grid }
                     }
                 }
             }
         };
-        const actions = [
-            {
-                name: 'Add Dataset',
-                handler(chart) {
-                    const data = chart.data;
-                    const dsColor = Utils.namedColor(chart.data.datasets.length);
-                    const newDataset = {
-                        label: 'Dataset ' + (data.datasets.length + 1),
-                        backgroundColor: Utils.transparentize(dsColor, 0.5),
-                        borderColor: dsColor,
-                        data: Utils.numbers({count: data.labels.length, min: -100, max: 100}),
-                    };
-                    chart.data.datasets.push(newDataset);
-                    chart.update();
-                }
-            }];
 
-        // Initialize the chart
-        const lineChart = new Chart(
-            document.getElementById('line'),
-            config
-        );
-
-
-
-        function pointExists(time, dataset) {
-            return dataset.labels.some(label => new Date(label).getTime() === new Date(time).getTime());
-        }
-
+        lineChart = new Chart(document.getElementById('line'), config);
 
         function updateChart(newData, seuilMax, seuilMin) {
             const datas = newData;
             datas.forEach((data) => {
-                let date = data.dateData;
-                let glucose = data.glucose;
-                let seuilmax = window.seuilMax;
-                let seuilmin = window.seuilMin;
-                let id = data.id;
-                let temps = new Date(date);
-                let glucoseConverted = parseFloat(glucose);
+                let temps = new Date(data.dateData);
+                let glucoseConverted = parseFloat(data.glucose);
                 lineChart.data.labels.push(temps);
-
                 lineChart.data.datasets[0].data.push(glucoseConverted);
                 lineChart.data.datasets[1].data.push(seuilMax);
                 lineChart.data.datasets[2].data.push(seuilMin);
-
-                console.log(seuilmax + "seuilmax");
-                console.log(seuilmin + "seuilmin")
-                lineChart.update();
             });
             lineChart.update();
         }
 
         function fetchData(idActivite) {
-            fetch('http://10.45.21.240:8080/GlucoseApplication-1.0-SNAPSHOT/api/activite/read?idActivite=' + idActivite, {})
-                .then(response => response.json())
-                .then(dataJsonActivite => {
-                    console.log(dataJsonActivite);
+            fetch('http://10.117.2.240:8080/GlucoseApplication-1.0-SNAPSHOT/api/activite/read?idActivite=' + idActivite, {})
+                    .then(response => response.json())
+                    .then(dataJsonActivite => {
+                        if (dataJsonActivite &amp;&amp; dataJsonActivite.utilisateur) {
+                            var data = dataJsonActivite.listDonnees;
 
-                    var data = dataJsonActivite.listDonnees;
-                    var seuilMax = dataJsonActivite.utilisateur.seuilMax;
-                    var seuilMin = dataJsonActivite.utilisateur.seuilMin;
-                    if (data &amp;&amp; Array.isArray(data)) {
-                        // Add data to the chart
-                        updateChart(data, seuilMax, seuilMin);
-                    }
-                })
-                .catch(error => console.error('Error fetching chart data:', error));
+                            var seuilMax = parseFloat(dataJsonActivite.utilisateur.seuilMax);
+                            var seuilMin = parseFloat(dataJsonActivite.utilisateur.seuilMin);
+
+                            window.seuilMax = seuilMax;
+                            window.seuilMin = seuilMin;
+
+                            if (data &amp;&amp; Array.isArray(data)) {
+                                updateChart(data, seuilMax, seuilMin);
+                            }
+                        }
+                    })
+                    .catch(error => console.error('Error fetching chart data:', error));
         }
-    </script>
-    <button onClick="lineChart.resetZoom()">Réinitialiser le zoom</button>
+
+        fetchData(idActivite);
+
+    </h:outputScript>
+
 </h:body>
 </html>

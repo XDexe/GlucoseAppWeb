@@ -5,10 +5,12 @@ import fr.lamsoent.glucoseapplication.model.UtilisateurModel;
 import fr.lamsoent.glucoseapplication.pojo.*;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Named
@@ -23,6 +25,9 @@ public class UtilisateurController implements Serializable {
 
     @EJB
     private UtilisateurModel utilisateurModel;
+
+    @Inject
+    EmailController emailController;
 
     @Inject
     private PersonneController personneController;
@@ -45,62 +50,56 @@ public class UtilisateurController implements Serializable {
     @Inject
     private CategorieController categorieController;
 
+    public void sendMail(String to, String subject, String body) {;
+        if (to == null || to.isEmpty()) {
+            System.out.println("L'adresse e-mail est vide.");
+            return;
+        }
+        emailController.sendEmail(to, subject, body);
+    }
+
     public void editUtilisateur() {
-        Role roleUtilisateur = roleModel.getRoleByName("DEFAUT");
-        if (roleUtilisateur == null) {
-            roleUtilisateur = new Role();
-            roleUtilisateur.setNomRole("DEFAUT");
-        }
+        Role roleUtilisateur = roleModel.getOrCreateRoleByName("DEFAUT");
         utilisateur.setRole(roleUtilisateur);
-        utilisateur = utilisateurModel.update(utilisateur);
-        imageController.saveImage(utilisateur);
 
-        if(medecinSelectionne.getIdPersonne() == 0){
-            System.out.println(medecinSelectionne.getIdPersonne());
-            utilisateur.setMedecin(null);
-        }
-        else {
-            System.out.println(medecinSelectionne.getIdPersonne());
-            utilisateur.setMedecin(medecinSelectionne);
+        if (utilisateur.getPlainTextPassword() != null && !utilisateur.getPlainTextPassword().isEmpty()) {
+            utilisateur.setMotDePasse(utilisateur.getPlainTextPassword());
         }
 
-        if(entraineurSelectionne.getIdPersonne() == 0){
-            System.out.println(entraineurSelectionne.getIdPersonne());
-            utilisateur.setEntraineur(null);
-        }
-        else{
-            System.out.println(entraineurSelectionne.getIdPersonne());
-            utilisateur.setEntraineur(entraineurSelectionne);
-        }
-
-        if(dieteticienSelectionne.getIdPersonne() == 0){
-            System.out.println(dieteticienSelectionne.getIdPersonne());
-            utilisateur.setDieteticien(null);
-        }
-        else{
-            System.out.println(dieteticienSelectionne.getIdPersonne());
-            utilisateur.setDieteticien(dieteticienSelectionne);
-        }
-
-        if(categorieSelectionnee.getId() == 0){
-            utilisateur.setCategorie(null);
-        }
-        else{
-            utilisateur.setCategorie(categorieSelectionnee);
-        }
+        utilisateur.setMedecin(medecinSelectionne != null && medecinSelectionne.getIdPersonne() != 0 ? medecinSelectionne : null);
+        utilisateur.setEntraineur(entraineurSelectionne != null && entraineurSelectionne.getIdPersonne() != 0 ? entraineurSelectionne : null);
+        utilisateur.setDieteticien(dieteticienSelectionne != null && dieteticienSelectionne.getIdPersonne() != 0 ? dieteticienSelectionne : null);
+        utilisateur.setCategorie(categorieSelectionnee != null && categorieSelectionnee.getId() != 0 ? categorieSelectionnee : null);
 
         utilisateurModel.update(utilisateur);
+        imageController.saveImage(utilisateur);
 
         resetForm();
     }
 
     public void deleteUtilisateur(Utilisateur utilisateur) {
-        imageController.deleteImage(utilisateur);
+        if (utilisateur != null) {
+            imageController.deleteImage(utilisateur);
+        }
         utilisateurModel.delete(utilisateur);
     }
 
     public void loadUtilisateur(Utilisateur utilisateur) {
-        this.utilisateur=utilisateur;
+        if (utilisateur == null) {
+            resetForm();
+            return;
+        }
+
+        if (utilisateur.getIdPersonne() > 0) {
+            this.utilisateur = utilisateurModel.read(utilisateur.getIdPersonne());
+        } else {
+            this.utilisateur = utilisateur;
+        }
+
+        this.medecinSelectionne = this.utilisateur.getMedecin() != null ? this.utilisateur.getMedecin() : new Medecin();
+        this.dieteticienSelectionne = this.utilisateur.getDieteticien() != null ? this.utilisateur.getDieteticien() : new Dieteticien();
+        this.entraineurSelectionne = this.utilisateur.getEntraineur() != null ? this.utilisateur.getEntraineur() : new Entraineur();
+        this.categorieSelectionnee = this.utilisateur.getCategorie() != null ? this.utilisateur.getCategorie() : new Categorie();
     }
 
     public List<Utilisateur> readByMedecin(int medecinId) {
@@ -133,9 +132,13 @@ public class UtilisateurController implements Serializable {
     public void resetForm() {
         this.utilisateur = new Utilisateur();
         this.medecinSelectionne = new Medecin();
-        this.entraineurSelectionne = new Entraineur();
         this.dieteticienSelectionne = new Dieteticien();
+        this.entraineurSelectionne = new Entraineur();
         this.categorieSelectionnee = new Categorie();
+
+        if (imageController != null) {
+            imageController.resetUploadedFile();
+        }
     }
 
     public Utilisateur update(Utilisateur utilisateur) {
@@ -173,6 +176,10 @@ public class UtilisateurController implements Serializable {
         this.categorieController = categorieController;
     }
 
+    public List<Utilisateur> getUtilisateursByRole() {
+        return utilisateurModel.readByRole("DEFAUT");
+    }
+
     public List<Entraineur> getEntraineurs() {
         return entraineurController.getEntraineurs();
     }
@@ -201,6 +208,15 @@ public class UtilisateurController implements Serializable {
         this.dieteticienSelectionne = dieteticienSelectionne;
     }
 
+    public void accesActivitesPatient(Utilisateur utilisateur) {
+        setUtilisateur(utilisateur);
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("./../client/listeActivites.html?faces-redirect=true");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public ImageController getImageController() {
         return imageController;
     }
@@ -249,6 +265,20 @@ public class UtilisateurController implements Serializable {
         this.entraineurController = entraineurController;
     }
 
+    public EmailController getEmailController() {
+        return emailController;
+    }
 
+    public void setEmailController(EmailController emailController) {
+        this.emailController = emailController;
+    }
+
+    public RoleModel getRoleModel() {
+        return roleModel;
+    }
+
+    public void setRoleModel(RoleModel roleModel) {
+        this.roleModel = roleModel;
+    }
 }
 

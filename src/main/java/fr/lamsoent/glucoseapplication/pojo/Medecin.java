@@ -13,7 +13,7 @@ import java.util.List;
 public class Medecin extends Personne{
 
     @JsonbTransient
-    @OneToMany(mappedBy = "medecin")
+    @OneToMany(mappedBy = "medecin", cascade = CascadeType.ALL)
     private List<Utilisateur> listUtilisateurs = new ArrayList<>();
 
     public Medecin(){

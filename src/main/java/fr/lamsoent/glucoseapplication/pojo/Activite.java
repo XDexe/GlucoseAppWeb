@@ -2,6 +2,8 @@ package fr.lamsoent.glucoseapplication.pojo;
 
 import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.*;
+import org.eclipse.persistence.annotations.CascadeOnDelete;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,14 +20,14 @@ public class Activite {
     private Date dateFin;
     private boolean isAlive;
 
-    @OneToMany(mappedBy = "activite", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "activite", cascade = CascadeType.REMOVE,orphanRemoval = true)
     private List<Donnee> listDonnees = new ArrayList<>();
 
     @ManyToOne
-    private Utilisateur utilisateur ;
+    private Utilisateur utilisateur;
 
     @ManyToOne
-    private Capteur capteur ;
+    private Capteur capteur;
 
     public int getId() {
         return id;

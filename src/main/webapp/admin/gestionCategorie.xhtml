@@ -1,105 +1,171 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
+
 <h:head>
-    <title>Gestion categorie</title>
-    <h:outputStylesheet library="css" name="cssTemp.css"/>
+    <title>Gestion des Catégories</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <h:outputStylesheet library="css" name="mainCss.css"/>
+    <h:outputStylesheet library="css" name="topbar.css"/>
+    <h:outputScript library="javascript" name="themeManager.js" target="body"/>
 </h:head>
 
-<h:body id="bodyElement">
-    <div class="header">
-        <div class="drop">
-            <input class="dropdown" type="checkbox" id="dropdown2" name="dropdown"/>
-            <label class="profile-image" for="dropdown2">
-                <h:graphicImage library="images" name="Screenshot 2023-11-29 160453.png" alt="Profile"/>
-            </label>
-            <div class="section-dropdown">
-                <div class="toggle-switch">
-                    <input type="checkbox" id="themeToggle" onchange="toggleTheme()"/>
-                    <label class="slider" for="themeToggle"></label>
+<h:body style="background-color: #F4F1DF;">
+    <div class="admin-page-wrapper">
+        <ui:include src="/WEB-INF/template/topbarAdmin.xhtml"/>
+        <main class="admin-page-main-content">
+            <div class="gestion-entity-page">
+                <div class="table-with-button-wrapper">
+                    <div class="data-table-wrapper">
+                        <h:form id="formTableCategories" styleClass="form-table-container">
+
+                            <p:messages id="tableMessages"
+                                        globalOnly="false"
+                                        closable="true"
+                                        showDetail="false"/>
+
+                            <p:dataTable id="listCategorie"
+                                         value="#{categorieController.categories}"
+                                         var="categorie"
+                                         styleClass="gestion-data-table"
+                                         widgetVar="categoriesTableWV"
+                                         emptyMessage="Aucun catégorie trouvée.">
+
+
+
+                                <p:column headerText="Nom"
+                                          sortBy="#{categorie.nom}"
+                                          styleClass="col-nom">
+                                    <h:outputText value="#{categorie.nom}"/>
+                                </p:column>
+
+
+
+
+                                <p:column headerText="Actions"
+                                          styleClass="col-actions text-center"
+                                          exportable="false">
+
+                                    <p:commandButton id="btnModifier"
+                                                     icon="btnEdit"
+                                                     iconOnly="true"
+                                                     actionListener="#{categorieController.loadCategorie(categorie)}"
+                                                     update=":dialogForm"
+                                                     oncomplete="PF('entityDialogWidget').show(); PrimeFaces.focus('dialogForm:categorieNomDlg');"
+                                                     title="Modifier le catégorie"
+                                                     styleClass="btn-icon-only"/>
+
+                                    <p:commandButton id="btnSupprimer"
+                                                     icon="btnDelete"
+                                                     iconOnly="true"
+                                                     actionListener="#{categorieController.deleteCategorie(categorie)}"
+                                                     update="listCategorie tableMessages"
+                                                     styleClass="btn-icon-only"
+                                                     title="Supprimer le catégorie">
+                                        <p:confirm header="Confirmation"
+                                                   message="Supprimer le catégorie #{categorie.nom} ?"
+                                                   icon="pi pi-exclamation-triangle"/>
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+                        </h:form>
+                    </div>
+
+                    <h:form id="formAddButton" styleClass="form-footer-container">
+                        <p:commandButton value="Ajouter un Catégorie"
+                                         id="addCategorieBtnPage"
+                                         actionListener="#{categorieController.resetForm()}"
+                                         update=":dialogForm:dialogContentPanel"
+                                         oncomplete="PF('entityDialogWidget').show(); PrimeFaces.focus('dialogForm:categorieNom');"
+                                         styleClass="add-entity-button"
+                                         iconPos="left">
+
+                        </p:commandButton>
+                    </h:form>
+
                 </div>
-                <p:commandButton id="modifProfileButton" styleClass="custom-btn" value="Modifier votre profil"
-                                 actionListener="#{categorieController.resetForm()}"
-                                 update=""
-                                 oncomplete="PF('').show()"/>
-                <p:commandButton id="contacterVotreCategorie" value="Contacter votre categorie"
-                                 actionListener="#{categorieController.resetForm()}"
-                                 update=""
-                                 styleClass="custom-btn"
-                                 oncomplete="PF('').show()"/>
+
             </div>
-        </div>
-    </div>
-    <script type="text/javascript">
-        function toggleTheme() {
-            var body = document.getElementById('bodyElement');
-            body.classList.toggle('light-theme');
-        }
-    </script>
-
-    <div id="appContainer">
-        <div class="locked-table">
-            <h:form id="formCategories">
-
-                <p:dataTable value="#{categorieController.categories}" var="categorie">
-
-                    <p:column headerText="Nom">
-                        <h:outputText value="#{categorie.nom}"/>
-                    </p:column>
-                    <p:column id="actionColum" headerText="Actions">
-                        <p:commandButton id="chargerCategorieButton" icon="pi pi-pencil"
-                                         action="#{categorieController.loadCategorie(categorie)}"
-                                         update=":formAddCategorie" oncomplete="PF('dlgAddCategorie').show()"
-                                         title="Modifier"/>
-                        <p:commandButton id="supprimerCategorieButton" icon="pi pi-trash"
-                                         action="#{categorieController.deleteCategorie(categorie)}"
-                                         update="formCategories" title="Supprimer"/>
-                    </p:column>
-                </p:dataTable>
-            </h:form>
-        </div>
-    </div>
-    <div class="bottom">
-        <p:commandButton value="Ajouter un categorie"
-                         id="addCategorieButton"
-                         actionListener="#{categorieController.resetForm()}"
-                         update="formAddCategorie"
-                         oncomplete="PF('dlgAddCategorie').show()"
-                         styleClass="button-bottom"/>
+        </main>
     </div>
 
-    <p:dialog styleClass="dialog" widgetVar="dlgAddCategorie" modal="true" resizable="false" draggable="false"
-              closeOnEscape="true" showEffect="fade" hideEffect="fade" width="50%" bottom="0" left="50%">
 
-        <h:form id="formAddCategorie" enctype="multipart/form-data">
-            <h:inputHidden value="#{categorieController.categorie.id}"/>
+    <h:form id="dialogForm" enctype="multipart/form-data">
+        <p:dialog id="entityDialog"
+                  styleClass="entity-dialog"
+                  widgetVar="entityDialogWidget"
+                  modal="true"
+                  resizable="false"
+                  draggable="false"
+                  closeOnEscape="true"
+                  showEffect="fade"
+                  hideEffect="fade"
+                  fitViewport="true"
+                  responsive="true"
+                  width="700px"
+                  position="center center">
 
-            <p:panelGrid columns="2" styleClass="grid">
+            <h:panelGroup id="dialogContentPanel" layout="block">
+                <p:messages id="dialogMessages"
+                            globalOnly="false"
+                            closable="true"
+                            showDetail="false"/>
+                <p:focus context="dialogContentPanel"/>
+                <h:inputHidden id="categorieIdDlg" value="#{categorieController.categorie.id}"/>
 
-                <h:outputLabel value="Nom :"/>
-                <p:inputText id="nomCategorie" value="#{categorieController.categorie.nom}"/>
+                <div class="dialog-grid">
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="categorieNomDlg" value="Nom : *" />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:inputText id="categorieNomDlg"
+                                     value="#{categorieController.categorie.nom}"
+                                     required="true"
+                                     requiredMessage="Le nom est obligatoire."
+                                     styleClass="dialog-inputfield"/>
+                    </div>
+                    <div class="dialog-label-col">
+                    </div>
+                </div>
 
-            </p:panelGrid>
+                <div class="dialog-buttons-bar">
 
-            <p:separator/>
+                    <p:commandButton value="Enregistrer"
+                                     action="#{categorieController.editCategorie}"
+                                     update=":formTableCategories:listCategorie :formTableCategories:tableMessages @form"
+                                     oncomplete="if (!args.validationFailed) {PF('entityDialogWidget').hide();}"
+                                     styleClass="ui-button-success"
+                                     icon="pi pi-check"/>
+                    <p:commandButton value="Annuler"
+                                     type="button"
+                                     onclick="PF('entityDialogWidget').hide()"
+                                     styleClass="ui-button-secondary ui-button-outlined"
+                                     icon="pi pi-times"/>
+                </div>
 
-            <p:commandButton value="Enregistrer"
-                             id="saveCategorie"
-                             actionListener="#{categorieController.editCategorie()}"
-                             oncomplete="PF('dlgAddCategorie').hide()"
-                             update="formCategories"
-                             icon="pi pi-check"/>
+            </h:panelGroup>
+        </p:dialog>
+    </h:form>
 
-            <p:commandButton value="Annuler"
-                             id="cancelCreateOrUpdateCategorie"
-                             type="button"
-                             onclick="PF('dlgAddCategorie').hide()"
-                             icon="pi pi-times"/>
-        </h:form>
-    </p:dialog>
+    <p:confirmDialog global="true"
+                     styleClass="custom-confirm-dialog"
+                     showEffect="fade"
+                     hideEffect="fade"
+                     width="380">
+        <p:commandButton value="Oui"
+                         type="button"
+                         styleClass="ui-confirmdialog-yes ui-button-success"
+                         icon="pi pi-check"/>
+        <p:commandButton value="Non"
+                         type="button"
+                         styleClass="ui-confirmdialog-no ui-button-outlined ui-button-secondary"
+                         icon="pi pi-times"/>
+    </p:confirmDialog>
+
 </h:body>
 </html>

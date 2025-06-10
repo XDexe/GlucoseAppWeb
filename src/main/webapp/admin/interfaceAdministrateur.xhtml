@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+   <title>Interface Administrateur</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+   <h:outputStylesheet library="css" name="mainCss.css"/>
+   <h:outputStylesheet library="css" name="topbar.css"/>
+    <h:outputStylesheet library="css" name="admin-interface.css"/>
+</h:head>
+
+<h:body styleClass="admin-page-background">
+   <ui:include src="/WEB-INF/template/topbarAdmin.xhtml"/>
+
+      <h:form class="admin-grid-container">
+
+      <p:link outcome="gestionMedecin.html" styleClass="admin-card">
+         <h:outputText value="Gestion des médecins" styleClass="card-title" />
+         <h:outputText value="Ajouter, modifier ou supprimer." styleClass="card-subtitle" />
+      </p:link>
+
+      <p:link outcome="gestionDieteticien.html" styleClass="admin-card">
+         <h:outputText value="Gestion des diététiciens" styleClass="card-title" />
+         <h:outputText value="Ajouter, modifier ou supprimer." styleClass="card-subtitle" />
+      </p:link>
+
+      <p:link outcome="gestionEntraineur.html" styleClass="admin-card">
+         <h:outputText value="Gestion des entraineurs" styleClass="card-title" />
+         <h:outputText value="Ajouter, modifier ou supprimer." styleClass="card-subtitle" />
+      </p:link>
+
+      <p:link outcome="gestionUtilisateur.html" styleClass="admin-card">
+         <h:outputText value="Gestion des utilisateurs" styleClass="card-title" />
+         <h:outputText value="Ajouter, modifier ou supprimer." styleClass="card-subtitle" />
+      </p:link>
+
+      <p:link outcome="gestionCategorie.html" styleClass="admin-card">
+         <h:outputText value="Gestion des catégories" styleClass="card-title" />
+         <h:outputText value="Ajouter, modifier ou supprimer." styleClass="card-subtitle" />
+      </p:link>
+
+      <p:link outcome="gestionAdministrateur.html" styleClass="admin-card">
+         <h:outputText value="Gestion des administrateurs" styleClass="card-title" />
+         <h:outputText value="Ajouter, modifier ou supprimer." styleClass="card-subtitle" />
+      </p:link>
+
+      <p:link outcome="gestionCapteur.html" styleClass="admin-card">
+         <h:outputText value="Gestion des capteurs" styleClass="card-title" />
+         <h:outputText value="Ajouter, modifier ou supprimer." styleClass="card-subtitle" />
+      </p:link>
+
+      </h:form>
+
+
+</h:body>
+</html>

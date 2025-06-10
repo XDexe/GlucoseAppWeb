@@ -7,12 +7,14 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
 
 import java.io.File;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Base64;
 import java.util.UUID;
 
 @Named
@@ -20,6 +22,7 @@ import java.util.UUID;
 public class ImageController implements Serializable {
 
     private UploadedFile uploadedFile;
+    private String tempImagePath;
 
     @EJB
     private PersonneModel personneModel;
@@ -97,6 +100,36 @@ public class ImageController implements Serializable {
 
     public void resetUploadedFile() {
         this.uploadedFile = null;
+    }
+
+    public String getTempImagePath() {
+        return tempImagePath;
+    }
+
+    public void setTempImagePath(String tempImagePath) {
+        this.tempImagePath = tempImagePath;
+    }
+
+    public void handleFileUpload(FileUploadEvent event) {
+        System.out.println("Method called - handleFileUpload");
+        if (event == null) {
+            System.out.println("Event is null");
+            return;
+        }
+        if (event.getFile() == null) {
+            System.out.println("File is null");
+            return;
+        }
+
+        this.uploadedFile = event.getFile();
+        try {
+            // Rest of your code...
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage("Success", "Image téléchargée: " + uploadedFile.getFileName()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Exception: " + e.getMessage());
+        }
     }
 
     public boolean hasUploadedFile() {

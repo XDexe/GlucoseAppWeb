@@ -7,7 +7,7 @@
       xmlns:p="http://primefaces.org/ui">
 
 <h:head>
-    <title>Gestion des Utilisateurs</title>
+    <title>Gestion des Administrateurs</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <h:outputStylesheet library="css" name="mainCss.css"/>
     <h:outputStylesheet library="css" name="topbar.css"/>
@@ -21,50 +21,50 @@
             <div class="gestion-entity-page">
                 <div class="table-with-button-wrapper">
                     <div class="data-table-wrapper">
-                        <h:form id="formTableUtilisateurs" styleClass="form-table-container">
+                        <h:form id="formTableAdministrateurs" styleClass="form-table-container">
 
                             <p:messages id="tableMessages"
                                         globalOnly="false"
                                         closable="true"
                                         showDetail="false"/>
 
-                            <p:dataTable id="listUtilisateur"
-                                         value="#{utilisateurController.utilisateurs}"
-                                         var="utilisateur"
+                            <p:dataTable id="listAdministrateur"
+                                         value="#{administrateurController.administrateurs}"
+                                         var="administrateur"
                                          styleClass="gestion-data-table"
-                                         widgetVar="utilisateursTableWV"
-                                         emptyMessage="Aucun utilisateur trouvé.">
+                                         widgetVar="administrateursTableWV"
+                                         emptyMessage="Aucun administrateur trouvé.">
 
                                 <p:column headerText="Photo"
                                           styleClass="col-photo text-center"
                                           exportable="false">
                                     <p:graphicImage library="photo-profil"
-                                                    name="#{utilisateur.photoDeProfilUrl}"
+                                                    name="#{administrateur.photoDeProfilUrl}"
                                                     styleClass="table-profile-pic"
-                                                    rendered="#{not empty utilisateur.photoDeProfilUrl}"
+                                                    rendered="#{not empty administrateur.photoDeProfilUrl}"
                                                     alt="Photo"/>
                                     <p:avatar icon="fas fa-user-md"
                                               styleClass="table-profile-pic default-avatar"
-                                              rendered="#{empty utilisateur.photoDeProfilUrl}"
+                                              rendered="#{empty administrateur.photoDeProfilUrl}"
                                               shape="circle"/>
                                 </p:column>
 
                                 <p:column headerText="Nom"
-                                          sortBy="#{utilisateur.nom}"
+                                          sortBy="#{administrateur.nom}"
                                           styleClass="col-nom">
-                                    <h:outputText value="#{utilisateur.nom}"/>
+                                    <h:outputText value="#{administrateur.nom}"/>
                                 </p:column>
 
                                 <p:column headerText="Prénom"
-                                          sortBy="#{utilisateur.prenom}"
+                                          sortBy="#{administrateur.prenom}"
                                           styleClass="col-prenom">
-                                    <h:outputText value="#{utilisateur.prenom}"/>
+                                    <h:outputText value="#{administrateur.prenom}"/>
                                 </p:column>
 
                                 <p:column headerText="Identifiant"
-                                          sortBy="#{utilisateur.identifiant}"
+                                          sortBy="#{administrateur.identifiant}"
                                           styleClass="col-identifiant">
-                                    <h:outputText value="#{utilisateur.identifiant}"/>
+                                    <h:outputText value="#{administrateur.identifiant}"/>
                                 </p:column>
 
                                 <p:column headerText="Actions"
@@ -74,21 +74,21 @@
                                     <p:commandButton id="btnModifier"
                                                      icon="btnEdit"
                                                      iconOnly="true"
-                                                     actionListener="#{utilisateurController.loadUtilisateur(utilisateur)}"
+                                                     actionListener="#{administrateurController.loadAdministrateur(administrateur)}"
                                                      update=":dialogForm"
-                                                     oncomplete="PF('entityDialogWidget').show(); PrimeFaces.focus('dialogForm:utilisateurNomDlg');"
-                                                     title="Modifier le utilisateur"
+                                                     oncomplete="PF('entityDialogWidget').show(); PrimeFaces.focus('dialogForm:administrateurNomDlg');"
+                                                     title="Modifier le administrateur"
                                                      styleClass="btn-icon-only"/>
 
                                     <p:commandButton id="btnSupprimer"
                                                      icon="btnDelete"
                                                      iconOnly="true"
-                                                     actionListener="#{utilisateurController.deleteUtilisateur(utilisateur)}"
-                                                     update="listUtilisateur tableMessages"
+                                                     actionListener="#{administrateurController.deleteAdministrateur(administrateur)}"
+                                                     update="listAdministrateur tableMessages"
                                                      styleClass="btn-icon-only"
-                                                     title="Supprimer le utilisateur">
+                                                     title="Supprimer le administrateur">
                                         <p:confirm header="Confirmation"
-                                                   message="Supprimer le utilisateur #{utilisateur.prenom} #{utilisateur.nom} ?"
+                                                   message="Supprimer le administrateur #{administrateur.prenom} #{administrateur.nom} ?"
                                                    icon="pi pi-exclamation-triangle"/>
                                     </p:commandButton>
                                 </p:column>
@@ -98,12 +98,15 @@
                     </div>
 
                     <h:form id="formAddButton" styleClass="form-footer-container">
-                        <p:commandButton value="Ajouter un Utilisateur"
-                                         id="addUtilisateurBtnPage"
-                                         actionListener="#{utilisateurController.resetForm()}"
-                                         update=":dialogForm" oncomplete="PF('entityDialogWidget').show(); PrimeFaces.focus('dialogForm:utilisateurNomDlg');"
+                        <p:commandButton value="Ajouter un Administrateur"
+                                         id="addAdministrateurBtnPage"
+                                         actionListener="#{administrateurController.resetForm()}"
+                                         update=":dialogForm:dialogContentPanel"
+                                         oncomplete="PF('entityDialogWidget').show(); PrimeFaces.focus('dialogForm:administrateurNom');"
                                          styleClass="add-entity-button"
-                                         iconPos="left"/>
+                                         iconPos="left">
+
+                        </p:commandButton>
                     </h:form>
 
                 </div>
@@ -134,107 +137,62 @@
                             closable="true"
                             showDetail="false"/>
                 <p:focus context="dialogContentPanel"/>
-                <h:inputHidden id="utilisateurIdDlg" value="#{utilisateurController.utilisateur.idPersonne}"/>
+                <h:inputHidden id="administrateurIdDlg" value="#{administrateurController.administrateur.idPersonne}"/>
 
                 <div class="dialog-grid">
                     <div class="dialog-label-col">
-                        <h:outputLabel for="utilisateurNomDlg" value="Nom : *" />
+                        <h:outputLabel for="administrateurNomDlg" value="Nom : *" />
                     </div>
                     <div class="dialog-input-col">
-                        <p:inputText id="utilisateurNomDlg"
-                                     value="#{utilisateurController.utilisateur.nom}"
+                        <p:inputText id="administrateurNomDlg"
+                                     value="#{administrateurController.administrateur.nom}"
                                      required="true"
                                      requiredMessage="Le nom est obligatoire."
                                      styleClass="dialog-inputfield"/>
                     </div>
 
                     <div class="dialog-label-col">
-                        <h:outputLabel for="utilisateurPrenomDlg" value="Prénom : *" />
+                        <h:outputLabel for="administrateurPrenomDlg" value="Prénom : *" />
                     </div>
                     <div class="dialog-input-col">
-                        <p:inputText id="utilisateurPrenomDlg"
-                                     value="#{utilisateurController.utilisateur.prenom}"
+                        <p:inputText id="administrateurPrenomDlg"
+                                     value="#{administrateurController.administrateur.prenom}"
                                      required="true"
                                      requiredMessage="Le prénom est obligatoire."
                                      styleClass="dialog-inputfield"/>
                     </div>
 
                     <div class="dialog-label-col">
-                        <h:outputLabel for="utilisateurIdentifiantDlg" value="Identifiant : *" />
+                        <h:outputLabel for="administrateurIdentifiantDlg" value="Identifiant : *" />
                     </div>
                     <div class="dialog-input-col">
-                        <p:inputText id="utilisateurIdentifiantDlg"
-                                     value="#{utilisateurController.utilisateur.identifiant}"
+                        <p:inputText id="administrateurIdentifiantDlg"
+                                     value="#{administrateurController.administrateur.identifiant}"
                                      required="true"
                                      requiredMessage="L’identifiant est obligatoire."
                                      styleClass="dialog-inputfield"/>
                     </div>
 
                     <div class="dialog-label-col">
-                        <h:outputLabel for="utilisateurMedecinsDlg" value="Sélectionner les médecins :" />
+                        <h:outputLabel for="administrateurMdpDlg" value="Mot de passe : *" />
                     </div>
                     <div class="dialog-input-col">
-                        <p:selectOneMenu id="utilisateurMedecinsDlg" value="#{utilisateurController.medecinSelectionne.idPersonne}">
-                            <f:selectItem itemLabel="-- Aucun --" itemValue="0" noSelectionOption="true"/>
-                            <f:selectItems
-                                    value="#{utilisateurController.medecins}"
-                                    var="medecin"
-                                    itemLabel="#{medecin.nom} #{medecin.prenom}"
-                                    itemValue="#{medecin.idPersonne}"
-                                    styleClass="dialog-selectmenu"/>
-                        </p:selectOneMenu>
-                    </div>
-
-                    <div class="dialog-label-col">
-                        <h:outputLabel for="utilisateurDieteticiensDlg" value="Sélectionner les diététiciens :" />
-                    </div>
-                    <div class="dialog-input-col">
-                        <p:selectOneMenu id="utilisateurDieteticiensDlg" value="#{utilisateurController.dieteticienSelectionne.idPersonne}">
-                            <f:selectItem itemLabel="-- Aucun --" itemValue="0" noSelectionOption="true"/>
-                            <f:selectItems
-                                    value="#{utilisateurController.dieteticiens}"
-                                    var="dieteticien"
-                                    itemLabel="#{dieteticien.nom} #{dieteticien.prenom}"
-                                    itemValue="#{dieteticien.idPersonne}"
-                                    styleClass="dialog-selectmenu"/>
-                        </p:selectOneMenu>
-                    </div>
-
-                    <div class="dialog-label-col">
-                        <h:outputLabel for="utilisateurEntraineursDlg" value="Sélectionner les entraineurs :" />
-                    </div>
-                    <div class="dialog-input-col">
-                        <p:selectOneMenu id="utilisateurEntraineursDlg" value="#{utilisateurController.entraineurSelectionne.idPersonne}">
-                            <f:selectItem itemLabel="-- Aucun --" itemValue="0" noSelectionOption="true"/>
-                            <f:selectItems
-                                    value="#{utilisateurController.entraineurs}"
-                                    var="entraineur"
-                                    itemLabel="#{entraineur.nom} #{entraineur.prenom}"
-                                    itemValue="#{entraineur.idPersonne}"
-                                    styleClass="dialog-selectmenu"/>
-                        </p:selectOneMenu>
-                    </div>
-
-                    <div class="dialog-label-col">
-                        <h:outputLabel for="utilisateurMdpDlg" value="Mot de passe : *" />
-                    </div>
-                    <div class="dialog-input-col">
-                        <p:password id="utilisateurMdpDlg"
-                                    value="#{utilisateurController.utilisateur.plainTextPassword}"
+                        <p:password id="administrateurMdpDlg"
+                                    value="#{administrateurController.administrateur.plainTextPassword}"
                                     feedback="false"
                                     weakLabel="Faible"
                                     goodLabel="Moyen"
                                     strongLabel="Fort"
-                                    requiredMessage="Mot de passe requis pour un nouveau utilisateur."
+                                    requiredMessage="Mot de passe requis pour un nouveau administrateur."
                                     styleClass="dialog-password"/>
                     </div>
 
                     <div class="dialog-label-col">
-                        <h:outputLabel for="utilisateurPhotoUploadDlg" value="Photo de profil :" />
+                        <h:outputLabel for="administrateurPhotoUploadDlg" value="Photo de profil :" />
                     </div>
                     <div class="dialog-input-col">
 
-                        <p:fileUpload id="utilisateurPhotoUploadDlg"
+                        <p:fileUpload id="administrateurPhotoUploadDlg"
                                       mode="advanced"
                                       skinSimple="false"
                                       auto="false"
@@ -264,8 +222,8 @@
                 <div class="dialog-buttons-bar">
 
                     <p:commandButton value="Enregistrer"
-                                     action="#{utilisateurController.editUtilisateur}"
-                                     update=":formTableUtilisateurs:listUtilisateur :formTableUtilisateurs:tableMessages @form"
+                                     action="#{administrateurController.editAdministrateur}"
+                                     update=":formTableAdministrateurs:listAdministrateur :formTableAdministrateurs:tableMessages @form"
                                      oncomplete="if (!args.validationFailed) {PF('entityDialogWidget').hide();}"
                                      styleClass="ui-button-success"
                                      icon="pi pi-check"/>

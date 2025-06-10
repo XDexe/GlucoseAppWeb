@@ -1,0 +1,96 @@
+/*
+ * Feuille de style pour la page d'accueil de l'administration
+ */
+
+/* Style général du corps de la page */
+/* Style général du corps de la page */
+body.admin-page-background {
+    font-family: 'Lemon Milk Pro', sans-serif;
+    margin: 0;
+    padding: 0; /* Le padding sera géré par le conteneur principal */
+    box-sizing: border-box;
+    overflow-y: auto; /* IMPORTANT : Réactive le défilement vertical */
+    overflow-x: hidden; /* Empêche le défilement horizontal non désiré */
+}
+
+
+.admin-grid-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: flex-start;
+    gap: 2rem;
+    padding: 2rem; /* Espace autour de la grille */
+    min-height: calc(100vh - 120px - 4rem); /* Garde une hauteur minimale pour les écrans larges */
+    box-sizing: border-box;
+}
+
+/* Style de chaque carte cliquable */
+.admin-card {
+    background-color: #E8E6D6; /* Fond des cartes, encore plus clair */
+    border-radius: 12px;
+    padding: 2rem;
+    width: 320px; /* Largeur fixe pour chaque carte */
+    height: 160px; /* Hauteur fixe */
+    text-align: center;
+    text-decoration: none; /* Supprime le soulignement des liens */
+    color: #333; /* Couleur du texte principale */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+    /* Utilise flexbox pour centrer le contenu à l'intérieur de la carte */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Effet de survol sur les cartes */
+.admin-card:hover {
+    transform: translateY(-5px); /* Soulève légèrement la carte */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    background: #DCDBCD;
+}
+
+/* Style pour le titre principal de la carte */
+.card-title {
+    font-size: 1.5rem; /* ~24px */
+    font-weight: 500; /* Medium */
+    margin: 0 0 0.5rem 0;
+    color: #1a1a1a;
+}
+
+/* Style pour le sous-titre de la carte */
+.card-subtitle {
+    font-size: 1rem; /* ~16px */
+    font-weight: 200; /* Ultra Light */
+    margin: 0;
+    color: #555;
+}
+
+
+@media (max-width: 768px) {
+
+    /* Ajuster la hauteur du conteneur pour s'adapter au contenu sur mobile */
+    .admin-grid-container {
+        height: auto;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    /* Les cartes prennent toute la largeur et s'empilent verticalement */
+    .admin-card {
+        width: 100%; /* Chaque carte prend toute la largeur disponible */
+        height: auto; /* La hauteur s'adapte au contenu */
+        min-height: 120px; /* On garde une hauteur minimale correcte */
+        padding: 1.5rem;
+    }
+
+    /* Ajuster la taille des polices pour une meilleure lisibilité sur petit écran */
+    .card-title {
+        font-size: 1.3rem;
+    }
+
+    .card-subtitle {
+        font-size: 0.9rem;
+    }
+}

@@ -32,19 +32,19 @@ public class AdministrateurController implements Serializable {
     @Inject
     private ImageController imageController;
 
-    
+
     public void editAdministrateur() {
-        Role roleAdmin = roleModel.getRoleByName("ADMINISTRATEUR");
-        if (roleAdmin == null) {
-            roleAdmin = new Role();
-            roleAdmin.setNomRole("ADMINISTRATEUR");
+        Role roleAdmin = roleModel.getOrCreateRoleByName("ADMINISTRATEUR");
+        administrateur.setRole(roleAdmin);
+
+        if (administrateur.getPlainTextPassword() != null && !administrateur.getPlainTextPassword().isEmpty()) {
+            administrateur.setMotDePasse(administrateur.getPlainTextPassword());
         }
 
-        administrateur.setRole(roleAdmin);
         administrateur = utilisateurModel.update(administrateur);
         imageController.saveImage(administrateur);
 
-        administrateur = new Utilisateur();
+        resetForm();
     }
 
     public void deleteAdministrateur(Utilisateur administrateur) {
@@ -62,6 +62,7 @@ public class AdministrateurController implements Serializable {
 
     public void resetForm() {
         this.administrateur = new Utilisateur();
+        imageController.resetUploadedFile();
     }
 
     public Utilisateur getAdministrateur() {

@@ -1,55 +1,104 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
+
 <h:head>
-   <title>Gestion des activités</title>
-   <h:outputStylesheet library="css" name="glucoseApp.css"/>
+    <title>Gestion des Activités</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <h:outputStylesheet library="css" name="mainCss.css"/>
+    <h:outputStylesheet library="css" name="topbar.css"/>
+    <h:outputScript library="javascript" name="themeManager.js" target="body"/>
 </h:head>
 
-<h:body>
-   <p:commandButton style="font-size: 20px; padding: 12px 24px;"
-                    icon="pi pi-home"
-                    action="#{authentificationController.logout()}"
-                    styleClass="iconButton"
-                    title="Déconnexion"/>
-   <div id="appContainer">
-      <div class="table-wrapper">
-         <h:form id="formActivites" style="display: flex; flex-direction: column; height: 100%;">
-            <p:dataTable value="#{activiteController.getActiviteUtilisateur()}"
-                         var="activite"
-                         scrollable="true"
-                         scrollHeight="500px"
-                         styleClass="table-container"
-                         style="width:100%; flex:1; border: none !important;">
+<h:body style="background-color: #F4F1DF;">
+    <div class="admin-page-wrapper">
+        <ui:include src="/WEB-INF/template/topbarClient.xhtml"/>
+        <main class="admin-page-main-content">
+            <div class="gestion-entity-page">
+                <div class="table-with-button-wrapper">
+                    <div class="data-table-wrapper">
+                        <h:form id="formTableActivites" styleClass="form-table-container">
 
-               <p:column headerText="Date debut">
-                  <h:outputText value="#{activite.dateDebut}" />
-               </p:column>
+                            <p:messages id="tableMessages"
+                                        globalOnly="false"
+                                        closable="true"
+                                        showDetail="false"/>
 
-               <p:column headerText="Date fin">
-                  <h:outputText value="#{activite.dateFin}" />
-               </p:column>
+                            <p:dataTable id="listActivite"
+                                         value="#{activiteController.activites}"
+                                         var="activite"
+                                         styleClass="gestion-data-table"
+                                         widgetVar="activitesTableWV"
+                                         emptyMessage="Aucune activité trouvée.">
 
-               <p:column headerText="Actions" style="width: 100px; text-align: center;">
-                  <p:commandButton icon="pi pi-chart-line"
-                                   action="#{activiteController.accesActivite(activite)}"
-                                   styleClass="iconButton"
-                                   title="Accéder"/>
+                                <p:column headerText="Date de début"
+                                          sortBy="#{activite.dateDebut}"
+                                          styleClass="col-nom">
+                                    <h:outputText value="#{activite.dateDebut}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"></f:convertDateTime>
+                                    </h:outputText>
+                                </p:column>
 
-                  <p:commandButton icon="pi pi-trash"
-                                   action="#{activiteController.deleteActivite(activite)}"
-                                   styleClass="iconButton"
-                                   update="formActivites"
-                                   title="Supprimer"/>
-               </p:column>
-            </p:dataTable>
-         </h:form>
-      </div>
-   </div>
+                                <p:column headerText="Date de fin"
+                                          sortBy="#{activite.dateFin}"
+                                          styleClass="col-prenom">
+                                    <h:outputText value="#{activite.dateFin}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"></f:convertDateTime>
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="Actions"
+                                          styleClass="col-actions text-center"
+                                          exportable="false">
+
+                                    <p:commandButton id="btnAcceder"
+                                                     icon="btnEdit"
+                                                     iconOnly="true"
+                                                     action="#{activiteController.accesActivite(activite)}"
+                                                     title="Modifier l'activité"
+                                                     styleClass="btn-icon-only"/>
+
+                                    <p:commandButton id="btnSupprimer"
+                                                     icon="btnDelete"
+                                                     iconOnly="true"
+                                                     actionListener="#{activiteController.deleteActivite(activite)}"
+                                                     update="listActivite tableMessages"
+                                                     styleClass="btn-icon-only"
+                                                     title="Supprimer l'activité">
+                                        <p:confirm header="Confirmation"
+                                                   message="Supprimer l'activité du #{activite.dateDebut} ?"
+                                                   icon="pi pi-exclamation-triangle"/>
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+                        </h:form>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <p:confirmDialog global="true"
+                     styleClass="custom-confirm-dialog"
+                     showEffect="fade"
+                     hideEffect="fade"
+                     width="380">
+        <p:commandButton value="Oui"
+                         type="button"
+                         styleClass="ui-confirmdialog-yes ui-button-success"
+                         icon="pi pi-check"/>
+        <p:commandButton value="Non"
+                         type="button"
+                         styleClass="ui-confirmdialog-no ui-button-outlined ui-button-secondary"
+                         icon="pi pi-times"/>
+    </p:confirmDialog>
+
 </h:body>
 </html>
-

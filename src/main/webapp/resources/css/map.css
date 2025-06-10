@@ -1,0 +1,71 @@
+/*
+ * Feuille de style pour la page de géolocalisation
+ */
+
+/* Conteneur principal qui organise la page en colonne (contrôles en haut, carte en bas) */
+.map-page-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 120px); /* Hauteur de la fenêtre moins la topbar */
+    padding: 2rem;
+    box-sizing: border-box;
+    gap: 1.5rem;
+}
+
+/* Panneau supérieur contenant les contrôles (ex: le sélecteur de capteur) */
+.map-controls-panel {
+    flex-shrink: 0; /* Empêche le panneau de rétrécir */
+    padding: 1.5rem 2rem;
+    background-color: #FBF9F3; /* Fond de la "carte" */
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Style pour les labels dans le panneau de contrôle */
+.map-controls-panel .ui-outputlabel {
+    font-weight: 500;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+/* Style pour le sélecteur PrimeFaces */
+.map-controls-panel .ui-selectonemenu {
+    min-width: 300px;
+    font-family: 'LEMON MILK Pro FTR', sans-serif !important;
+}
+
+/* Conteneur de la carte Leaflet */
+.map-container {
+    flex-grow: 1; /* La carte prend tout l'espace vertical restant */
+    width: 100%;
+    border-radius: 15px;
+    overflow: hidden; /* Assure que les coins de la carte sont bien arrondis */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+
+#map {
+    width: 100%;
+    height: 100%; /* La carte remplit son conteneur */
+}
+
+/* Media query pour les petits écrans */
+@media (max-width: 768px) {
+    .map-page-container {
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .map-controls-panel {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .map-controls-panel .ui-selectonemenu {
+        width: 100%;
+        min-width: unset;
+    }
+}
+

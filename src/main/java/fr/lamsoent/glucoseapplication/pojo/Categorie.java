@@ -14,7 +14,7 @@ public class Categorie {
     private String nom;
 
 
-    @OneToMany(mappedBy = "categorie")
+    @OneToMany(mappedBy = "categorie", cascade = CascadeType.ALL)
     @JsonbTransient
     private List<Utilisateur> listUtilisateurs = new ArrayList<Utilisateur>();
 

@@ -2,18 +2,21 @@ package fr.lamsoent.glucoseapplication.controller;
 
 import fr.lamsoent.glucoseapplication.model.MedecinModel;
 import fr.lamsoent.glucoseapplication.model.RoleModel;
+import fr.lamsoent.glucoseapplication.model.UtilisateurModel;
 import fr.lamsoent.glucoseapplication.pojo.Medecin;
-import fr.lamsoent.glucoseapplication.pojo.Personne;
 import fr.lamsoent.glucoseapplication.pojo.Role;
 import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.faces.context.FacesContext;
 
+import java.io.Console;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Named
 @SessionScoped
@@ -21,11 +24,13 @@ public class MedecinController implements Serializable {
 
     private Medecin medecin = new Medecin();
     private Utilisateur utilisateurSelectionne = new Utilisateur();
-    private List<Integer> utilisteursSelectionnesIds;
-    private boolean addMode = false;
+    private List<Integer> utilisateursSelectionnesIds = new ArrayList<>();
 
     @EJB
     private MedecinModel medecinModel;
+
+    @EJB
+    private UtilisateurModel utilisateurModel;
 
     @EJB
     private RoleModel roleModel;
@@ -45,32 +50,40 @@ public class MedecinController implements Serializable {
     }
 
     public void editMedecin() {
-        Role roleMDefaut = roleModel.getOrCreateRoleByName("DEFAUT");
-        medecin.setRole(roleMDefaut);
+        Role roleMedecin = roleModel.getOrCreateRoleByName("DEFAUT");
+        medecin.setRole(roleMedecin);
 
-        if (medecin.getIdPersonne() != 0 &&
-                (medecin.getPlainTextPassword() == null || medecin.getPlainTextPassword().isEmpty())) {
-            Medecin existingMedecin = medecinModel.read(medecin.getIdPersonne());
-            if (existingMedecin != null) {
-                medecin.setMotDePasse(existingMedecin.getMotDePasse());
-            }
-        }
-
-        if (imageController.hasUploadedFile()) {
-            imageController.saveImage(medecin);
+        if (medecin.getPlainTextPassword() != null && !medecin.getPlainTextPassword().isEmpty()) {
+            medecin.setMotDePasse(medecin.getPlainTextPassword());
         }
 
         medecin = medecinModel.update(medecin);
+        imageController.saveImage(medecin);
 
-        if (utilisteursSelectionnesIds != null && !utilisteursSelectionnesIds.isEmpty()) {
-            utilisteursSelectionnesIds.forEach(id -> {
-                Utilisateur utilisateur = utilisateurController.read(id);
-                if (utilisateur != null) {
+        Set<Integer> currentPatientIds = utilisateurModel.readByMedecin(medecin.getIdPersonne())
+                .stream()
+                .map(Utilisateur::getIdPersonne)
+                .collect(Collectors.toSet());
+
+        Set<Integer> newPatientIds = utilisateursSelectionnesIds.stream().collect(Collectors.toSet());
+
+        currentPatientIds.stream()
+                .filter(id -> !newPatientIds.contains(id))
+                .map(id -> utilisateurController.read(id))
+                .filter(u -> u != null)
+                .forEach(utilisateur -> {
+                    utilisateur.setMedecin(null);
+                    utilisateurController.update(utilisateur);
+                });
+
+        newPatientIds.stream()
+                .filter(id -> !currentPatientIds.contains(id))
+                .map(id -> utilisateurController.read(id))
+                .filter(u -> u != null)
+                .forEach(utilisateur -> {
                     utilisateur.setMedecin(medecin);
                     utilisateurController.update(utilisateur);
-                }
-            });
-        }
+                });
 
         resetForm();
     }
@@ -88,8 +101,34 @@ public class MedecinController implements Serializable {
     }
 
     public void loadMedecin(Medecin medecin) {
-        this.medecin=medecin;
-        this.addMode = false;
+        this.utilisateursSelectionnesIds = new ArrayList<>(); // Correction : Réinitialisation de la liste
+        if (medecin == null) {
+            System.out.println("Medecin n'existe pas");
+            this.medecin = new Medecin();
+            return;
+        }
+
+        int medecinId = medecin.getIdPersonne();
+        System.out.println("Loading medecin with ID: " + medecinId);
+
+        // If we have a valid ID, load it fresh from the database
+        if (medecinId > 0) {
+            this.medecin = medecinModel.read(medecinId);
+            if (this.medecin == null) {
+                System.out.println("Médecin not found in database. Creating new instance.");
+                this.medecin = new Medecin();
+                return;
+            }
+
+            for (Utilisateur utilisateur:utilisateurModel.readByMedecin(medecinId)){
+                System.out.println("Utilisateur ID: " + utilisateur.getIdPersonne() + " is associated with Medecin ID: " + medecinId);
+                utilisateursSelectionnesIds.add(utilisateur.getIdPersonne());
+            }
+        } else {
+            this.medecin = medecin;
+            System.out.println("Medecin creation mode - ID is 0");
+
+        }
     }
 
     public Medecin getMedecin() {
@@ -106,8 +145,7 @@ public class MedecinController implements Serializable {
 
     public void resetForm() {
         this.medecin = new Medecin();
-        this.addMode = true;
-
+        this.utilisateursSelectionnesIds = new ArrayList<>();
         imageController.resetUploadedFile();
     }
 
@@ -117,6 +155,14 @@ public class MedecinController implements Serializable {
 
     public void setUtilisateurSelectionne(Utilisateur utilisateurSelectionne) {
         this.utilisateurSelectionne = utilisateurSelectionne;
+    }
+
+    public List<Integer> getUtilisateursSelectionnesIds() {
+        return utilisateursSelectionnesIds;
+    }
+
+    public void setUtilisateursSelectionnesIds(List<Integer> utilisteursSelectionnesIds) {
+        this.utilisateursSelectionnesIds = utilisteursSelectionnesIds;
     }
 
     public MedecinModel getMedecinModel() {
@@ -143,20 +189,12 @@ public class MedecinController implements Serializable {
         this.utilisateurController = utilisateurController;
     }
 
-    public List<Integer> getUtilisteursSelectionnesIds() {
-        return utilisteursSelectionnesIds;
+    public UtilisateurModel getUtilisateurModel() {
+        return utilisateurModel;
     }
 
-    public void setUtilisteursSelectionnesIds(List<Integer> utilisteursSelectionnesIds) {
-        this.utilisteursSelectionnesIds = utilisteursSelectionnesIds;
-    }
-
-    public boolean isAddMode() {
-        return addMode;
-    }
-
-    public void setAddMode(boolean addMode) {
-        this.addMode = addMode;
+    public void setUtilisateurModel(UtilisateurModel utilisateurModel) {
+        this.utilisateurModel = utilisateurModel;
     }
 
     public RoleModel getRoleModel() {

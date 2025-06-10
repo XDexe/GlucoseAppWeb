@@ -20,7 +20,7 @@ public class Donnee {
     @ManyToOne
     private Activite activite = new Activite();
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.ALL)
     private Alerte alerte;
 
     public int getId() {

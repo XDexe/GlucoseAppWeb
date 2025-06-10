@@ -71,7 +71,7 @@
                </p:column>
                <p:column headerText="Actions">
                   <p:commandButton icon="pi pi-eye"
-                                   action="patientDetails?faces-redirect=true"
+                                   action="#{utilisateurController.accesActivitesPatient(patient)}"
                                    title="Voir détails">
                      <f:setPropertyActionListener value="#{patient}"
                                                   target="#{utilisateurController.utilisateur}"/>

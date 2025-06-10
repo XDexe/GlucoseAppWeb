@@ -2,6 +2,7 @@ package fr.lamsoent.glucoseapplication.controller;
 
 import fr.lamsoent.glucoseapplication.model.EntraineurModel;
 import fr.lamsoent.glucoseapplication.model.RoleModel;
+import fr.lamsoent.glucoseapplication.model.UtilisateurModel;
 import fr.lamsoent.glucoseapplication.pojo.Entraineur;
 import fr.lamsoent.glucoseapplication.pojo.Role;
 import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
@@ -11,7 +12,10 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Named
 @SessionScoped
@@ -27,6 +31,9 @@ public class EntraineurController implements Serializable {
     @EJB
     private RoleModel roleModel;
 
+    @EJB
+    private UtilisateurModel utilisateurModel;
+
     @Inject
     private PersonneController personneController;
 
@@ -41,25 +48,42 @@ public class EntraineurController implements Serializable {
     }
 
     public void editEntraineur() {
+        Role roleEntraineur = roleModel.getOrCreateRoleByName("DEFAUT");
+        entraineur.setRole(roleEntraineur);
 
-        Role roleDefaut = roleModel.getRoleByName("DEFAUT");
-        entraineur.setRole(roleDefaut);
+        if (entraineur.getPlainTextPassword() != null && !entraineur.getPlainTextPassword().isEmpty()) {
+            entraineur.setMotDePasse(entraineur.getPlainTextPassword());
+        }
 
         entraineur = entraineurModel.update(entraineur);
         imageController.saveImage(entraineur);
 
-        if(!utilisteursSelectionnesIds.isEmpty()) {
-            utilisteursSelectionnesIds.forEach(id -> {
-                Utilisateur utilisateur;
-                utilisateur = utilisateurController.read(id);
+        Set<Integer> currentPatientIds = utilisateurModel.readByEntraineur(entraineur.getIdPersonne())
+                .stream()
+                .map(Utilisateur::getIdPersonne)
+                .collect(Collectors.toSet());
 
-                if(utilisateur != null) {
+        Set<Integer> newPatientIds = utilisteursSelectionnesIds.stream().collect(Collectors.toSet());
+
+        currentPatientIds.stream()
+                .filter(id -> !newPatientIds.contains(id))
+                .map(id -> utilisateurController.read(id))
+                .filter(u -> u != null)
+                .forEach(utilisateur -> {
+                    utilisateur.setEntraineur(null);
+                    utilisateurController.update(utilisateur);
+                });
+
+        newPatientIds.stream()
+                .filter(id -> !currentPatientIds.contains(id))
+                .map(id -> utilisateurController.read(id))
+                .filter(u -> u != null)
+                .forEach(utilisateur -> {
                     utilisateur.setEntraineur(entraineur);
                     utilisateurController.update(utilisateur);
-                }
-            });
-        }
-        entraineur = new Entraineur();
+                });
+
+        resetForm();
     }
 
     public void deleteEntraineur(Entraineur entraineur) {
@@ -75,7 +99,28 @@ public class EntraineurController implements Serializable {
     }
 
     public void loadEntraineur(Entraineur entraineur) {
-        this.entraineur=entraineur;
+        this.utilisteursSelectionnesIds = new ArrayList<>();
+        if (entraineur == null) {
+            this.entraineur = new Entraineur();
+            return;
+        }
+
+        int entraineurId = entraineur.getIdPersonne();
+
+        if (entraineurId > 0) {
+            this.entraineur = entraineurModel.read(entraineurId);
+            if (this.entraineur == null) {
+                this.entraineur = new Entraineur();
+                return;
+            }
+
+            for (Utilisateur utilisateur:utilisateurModel.readByEntraineur(entraineurId)){
+                utilisteursSelectionnesIds.add(utilisateur.getIdPersonne());
+            }
+        } else {
+            this.entraineur = entraineur;
+
+        }
     }
 
     public Entraineur getEntraineur() {
@@ -92,6 +137,8 @@ public class EntraineurController implements Serializable {
 
     public void resetForm() {
         this.entraineur = new Entraineur();
+        this.utilisteursSelectionnesIds = new ArrayList<>();
+        imageController.resetUploadedFile();
     }
 
     public Utilisateur getUtilisateurSelectionne() {

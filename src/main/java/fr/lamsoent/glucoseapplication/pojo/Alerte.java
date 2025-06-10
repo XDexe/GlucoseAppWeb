@@ -1,6 +1,7 @@
 package fr.lamsoent.glucoseapplication.pojo;
 
 import jakarta.persistence.*;
+import org.eclipse.persistence.annotations.CascadeOnDelete;
 
 import java.util.Date;
 
@@ -11,7 +12,7 @@ public class Alerte  {
     private int idAlerte;
     private boolean estAuDessusTaux;
 
-    @OneToOne(cascade = CascadeType.REMOVE,mappedBy = "alerte")
+    @OneToOne(cascade = CascadeType.ALL,mappedBy = "alerte")
     private Donnee donnee = new Donnee();
     @ManyToOne
     private Utilisateur utilisateur = new Utilisateur();

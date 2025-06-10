@@ -1,27 +1,25 @@
-/* === topbar.css === */
+/*
+ * Feuille de style pour la Topbar (Thème Clair Unifié)
+ */
 
-/* === Variables CSS pour la Topbar et son Dropdown === */
-/* Ces variables sont spécifiques à la topbar. */
+/* === Définition des couleurs et polices === */
 :root {
-    /* Couleurs pour la BARRE elle-même (vont s'adapter au thème de la page) */
-    /* Ces variables seront surchargées par html[data-theme] de votre mainCss.css */
-    --topbar-bg: var(--header-bg, #151515); /* Valeur par défaut sombre */
-    --topbar-text-color: var(--header-text, white);
-    --topbar-avatar-border-color: var(--avatar-border, black);
+    /* Couleurs pour la barre de navigation */
+    --topbar-bg: #FFFBE7; /* Fond de la topbar comme demandé */
+    --topbar-text-color: #1a1a1a; /* Texte noir pour un bon contraste */
+    --topbar-avatar-border-color: #E8E6D6; /* Bordure discrète pour l'avatar */
+    --topbar-item-hover-bg: rgba(0, 0, 0, 0.04); /* Effet de survol léger */
 
-    /* Couleurs FIXES pour le MENU DÉROULANT (toujours en thème clair) */
-    --topbar-DROPDOWN-fixed-bg: #FFFBE7;
-    --topbar-DROPDOWN-fixed-text-color: black;
-    --topbar-DROPDOWN-fixed-item-hover-bg: #f0eada; /* Survol dans dropdown clair */
-    --topbar-DROPDOWN-fixed-radius: 10px; /* Radius plus intégré pour le dropdown */
-    --topbar-DROPDOWN-shadow: 0px 8px 16px rgba(0,0,0,0.15);
+    /* Couleurs pour le menu déroulant */
+    --topbar-dropdown-bg: #FFFFFF; /* Fond blanc classique pour le dropdown */
+    --topbar-dropdown-text-color: #1a1a1a;
+    --topbar-dropdown-item-hover-bg: #f5f5f5;
+    --topbar-dropdown-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
 
     /* Autres variables */
-    --topbar-main-radius: 10px; /* Radius de la topbar elle-même */
-
-    /* Polices (doivent être chargées globalement via @font-face dans mainCss.css) */
-    --font-inter: 'Inter', sans-serif;
-    --font-lemon-milk: 'LEMON MILK Pro FTR', sans-serif;
+    --topbar-main-radius: 12px;
+    --font-inter: 'Lemon Milk Pro', sans-serif; /* Police moderne pour la topbar */
+    --font-lemon-milk: 'LEMON MILK Pro', sans-serif; /* Police pour le menu */
 }
 
 /* === Styles pour la Barre de Navigation Horizontale (Topbar) === */
@@ -33,29 +31,27 @@
     width: 100%;
     padding: 0 40px;
     box-sizing: border-box;
-    border-radius: var(--topbar-main-radius);
     font-family: var(--font-inter);
     position: relative;
-    z-index: 1020; /* Au-dessus du contenu mais sous les p:dialog globaux */
+    z-index: 1020;
     transition: background-color 0.3s ease, color 0.3s ease;
 
-    /* Application du thème à la topbar via les variables globales de mainCss.css */
-    background-color: var(--header-bg); /* Vient de :root ou html[data-theme] dans mainCss.css */
-    color: var(--header-text);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    /* Application des couleurs définies ci-dessus */
+    background-color: var(--topbar-bg);
+    color: var(--topbar-text-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
 }
 
 .app-header-left .app-accueil-link,
 .app-header-left .app-accueil-link.ui-link {
     color: inherit;
     font-size: 20px;
-    font-family: var(--font-inter);
-    font-weight: 400;
+    font-weight: 500;
     text-decoration: none;
     transition: opacity 0.2s ease;
 }
 .app-header-left .app-accueil-link.ui-link:hover {
-    opacity: 0.8;
+    opacity: 0.7;
 }
 
 .app-header-right {
@@ -70,23 +66,18 @@
     align-items: center;
     cursor: pointer;
     padding: 10px 15px;
-    height: 100%; /* Pour que le survol fonctionne sur toute la hauteur */
+    height: 100%;
     box-sizing: border-box;
-    border-radius: var(--topbar-main-radius); /* Pour que le hover bg soit contenu */
+    border-radius: var(--topbar-main-radius);
     transition: background-color 0.2s;
 }
+/* Effet de survol unifié */
 .app-header-right:hover .app-profil-trigger {
-    /* Thème sombre de la topbar */
-    background-color: rgba(255,255,255,0.05);
-}
-html[data-theme="light"] .app-header-right:hover .app-profil-trigger {
-    /* Thème clair de la topbar */
-    background-color: rgba(0,0,0,0.03);
+    background-color: var(--topbar-item-hover-bg);
 }
 
 .app-user-name {
     font-size: 20px;
-    font-family: var(--font-inter);
     font-weight: 400;
     margin-right: 20px;
     color: inherit;
@@ -107,136 +98,135 @@ html[data-theme="light"] .app-header-right:hover .app-profil-trigger {
     border-radius: 50%;
     display: block;
     object-fit: cover;
-}
-.app-avatar-wrapper::after {
-    content: '';
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    border-radius: 9999px;
-    border: 1px solid var(--avatar-border); /* Utilise la variable globale --avatar-border */
-    box-sizing: border-box;
-    pointer-events: none;
-}
-.app-user-avatar.default-avatar.ui-avatar {
-    background-color: var(--avatar-border) !important; /* Utilise la variable globale */
-    color: var(--header-bg) !important; /* Utilise la variable globale */
-    font-size: 35px !important;
-    display: flex; align-items: center; justify-content: center;
+    border: 2px solid var(--topbar-avatar-border-color);
 }
 
-/* === Menu Déroulant (Pop-up) - Styles FIXES pour Thème Clair === */
+/* === Menu Déroulant (Pop-up) - Style "Attaché" === */
+/* === Menu Déroulant (Pop-up) - Style "100% Unifié" === */
 .app-profil-dropdown {
     position: absolute;
-    top: 100%; /* Commence juste en dessous du .app-header-right */
+    top: 100%; /* Positionnement parfait sous la barre */
     right: 0;
-    width: 380px; /* Un peu moins que 410px pour un look plus standard */
-    min-height: auto; /* S'adapte au contenu */
+    width: 320px;
 
-    background: var(--topbar-DROPDOWN-fixed-bg); /* Fond clair #FFFBE7 FIXE */
-    color: var(--topbar-DROPDOWN-fixed-text-color); /* Texte noir FIXE */
+    /* ÉTAPE 1 : On s'assure que le fond est strictement identique à la topbar */
+    background: var(--topbar-bg);
 
-    /* Pour l'effet "ne faire qu'un" : le haut du dropdown touche le bas du header.
-       Le border-radius du header s'appliquera en haut.
-       Le dropdown aura des coins arrondis uniquement en bas. */
-    border-radius: 0 0 var(--topbar-main-radius) var(--topbar-main-radius); /* Coins arrondis en bas, assortis au header */
-    /* Alternative si vous voulez le grand radius de Figma pour le dropdown complet :
-       border-radius: var(--topbar-DROPDOWN-fixed-radius);
-    */
+    color: var(--topbar-text-color);
 
-    box-shadow: var(--topbar-DROPDOWN-shadow);
+    /* ÉTAPE 2 : On garde les coins supérieurs carrés pour la jonction */
+    border-radius: 0 0 var(--topbar-main-radius) var(--topbar-main-radius);
+
+    /* ÉTAPE 3 : On ajuste l'ombre pour qu'elle ne crée pas de séparation en haut */
+    /* L'ombre commence légèrement plus bas pour un effet plus doux */
+    box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.1);
+
     z-index: 1050;
-    padding: 20px 0; /* Padding vertical pour la liste, 0 horizontal car les items l'auront */
+    padding: 0.5rem;
     box-sizing: border-box;
+    margin-top: 0;
 
+    /* ÉTAPE 4 : On supprime complètement la bordure supérieure */
+    border-top: none;
+
+    /* Animation simple et propre */
     display: none;
     opacity: 0;
-    transform: translateY(0px); /* Commence aligné pour l'effet "ne fait qu'un" */
-    transition: opacity 0.15s ease-out, transform 0.15s ease-out, visibility 0s 0.15s linear;
+    transform: translateY(0);
+    transition: opacity 0.15s ease;
     visibility: hidden;
-    border-top: 1px solid var(--header-bg); /* "Masque" la jonction avec la couleur de la topbar */
 }
 
-/* Le sélecteur :hover doit être sur le parent pour garder le dropdown ouvert */
+.app-header-right:hover .app-profil-dropdown {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+}
+
 .app-header-right:hover .app-profil-dropdown {
     display: block;
     opacity: 1;
     transform: translateY(0);
-    transition-delay: 0s;
     visibility: visible;
 }
 
-/* Contenu interne du dropdown */
 .app-dropdown-list {
     list-style: none;
     padding: 0;
-    margin: 0; /* Le padding externe est sur .app-profil-dropdown */
+    margin: 0;
     font-family: var(--font-lemon-milk);
-}
-.app-dropdown-list li {
-    margin-bottom: 0; /* Items collés, le padding de l'item gère l'espace */
 }
 
 .app-dropdown-item,
 .app-dropdown-item.ui-link,
 .app-dropdown-item.ui-commandlink {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 15px 30px; /* Padding interne des items */
-    color: var(--topbar-DROPDOWN-fixed-text-color); /* Texte noir */
-    font-size: 20px; /* Ajusté pour lisibilité */
+    display: block;
+    padding: 1rem 1.5rem;
+    color: var(--topbar-dropdown-text-color);
+    font-size: 1rem;
     font-weight: 400;
     text-decoration: none;
-    /* Pas de border-radius sur les items si on veut qu'ils remplissent le dropdown */
+    border-radius: 8px;
     transition: background-color 0.2s;
     text-align: center;
 }
-.app-dropdown-item#themeToggleLinkAdminPage { /* ID de votre lien thème */
-    justify-content: space-between;
-    text-align: left;
-}
+
 .app-dropdown-item:hover,
 .app-dropdown-item.ui-link:hover,
 .app-dropdown-item.ui-commandlink:hover {
-    background-color: var(--topbar-DROPDOWN-fixed-item-hover-bg); /* #f0eada */
+    background-color: var(--topbar-dropdown-item-hover-bg);
 }
-.app-dropdown-item .app-dropdown-text {
-    flex-grow: 1;
-}
-.app-dropdown-icon {
-    font-size: 28px;
-    margin-left: 15px;
-    color: var(--topbar-DROPDOWN-fixed-text-color); /* Icône noire */
-}
+
 .app-dropdown-form {
-    margin:0;
-    padding:0;
+    margin: 0;
+    padding: 0;
     display: contents;
 }
 
-/* === Media Queries pour la Topbar (Exemple pour mobile) === */
+/* === Media Queries pour la Topbar === */
+/* === Media Queries pour la Topbar (Mobile) === */
 @media (max-width: 767px) {
-    .app-header-bar { height: auto; flex-direction: column; padding: 15px; gap: 15px; }
-    .app-header-left { width: 100%; text-align: center; }
-    .app-header-right { width: 100%; justify-content: center; height: auto; }
-    .app-profil-trigger { padding: 8px 12px; height: auto; }
-    .app-user-name { font-size: 18px; margin-right: 10px; }
-    .app-avatar-wrapper { width: 50px; height: 50px; }
-    .app-user-avatar.default-avatar.ui-avatar { font-size: 25px !important; }
+    /* 1. On garde la topbar sur une seule ligne (comportement par défaut de flex)
+       et on réduit juste sa hauteur et ses espacements. */
+    .app-header-bar {
+        height: 90px;
+        padding: 0 1rem; /* Moins de padding sur les côtés */
+    }
 
+    /* 2. On retire les anciennes règles qui mettaient les éléments en colonne
+       et sur 100% de la largeur. Ils vont maintenant s'adapter à leur contenu. */
+    .app-header-left, .app-header-right {
+        width: auto;
+        height: auto;
+        justify-content: flex-start; /* On laisse l'alignement par défaut */
+    }
+
+    /* 3. On ajuste la taille des polices et de l'avatar pour les petits écrans */
+    .app-header-left .app-accueil-link {
+        font-size: 1.1rem;
+    }
+
+    .app-user-name {
+        font-size: 1rem;
+        margin-right: 0.75rem; /* Espace réduit entre le nom et l'avatar */
+    }
+
+    .app-avatar-wrapper {
+        width: 50px;
+        height: 50px;
+    }
+
+    .app-profil-trigger {
+        padding: 0.5rem;
+    }
+
+    /* 4. On ajuste la largeur du menu déroulant pour qu'il ne soit pas trop large */
     .app-profil-dropdown {
-        width: calc(100% - 30px); /* Prend la largeur du padding de la page */
-        max-width: 350px;
-        left: 50%;
-        transform: translateX(-50%);
-        top: 100%; /* Juste en dessous du trigger empilé */
-        border-radius: var(--topbar-main-radius); /* Radius simple sur mobile */
-        max-height: 70vh; overflow-y: auto; padding: 15px 0;
+        width: 280px;
+        transform: none; /* On retire l'ancienne transformation devenue inutile */
     }
+
     .app-header-right:hover .app-profil-dropdown {
-        transform: translateX(-50%) translateY(0);
+        transform: none;
     }
-    .app-dropdown-list { padding: 15px; } /* Padding pour les items sur mobile */
-    .app-dropdown-list li { margin-bottom:10px; }
-    .app-dropdown-item, .app-dropdown-item.ui-link, .app-dropdown-item.ui-commandlink { font-size:18px; padding:12px 15px; }
-    .app-dropdown-icon { font-size:24px; }
 }

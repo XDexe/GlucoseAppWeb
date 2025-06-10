@@ -7,178 +7,269 @@
       xmlns:p="http://primefaces.org/ui">
 
 <h:head>
-    <f:facet name="first">
-        <meta charset="UTF-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    </f:facet>
     <title>Gestion des Médecins</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <h:outputStylesheet library="css" name="mainCss.css"/>
     <h:outputStylesheet library="css" name="topbar.css"/>
     <h:outputScript library="javascript" name="themeManager.js" target="body"/>
 </h:head>
 
-<h:body>
-    <div class="admin-page-wrapper"><ui:include src="/WEB-INF/template/topbarAdmin.xhtml"/>
-
+<h:body style="background-color: #F4F1DF;">
+    <div class="admin-page-wrapper">
+        <ui:include src="/WEB-INF/template/topbarAdmin.xhtml"/>
         <main class="admin-page-main-content">
             <div class="gestion-entity-page">
-                <div class="gestion-entity-header">
-                    <h:outputText value="Liste des Médecins" styleClass="gestion-entity-title"/>
+                <div class="table-with-button-wrapper">
+                    <div class="data-table-wrapper">
+                        <h:form id="formTableMedecins" styleClass="form-table-container">
+
+                            <p:messages id="tableMessages"
+                                        globalOnly="false"
+                                        closable="true"
+                                        showDetail="false"/>
+
+                            <p:dataTable id="listMedecin"
+                                         value="#{medecinController.medecins}"
+                                         var="medecin"
+                                         styleClass="gestion-data-table"
+                                         widgetVar="medecinsTableWV"
+                                         emptyMessage="Aucun médecin trouvé.">
+
+                                <p:column headerText="Photo"
+                                          styleClass="col-photo text-center"
+                                          exportable="false">
+                                    <p:graphicImage library="photo-profil"
+                                                    name="#{medecin.photoDeProfilUrl}"
+                                                    styleClass="table-profile-pic"
+                                                    rendered="#{not empty medecin.photoDeProfilUrl}"
+                                                    alt="Photo"/>
+                                    <p:avatar icon="fas fa-user-md"
+                                              styleClass="table-profile-pic default-avatar"
+                                              rendered="#{empty medecin.photoDeProfilUrl}"
+                                              shape="circle"/>
+                                </p:column>
+
+                                <p:column headerText="Nom"
+                                          sortBy="#{medecin.nom}"
+                                          styleClass="col-nom">
+                                    <h:outputText value="#{medecin.nom}"/>
+                                </p:column>
+
+                                <p:column headerText="Prénom"
+                                          sortBy="#{medecin.prenom}"
+                                          styleClass="col-prenom">
+                                    <h:outputText value="#{medecin.prenom}"/>
+                                </p:column>
+
+                                <p:column headerText="Identifiant"
+                                          sortBy="#{medecin.identifiant}"
+                                          styleClass="col-identifiant">
+                                    <h:outputText value="#{medecin.identifiant}"/>
+                                </p:column>
+
+                                <p:column headerText="Actions"
+                                          styleClass="col-actions text-center"
+                                          exportable="false">
+
+                                    <p:commandButton id="btnModifier"
+                                                     icon="btnEdit"
+                                                     iconOnly="true"
+                                                     actionListener="#{medecinController.loadMedecin(medecin)}"
+                                                     update=":dialogForm"
+                                                     oncomplete="PF('entityDialogWidget').show(); PrimeFaces.focus('dialogForm:medecinNomDlg');"
+                                                     title="Modifier le médecin"
+                                                     styleClass="btn-icon-only"/>
+
+                                    <p:commandButton id="btnSupprimer"
+                                                     icon="btnDelete"
+                                                     iconOnly="true"
+                                                     actionListener="#{medecinController.deleteMedecin(medecin)}"
+                                                     update="listMedecin tableMessages"
+                                                     styleClass="btn-icon-only"
+                                                     title="Supprimer le médecin">
+                                        <p:confirm header="Confirmation"
+                                                   message="Supprimer le médecin #{medecin.prenom} #{medecin.nom} ?"
+                                                   icon="pi pi-exclamation-triangle"/>
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+                        </h:form>
+                    </div>
+
+                    <h:form id="formAddButton" styleClass="form-footer-container">
+                        <p:commandButton value="Ajouter un Médecin"
+                                         id="addMedecinBtnPage"
+                                         actionListener="#{medecinController.resetForm()}"
+                                         update=":dialogForm:dialogContentPanel"
+                                         oncomplete="PF('entityDialogWidget').show(); PrimeFaces.focus('dialogForm:medecinNom');"
+                                         styleClass="add-entity-button"
+                                         iconPos="left">
+
+                        </p:commandButton>
+                    </h:form>
 
                 </div>
 
-                <h:form id="formTableMedecins">
-                    <p:messages id="tableMessages" globalOnly="false" closable="true" showDetail="true"/>
-                    <div class="data-table-wrapper">
-                        <p:dataTable id="listMedecin"
-                                     value="#{medecinController.medecins}"
-                                     var="medecin"
-                                     styleClass="gestion-data-table"
-                                     emptyMessage="Aucun médecin trouvé."
-                                     scrollable="true" scrollHeight="auto" liveScroll="false" virtualScroll="false"
-                                     lazy="false"
-                                     widgetVar="medecinsTableWV">
-
-                            <p:column headerText="Photo" styleClass="col-photo text-center" exportable="false">
-                                <p:graphicImage library="photo-profil" name="#{medecin.photoDeProfilUrl}"
-                                                styleClass="table-profile-pic"
-                                                rendered="#{not empty medecin.photoDeProfilUrl}" alt="Photo"/>
-                                <p:avatar icon="fas fa-user-md" styleClass="table-profile-pic default-avatar"
-                                          rendered="#{empty medecin.photoDeProfilUrl}" shape="circle"/>
-                            </p:column>
-
-                            <p:column headerText="Nom" sortBy="#{medecin.nom}" filterBy="#{medecin.nom}"
-                                      filterMatchMode="contains" styleClass="col-nom">
-                                <h:outputText value="#{medecin.nom}"/>
-                            </p:column>
-
-                            <p:column headerText="Prénom" sortBy="#{medecin.prenom}" filterBy="#{medecin.prenom}"
-                                      filterMatchMode="contains" styleClass="col-prenom">
-                                <h:outputText value="#{medecin.prenom}"/>
-                            </p:column>
-
-                            <p:column headerText="Identifiant" sortBy="#{medecin.identifiant}"
-                                      filterBy="#{medecin.identifiant}" filterMatchMode="contains"
-                                      styleClass="col-identifiant">
-                                <h:outputText value="#{medecin.identifiant}"/>
-                            </p:column>
-
-
-                            <p:column headerText="Actions" styleClass="col-actions text-center" exportable="false">
-                                <p:commandButton icon="pi pi-pencil" process="@this"
-                                                 styleClass="ui-button-warning rounded-button action-button"
-                                                 actionListener="#{medecinController.loadMedecin(medecin)}"
-                                                 update=":dialogForm:dialogContentPanel"
-                                                 oncomplete="PF('entityDialogWidget').show(); PrimeFaces.focus('dialogForm:medecinNom');"
-                                                 title="Modifier"/>
-                                <p:commandButton icon="pi pi-trash" process="@this"
-                                                 styleClass="ui-button-danger rounded-button action-button"
-                                                 actionListener="#{medecinController.deleteMedecin(medecin)}"
-                                                 update="listMedecin tableMessages"
-                                                 title="Supprimer">
-                                    <p:confirm header="Confirmation"
-                                               message="Supprimer le médecin #{medecin.prenom} #{medecin.nom} ?"
-                                               icon="pi pi-exclamation-triangle"/>
-                                </p:commandButton>
-                            </p:column>
-                        </p:dataTable>
-                    </div>
-                    <p:commandButton value="Ajouter un Médecin"
-                                     id="addMedecinBtnPage"
-                                     actionListener="#{medecinController.resetForm}"
-                                     update=":dialogForm:dialogContentPanel"
-                                     oncomplete="PF('entityDialogWidget').show(); PrimeFaces.focus('dialogForm:medecinNom');"
-                                     styleClass="add-entity-button"
-                                     icon="pi pi-plus"/>
-                </h:form>
             </div>
         </main>
     </div>
+
+
     <h:form id="dialogForm" enctype="multipart/form-data">
         <p:dialog id="entityDialog"
-                  header="#{medecinController.addMode ? 'Ajouter un Nouveau Médecin' : 'Modifier le Médecin'}"
-                  styleClass="entity-dialog" widgetVar="entityDialogWidget"
-                  modal="true" resizable="false" draggable="false" closeOnEscape="true"
-                  showEffect="fade" hideEffect="fade" fitViewport="true" responsive="true"
-                  width="700px" position="center center">
+                  styleClass="entity-dialog"
+                  widgetVar="entityDialogWidget"
+                  modal="true"
+                  resizable="false"
+                  draggable="false"
+                  closeOnEscape="true"
+                  showEffect="fade"
+                  hideEffect="fade"
+                  fitViewport="true"
+                  responsive="true"
+                  width="700px"
+                  position="center center">
+
             <h:panelGroup id="dialogContentPanel" layout="block">
-            <p:messages id="dialogMessages" globalOnly="false" closable="true" showDetail="false"/>
-            <p:focus context="dialogContentPanel"/>
-            <h:inputHidden value="#{medecinController.medecin.idPersonne}"/>
+                <p:messages id="dialogMessages"
+                            globalOnly="false"
+                            closable="true"
+                            showDetail="false"/>
+                <p:focus context="dialogContentPanel"/>
+                <h:inputHidden id="medecinIdDlg" value="#{medecinController.medecin.idPersonne}"/>
 
-            <p:panelGrid columns="2" styleClass="dialog-grid"
-                         columnClasses="dialog-label-col,dialog-input-col ui-fluid">
-                <p:outputLabel for="medecinNomDlg" value="Nom :"/>
-                <p:inputText id="medecinNomDlg" value="#{medecinController.medecin.nom}" required="true"
-                             requiredMessage="Le nom est obligatoire."/>
+                <div class="dialog-grid">
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="medecinNomDlg" value="Nom : *" />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:inputText id="medecinNomDlg"
+                                     value="#{medecinController.medecin.nom}"
+                                     required="true"
+                                     requiredMessage="Le nom est obligatoire."
+                                     styleClass="dialog-inputfield"/>
+                    </div>
 
-                <p:outputLabel for="medecinPrenomDlg" value="Prénom :"/>
-                <p:inputText id="medecinPrenomDlg" value="#{medecinController.medecin.prenom}" required="true"
-                             requiredMessage="Le prénom est obligatoire."/>
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="medecinPrenomDlg" value="Prénom : *" />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:inputText id="medecinPrenomDlg"
+                                     value="#{medecinController.medecin.prenom}"
+                                     required="true"
+                                     requiredMessage="Le prénom est obligatoire."
+                                     styleClass="dialog-inputfield"/>
+                    </div>
 
-                <p:outputLabel for="medecinIdentifiantDlg" value="Identifiant :"/>
-                <p:inputText id="medecinIdentifiantDlg" value="#{medecinController.medecin.identifiant}" required="true"
-                             requiredMessage="L'identifiant est obligatoire.">
-                </p:inputText>
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="medecinIdentifiantDlg" value="Identifiant : *" />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:inputText id="medecinIdentifiantDlg"
+                                     value="#{medecinController.medecin.identifiant}"
+                                     required="true"
+                                     requiredMessage="L’identifiant est obligatoire."
+                                     styleClass="dialog-inputfield"/>
+                    </div>
 
-                <p:outputLabel for="medecinUtilisateursDlg" value="Sélectionner les patients :"/>
-                <p:selectCheckboxMenu id="medecinUtilisateursDlg"
-                                      multiple="true" emptyLabel="Merci de séléctionner ..." updateLabel="true"
-                                      value="#{medecinController.utilisteursSelectionnesIds}">
-                    <f:selectItems value="#{utilisateurController.read()}" var="user" itemLabel="#{user.nom} #{user.prenom}" itemValue="#{user.idPersonne}"/>
-                </p:selectCheckboxMenu>
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="medecinUtilisateursDlg" value="Sélectionner les patients :" />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:selectCheckboxMenu id="medecinUtilisateursDlg"
+                                              multiple="true"
+                                              filter="false"
+                                              emptyLabel="Merci de sélectionner …"
+                                              updateLabel="true"
+                                              value="#{medecinController.utilisateursSelectionnesIds}"
+                                              styleClass="dialog-selectmenu">
+                            <f:selectItems value="#{utilisateurController.getUtilisateursByRole()}"
+                                           var="user"
+                                           itemLabel="#{user.nom} #{user.prenom}"
+                                           itemValue="#{user.idPersonne}"/>
+                        </p:selectCheckboxMenu>
+                    </div>
 
-                <p:outputLabel for="medecinMdpDlg" value="Mot de passe :"/>
-                <p:password id="medecinMdpDlg"
-                            value="#{medecinController.medecin.motDePasse}"
-                            feedback="false"
-                            weakLabel="Faible" goodLabel="Moyen" strongLabel="Fort"
-                            required="#{medecinController.addMode}"
-                            requiredMessage="Mot de passe requis pour un nouveau médecin."/>
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="medecinMdpDlg" value="Mot de passe : *" />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:password id="medecinMdpDlg"
+                                    value="#{medecinController.medecin.plainTextPassword}"
+                                    feedback="false"
+                                    weakLabel="Faible"
+                                    goodLabel="Moyen"
+                                    strongLabel="Fort"
+                                    requiredMessage="Mot de passe requis pour un nouveau médecin."
+                                    styleClass="dialog-password"/>
+                    </div>
+
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="medecinPhotoUploadDlg" value="Photo de profil :" />
+                    </div>
+                    <div class="dialog-input-col">
+
+                        <p:fileUpload id="medecinPhotoUploadDlg"
+                                      mode="advanced"
+                                      skinSimple="false"
+                                      auto="false"
+                                      value="#{imageController.uploadedFile}"
+                                      label="Choisir"
+                                      uploadLabel="Charger"
+                                      cancelLabel="Annuler"
+                                      sizeLimit="2097152"
+                                      multiple="false"
+                                      allowTypes="/(\.|\/)(jpg|jpeg|png|gif)$/"
+                                      invalidSizeMessage="Taille max : 2 Mo"
+                                      invalidFileMessage="Type invalide (JPG, PNG, GIF)."
+                                      showFileList="false"
 
 
-                <p:outputLabel for="medecinPhotoUploadDlg" value="Photo de profil :"/>
-                <p:fileUpload id="medecinPhotoUploadDlg" mode="advanced" skinSimple="false" auto="true"
-                              value="#{imageController.uploadedFile}"
-                              label="Choisir" uploadLabel="Charger" cancelLabel="Annuler"
-                              sizeLimit="2097152" allowTypes="/(\.|\/)(jpg|jpeg|png|gif)$/"
-                              invalidSizeMessage="Taille max: 2MB." invalidFileMessage="Type invalide (JPG, PNG, GIF)."
-                              update="currentPhotoDisplayDlg dialogMessages" process="@this"
-                              styleClass="dialog-fileupload"/>
+                                      update="currentPhotoDisplayDlg dialogMessages"
+                                      process="@this"
+                                      styleClass="dialog-fileupload"/>
 
-                <h:panelGroup/>
-                <h:panelGroup id="currentPhotoDisplayDlg">
-                    <h:outputText value="Actuelle : #{medecinController.medecin.photoDeProfilUrl}"
-                                  rendered="#{not empty medecinController.medecin.photoDeProfilUrl and not empty medecinController.medecin.idPersonne}"
-                                  styleClass="current-photo-info"/>
-                    <h:outputText value="Aucune photo actuellement."
-                                  rendered="#{empty medecinController.medecin.photoDeProfilUrl and not empty medecinController.medecin.idPersonne}"
-                                  styleClass="current-photo-info"/>
-                </h:panelGroup>
 
-            </p:panelGrid>
+                    </div>
 
-            <div class="dialog-buttons-bar">
-                <p:commandButton value="Enregistrer"
-                                 actionListener="#{medecinController.editMedecin()}"
-                                 update=":formTableMedecins:listMedecin :formTableMedecins:tableMessages @form"
-                                 oncomplete="PF('entityDialogWidget').hide(); PF('medecinsTableWV').clearFilters();"
-                                 styleClass="ui-button-success" icon="pi pi-check"/>
-                <p:commandButton value="Annuler" type="button"
-                                 onclick="PF('entityDialogWidget').hide()"
-                                 styleClass="ui-button-secondary ui-button-outlined" icon="pi pi-times"/>
-            </div>
-        </h:panelGroup>
+                    <div class="dialog-label-col">
+                    </div>
+                </div>
+
+                <div class="dialog-buttons-bar">
+
+                    <p:commandButton value="Enregistrer"
+                                     action="#{medecinController.editMedecin}"
+                                     update=":formTableMedecins:listMedecin :formTableMedecins:tableMessages @form"
+                                     oncomplete="if (!args.validationFailed) {PF('entityDialogWidget').hide();}"
+                                     styleClass="ui-button-success"
+                                     icon="pi pi-check"/>
+                    <p:commandButton value="Annuler"
+                                     type="button"
+                                     onclick="PF('entityDialogWidget').hide()"
+                                     styleClass="ui-button-secondary ui-button-outlined"
+                                     icon="pi pi-times"/>
+                </div>
+
+            </h:panelGroup>
         </p:dialog>
     </h:form>
 
-    <p:confirmDialog global="true" styleClass="custom-confirm-dialog" showEffect="fade" hideEffect="fade" width="380">
-        <p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes ui-button-success"
+    <p:confirmDialog global="true"
+                     styleClass="custom-confirm-dialog"
+                     showEffect="fade"
+                     hideEffect="fade"
+                     width="380">
+        <p:commandButton value="Oui"
+                         type="button"
+                         styleClass="ui-confirmdialog-yes ui-button-success"
                          icon="pi pi-check"/>
-        <p:commandButton value="Non" type="button"
-                         styleClass="ui-confirmdialog-no ui-button-outlined ui-button-secondary" icon="pi pi-times"/>
+        <p:commandButton value="Non"
+                         type="button"
+                         styleClass="ui-confirmdialog-no ui-button-outlined ui-button-secondary"
+                         icon="pi pi-times"/>
     </p:confirmDialog>
-
 
 </h:body>
 </html>

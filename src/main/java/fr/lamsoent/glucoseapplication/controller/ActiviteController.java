@@ -31,7 +31,7 @@ public class ActiviteController implements Serializable {
     private UtilisateurController utilisateurController;
 
     public void loadActivite(){
-        activite = (Activite) FacesContext.getCurrentInstance().getExternalContext().getFlash().getOrDefault("activiter", new Activite());
+        activite = (Activite) FacesContext.getCurrentInstance().getExternalContext().getFlash().getOrDefault("activite", new Activite());
 
         if (activite.getId() == 0) {
             activite =null;
@@ -60,13 +60,17 @@ public class ActiviteController implements Serializable {
     }
 
     public String accesActivite(Activite activite) {
-        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("activiter", activite);
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("activite", activite);
 
         return "graphiqueClient.html?faces-redirect=true";
     }
 
     public List<Activite> getActiviteUtilisateur(){
-        Utilisateur utilAlive=utilisateurController.getUtilisateur();
+        return getActiviteUtilisateur(utilisateurController.getUtilisateur());
+    }
+
+    public List<Activite> getActiviteUtilisateur(Utilisateur utilisateur){
+        Utilisateur utilAlive=utilisateur;
 
         if (utilAlive.getIdPersonne()==0){
             return new ArrayList<>();

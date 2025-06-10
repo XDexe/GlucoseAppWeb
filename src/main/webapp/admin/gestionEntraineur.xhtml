@@ -1,133 +1,275 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
+
 <h:head>
-    <title>Gestion entraineur</title>
-    <h:outputStylesheet library="css" name="cssTemp.css"/>
+    <title>Gestion des Entraineurs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <h:outputStylesheet library="css" name="mainCss.css"/>
+    <h:outputStylesheet library="css" name="topbar.css"/>
+    <h:outputScript library="javascript" name="themeManager.js" target="body"/>
 </h:head>
 
-<h:body id="bodyElement">
-    <div class="header">
-        <div class="drop">
-            <input class="dropdown" type="checkbox" id="dropdown2" name="dropdown"/>
-            <label class="profile-image" for="dropdown2">
-                <h:graphicImage library="images" name="Screenshot 2023-11-29 160453.png" alt="Profile"/>
-            </label>
-            <div class="section-dropdown">
-                <div class="toggle-switch">
-                    <input type="checkbox" id="themeToggle" onchange="toggleTheme()"/>
-                    <label class="slider" for="themeToggle"></label>
+<h:body style="background-color: #F4F1DF;">
+    <div class="admin-page-wrapper">
+        <ui:include src="/WEB-INF/template/topbarAdmin.xhtml"/>
+        <main class="admin-page-main-content">
+            <div class="gestion-entity-page">
+                <div class="table-with-button-wrapper">
+                    <div class="data-table-wrapper">
+                        <h:form id="formTableEntraineurs" styleClass="form-table-container">
+
+                            <p:messages id="tableMessages"
+                                        globalOnly="false"
+                                        closable="true"
+                                        showDetail="false"/>
+
+                            <p:dataTable id="listEntraineur"
+                                         value="#{entraineurController.entraineurs}"
+                                         var="entraineur"
+                                         styleClass="gestion-data-table"
+                                         widgetVar="entraineursTableWV"
+                                         emptyMessage="Aucun entraineur trouvé.">
+
+                                <p:column headerText="Photo"
+                                          styleClass="col-photo text-center"
+                                          exportable="false">
+                                    <p:graphicImage library="photo-profil"
+                                                    name="#{entraineur.photoDeProfilUrl}"
+                                                    styleClass="table-profile-pic"
+                                                    rendered="#{not empty entraineur.photoDeProfilUrl}"
+                                                    alt="Photo"/>
+                                    <p:avatar icon="fas fa-user-md"
+                                              styleClass="table-profile-pic default-avatar"
+                                              rendered="#{empty entraineur.photoDeProfilUrl}"
+                                              shape="circle"/>
+                                </p:column>
+
+                                <p:column headerText="Nom"
+                                          sortBy="#{entraineur.nom}"
+                                          styleClass="col-nom">
+                                    <h:outputText value="#{entraineur.nom}"/>
+                                </p:column>
+
+                                <p:column headerText="Prénom"
+                                          sortBy="#{entraineur.prenom}"
+                                          styleClass="col-prenom">
+                                    <h:outputText value="#{entraineur.prenom}"/>
+                                </p:column>
+
+                                <p:column headerText="Identifiant"
+                                          sortBy="#{entraineur.identifiant}"
+                                          styleClass="col-identifiant">
+                                    <h:outputText value="#{entraineur.identifiant}"/>
+                                </p:column>
+
+                                <p:column headerText="Actions"
+                                          styleClass="col-actions text-center"
+                                          exportable="false">
+
+                                    <p:commandButton id="btnModifier"
+                                                     icon="btnEdit"
+                                                     iconOnly="true"
+                                                     actionListener="#{entraineurController.loadEntraineur(entraineur)}"
+                                                     update=":dialogForm"
+                                                     oncomplete="PF('entityDialogWidget').show(); PrimeFaces.focus('dialogForm:entraineurNomDlg');"
+                                                     title="Modifier le entraineur"
+                                                     styleClass="btn-icon-only"/>
+
+                                    <p:commandButton id="btnSupprimer"
+                                                     icon="btnDelete"
+                                                     iconOnly="true"
+                                                     actionListener="#{entraineurController.deleteEntraineur(entraineur)}"
+                                                     update="listEntraineur tableMessages"
+                                                     styleClass="btn-icon-only"
+                                                     title="Supprimer le entraineur">
+                                        <p:confirm header="Confirmation"
+                                                   message="Supprimer le entraineur #{entraineur.prenom} #{entraineur.nom} ?"
+                                                   icon="pi pi-exclamation-triangle"/>
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+                        </h:form>
+                    </div>
+
+                    <h:form id="formAddButton" styleClass="form-footer-container">
+                        <p:commandButton value="Ajouter un Entraineur"
+                                         id="addEntraineurBtnPage"
+                                         actionListener="#{entraineurController.resetForm()}"
+                                         update=":dialogForm:dialogContentPanel"
+                                         oncomplete="PF('entityDialogWidget').show(); PrimeFaces.focus('dialogForm:entraineurNom');"
+                                         styleClass="add-entity-button"
+                                         iconPos="left">
+
+                        </p:commandButton>
+                    </h:form>
+
                 </div>
-                <p:commandButton id="mofiier" styleClass="custom-btn" value="Modifier votre profil"
-                                 actionListener="#{categorieController.resetForm()}"
-                                 update=""
-                                 oncomplete="PF('').show()"/>
-                <p:commandButton id="contact" value="Contacter votre entraineur"
-                                 actionListener="#{categorieController.resetForm()}"
-                                 update=""
-                                 styleClass="custom-btn"
-                                 oncomplete="PF('').show()"/>
+
             </div>
-        </div>
-    </div>
-    <script type="text/javascript">
-        function toggleTheme() {
-            var body = document.getElementById('bodyElement');
-            body.classList.toggle('light-theme');
-        }
-    </script>
-
-    <div id="appContainer">
-        <div class="locked-table">
-            <h:form id="formEntraineurs">
-
-                <p:dataTable value="#{entraineurController.entraineurs}" var="entraineur">
-
-                    <p:column headerText="Photo">
-                        <h:graphicImage library="photo-profil"
-                                        name="#{entraineur.photoDeProfilUrl}"
-                                        alt="Profile photo"
-                                        style="max-height:50px; width:auto; height:auto;"/>
-                    </p:column>
-                    <p:column headerText="Nom">
-                        <h:outputText value="#{entraineur.nom}"/>
-                    </p:column>
-                    <p:column headerText="Prénom">
-                        <h:outputText value="#{entraineur.prenom}"/>
-                    </p:column>
-                    <p:column headerText="Actions">
-                        <p:commandButton id="modifier" icon="pi pi-pencil"
-                                         action="#{entraineurController.loadEntraineur(entraineur)}"
-                                         update=":formAddEntraineur" oncomplete="PF('dlgAddEntraineur').show()"
-                                         title="Modifier"/>
-                        <p:commandButton id="supprimer" icon="pi pi-trash"
-                                         action="#{entraineurController.deleteEntraineur(entraineur)}"
-                                         update="formEntraineurs" title="Supprimer"/>
-                    </p:column>
-                </p:dataTable>
-            </h:form>
-        </div>
-    </div>
-    <div class="bottom">
-        <p:commandButton id="ajoutEntraineur" value="Ajouter un entraineur"
-                         actionListener="#{entraineurController.resetForm()}"
-                         update="formAddEntraineur"
-                         oncomplete="PF('dlgAddEntraineur').show()"
-                         styleClass="button-bottom"/>
+        </main>
     </div>
 
-    <p:dialog styleClass="dialog" widgetVar="dlgAddEntraineur" modal="true" resizable="false" draggable="false"
-              closeOnEscape="true" showEffect="fade" hideEffect="fade" width="50%" bottom="0" left="50%">
 
-        <h:form id="formAddEntraineur" enctype="multipart/form-data">
-            <h:inputHidden value="#{entraineurController.entraineur.idPersonne}"/>
+    <h:form id="dialogForm" enctype="multipart/form-data">
+        <p:dialog id="entityDialog"
+                  styleClass="entity-dialog"
+                  widgetVar="entityDialogWidget"
+                  modal="true"
+                  resizable="false"
+                  draggable="false"
+                  closeOnEscape="true"
+                  showEffect="fade"
+                  hideEffect="fade"
+                  fitViewport="true"
+                  responsive="true"
+                  width="700px"
+                  position="center center">
 
-            <p:panelGrid columns="2" styleClass="grid">
+            <h:panelGroup id="dialogContentPanel" layout="block">
+                <p:messages id="dialogMessages"
+                            globalOnly="false"
+                            closable="true"
+                            showDetail="false"/>
+                <p:focus context="dialogContentPanel"/>
+                <h:inputHidden id="entraineurIdDlg" value="#{entraineurController.entraineur.idPersonne}"/>
 
-                <h:outputLabel value="Nom :"/>
-                <p:inputText id="nom" value="#{entraineurController.entraineur.nom}"/>
+                <div class="dialog-grid">
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="entraineurNomDlg" value="Nom : *" />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:inputText id="entraineurNomDlg"
+                                     value="#{entraineurController.entraineur.nom}"
+                                     required="true"
+                                     requiredMessage="Le nom est obligatoire."
+                                     styleClass="dialog-inputfield"/>
+                    </div>
 
-                <h:outputLabel value="Prénom :"/>
-                <p:inputText id="prenom" value="#{entraineurController.entraineur.prenom}"/>
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="entraineurPrenomDlg" value="Prénom : *" />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:inputText id="entraineurPrenomDlg"
+                                     value="#{entraineurController.entraineur.prenom}"
+                                     required="true"
+                                     requiredMessage="Le prénom est obligatoire."
+                                     styleClass="dialog-inputfield"/>
+                    </div>
 
-                <h:outputLabel value="Identifiant:"/>
-                <p:inputText id="identifiant" value="#{entraineurController.entraineur.identifiant}"/>
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="entraineurIdentifiantDlg" value="Identifiant : *" />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:inputText id="entraineurIdentifiantDlg"
+                                     value="#{entraineurController.entraineur.identifiant}"
+                                     required="true"
+                                     requiredMessage="L’identifiant est obligatoire."
+                                     styleClass="dialog-inputfield"/>
+                    </div>
 
-                <h:outputLabel value="Mot de passe:"/>
-                <p:password id="mdp" value="#{entraineurController.entraineur.motDePasse}"/>
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="entraineurUtilisateursDlg" value="Sélectionner les patients :" />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:selectCheckboxMenu id="entraineurUtilisateursDlg"
+                                              multiple="true"
+                                              filter="false"
+                                              emptyLabel="Merci de sélectionner …"
+                                              updateLabel="true"
+                                              value="#{entraineurController.utilisteursSelectionnesIds}"
+                                              styleClass="dialog-selectmenu">
+                            <f:selectItems value="#{utilisateurController.getUtilisateursByRole()}"
+                                           var="user"
+                                           itemLabel="#{user.nom} #{user.prenom}"
+                                           itemValue="#{user.idPersonne}"/>
+                        </p:selectCheckboxMenu>
+                    </div>
 
-                <p:selectCheckboxMenu id="multiple"
-                                      multiple="true" emptyLabel="Please select..." updateLabel="true"
-                                      value="#{entraineurController.utilisteursSelectionnesIds}">
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="entraineurMdpDlg" value="Mot de passe : *" />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:password id="entraineurMdpDlg"
+                                    value="#{entraineurController.entraineur.plainTextPassword}"
+                                    feedback="false"
+                                    weakLabel="Faible"
+                                    goodLabel="Moyen"
+                                    strongLabel="Fort"
+                                    requiredMessage="Mot de passe requis pour un nouveau entraineur."
+                                    styleClass="dialog-password"/>
+                    </div>
 
-                    <f:selectItems value="#{utilisateurController.read()}" var="user" itemLabel="#{user.nom} #{user.prenom}" itemValue="#{user.idPersonne}"/>
-                </p:selectCheckboxMenu>
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="entraineurPhotoUploadDlg" value="Photo de profil :" />
+                    </div>
+                    <div class="dialog-input-col">
 
-                <h:outputLabel value="Photo de profil :"/>
-                <p:fileUpload id="photoProfil" mode="simple"
-                              value="#{imageController.uploadedFile}"
-                              sizeLimit="100000000"
-                              allowTypes="/(\.|\/)(jpg|jpeg|png)$/"
-                              dragDropSupport="false"/>
-            </p:panelGrid>
+                        <p:fileUpload id="entraineurPhotoUploadDlg"
+                                      mode="advanced"
+                                      skinSimple="false"
+                                      auto="false"
+                                      value="#{imageController.uploadedFile}"
+                                      label="Choisir"
+                                      uploadLabel="Charger"
+                                      cancelLabel="Annuler"
+                                      sizeLimit="2097152"
+                                      multiple="false"
+                                      allowTypes="/(\.|\/)(jpg|jpeg|png|gif)$/"
+                                      invalidSizeMessage="Taille max : 2 Mo"
+                                      invalidFileMessage="Type invalide (JPG, PNG, GIF)."
+                                      showFileList="false"
 
-            <p:separator/>
 
-            <p:commandButton id="enregistrer" value="Enregistrer"
-                             actionListener="#{entraineurController.editEntraineur()}"
-                             oncomplete="PF('dlgAddEntraineur').hide()"
-                             update="formEntraineurs"
-                             icon="pi pi-check"/>
+                                      update="currentPhotoDisplayDlg dialogMessages"
+                                      process="@this"
+                                      styleClass="dialog-fileupload"/>
 
-            <p:commandButton id="annuler" value="Annuler"
-                             type="button"
-                             onclick="PF('dlgAddEntraineur').hide()"
-                             icon="pi pi-times"/>
-        </h:form>
-    </p:dialog>
+
+                    </div>
+
+                    <div class="dialog-label-col">
+                    </div>
+                </div>
+
+                <div class="dialog-buttons-bar">
+
+                    <p:commandButton value="Enregistrer"
+                                     action="#{entraineurController.editEntraineur}"
+                                     update=":formTableEntraineurs:listEntraineur :formTableEntraineurs:tableMessages @form"
+                                     oncomplete="if (!args.validationFailed) {PF('entityDialogWidget').hide();}"
+                                     styleClass="ui-button-success"
+                                     icon="pi pi-check"/>
+                    <p:commandButton value="Annuler"
+                                     type="button"
+                                     onclick="PF('entityDialogWidget').hide()"
+                                     styleClass="ui-button-secondary ui-button-outlined"
+                                     icon="pi pi-times"/>
+                </div>
+
+            </h:panelGroup>
+        </p:dialog>
+    </h:form>
+
+    <p:confirmDialog global="true"
+                     styleClass="custom-confirm-dialog"
+                     showEffect="fade"
+                     hideEffect="fade"
+                     width="380">
+        <p:commandButton value="Oui"
+                         type="button"
+                         styleClass="ui-confirmdialog-yes ui-button-success"
+                         icon="pi pi-check"/>
+        <p:commandButton value="Non"
+                         type="button"
+                         styleClass="ui-confirmdialog-no ui-button-outlined ui-button-secondary"
+                         icon="pi pi-times"/>
+    </p:confirmDialog>
+
 </h:body>
 </html>

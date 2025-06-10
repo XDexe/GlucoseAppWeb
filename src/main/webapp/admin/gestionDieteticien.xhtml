@@ -1,138 +1,275 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
+
 <h:head>
-    <title>Gestion dieteticien</title>
-    <h:outputStylesheet library="css" name="cssTemp.css"/>
+    <title>Gestion des Diététiciens</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <h:outputStylesheet library="css" name="mainCss.css"/>
+    <h:outputStylesheet library="css" name="topbar.css"/>
+    <h:outputScript library="javascript" name="themeManager.js" target="body"/>
 </h:head>
 
-<h:body id="bodyElement">
-    <div class="header">
-        <div class="drop">
-            <input class="dropdown" type="checkbox" id="dropdown2" name="dropdown"/>
-            <label class="profile-image" for="dropdown2">
-                <h:graphicImage library="images" name="Screenshot 2023-11-29 160453.png" alt="Profile"/>
-            </label>
-            <div class="section-dropdown">
-                <div class="toggle-switch">
-                    <input type="checkbox" id="themeToggle" onchange="toggleTheme()"/>
-                    <label class="slider" for="themeToggle"></label>
+<h:body style="background-color: #F4F1DF;">
+    <div class="admin-page-wrapper">
+        <ui:include src="/WEB-INF/template/topbarAdmin.xhtml"/>
+        <main class="admin-page-main-content">
+            <div class="gestion-entity-page">
+                <div class="table-with-button-wrapper">
+                    <div class="data-table-wrapper">
+                        <h:form id="formTableDieteticiens" styleClass="form-table-container">
+
+                            <p:messages id="tableMessages"
+                                        globalOnly="false"
+                                        closable="true"
+                                        showDetail="false"/>
+
+                            <p:dataTable id="listDieteticien"
+                                         value="#{dieteticienController.dieteticiens}"
+                                         var="dieteticien"
+                                         styleClass="gestion-data-table"
+                                         widgetVar="dieteticiensTableWV"
+                                         emptyMessage="Aucun diététicien trouvé.">
+
+                                <p:column headerText="Photo"
+                                          styleClass="col-photo text-center"
+                                          exportable="false">
+                                    <p:graphicImage library="photo-profil"
+                                                    name="#{dieteticien.photoDeProfilUrl}"
+                                                    styleClass="table-profile-pic"
+                                                    rendered="#{not empty dieteticien.photoDeProfilUrl}"
+                                                    alt="Photo"/>
+                                    <p:avatar icon="fas fa-user-md"
+                                              styleClass="table-profile-pic default-avatar"
+                                              rendered="#{empty dieteticien.photoDeProfilUrl}"
+                                              shape="circle"/>
+                                </p:column>
+
+                                <p:column headerText="Nom"
+                                          sortBy="#{dieteticien.nom}"
+                                          styleClass="col-nom">
+                                    <h:outputText value="#{dieteticien.nom}"/>
+                                </p:column>
+
+                                <p:column headerText="Prénom"
+                                          sortBy="#{dieteticien.prenom}"
+                                          styleClass="col-prenom">
+                                    <h:outputText value="#{dieteticien.prenom}"/>
+                                </p:column>
+
+                                <p:column headerText="Identifiant"
+                                          sortBy="#{dieteticien.identifiant}"
+                                          styleClass="col-identifiant">
+                                    <h:outputText value="#{dieteticien.identifiant}"/>
+                                </p:column>
+
+                                <p:column headerText="Actions"
+                                          styleClass="col-actions text-center"
+                                          exportable="false">
+
+                                    <p:commandButton id="btnModifier"
+                                                     icon="btnEdit"
+                                                     iconOnly="true"
+                                                     actionListener="#{dieteticienController.loadDieteticien(dieteticien)}"
+                                                     update=":dialogForm"
+                                                     oncomplete="PF('entityDialogWidget').show(); PrimeFaces.focus('dialogForm:dieteticienNomDlg');"
+                                                     title="Modifier le diététicien"
+                                                     styleClass="btn-icon-only"/>
+
+                                    <p:commandButton id="btnSupprimer"
+                                                     icon="btnDelete"
+                                                     iconOnly="true"
+                                                     actionListener="#{dieteticienController.deleteDieteticien(dieteticien)}"
+                                                     update="listDieteticien tableMessages"
+                                                     styleClass="btn-icon-only"
+                                                     title="Supprimer le diététicien">
+                                        <p:confirm header="Confirmation"
+                                                   message="Supprimer le diététicien #{dieteticien.prenom} #{dieteticien.nom} ?"
+                                                   icon="pi pi-exclamation-triangle"/>
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+                        </h:form>
+                    </div>
+
+                    <h:form id="formAddButton" styleClass="form-footer-container">
+                        <p:commandButton value="Ajouter un Diététicien"
+                                         id="addDieteticienBtnPage"
+                                         actionListener="#{dieteticienController.resetForm()}"
+                                         update=":dialogForm:dialogContentPanel"
+                                         oncomplete="PF('entityDialogWidget').show(); PrimeFaces.focus('dialogForm:dieteticienNom');"
+                                         styleClass="add-entity-button"
+                                         iconPos="left">
+
+                        </p:commandButton>
+                    </h:form>
+
                 </div>
-                <p:commandButton id="modifProfileDieteticien" styleClass="custom-btn" value="Modifier votre profil"
-                                 actionListener="#{categorieController.resetForm()}"
-                                 update=""
-                                 oncomplete="PF('').show()"/>
-                <p:commandButton id="contactDieteticien" value="Contacter votre dieteticien"
-                                 actionListener="#{categorieController.resetForm()}"
-                                 update=""
-                                 styleClass="custom-btn"
-                                 oncomplete="PF('').show()"/>
+
             </div>
-        </div>
-    </div>
-    <script type="text/javascript">
-        function toggleTheme() {
-            var body = document.getElementById('bodyElement');
-            body.classList.toggle('light-theme');
-        }
-    </script>
-
-    <div id="appContainer">
-        <div class="locked-table">
-            <h:form id="formDieteticiens">
-
-                <p:dataTable id="listDieteticien" value="#{dieteticienController.dieteticiens}" var="dieteticien">
-
-                    <p:column headerText="Photo">
-                        <h:graphicImage library="photo-profil"
-                                        name="#{dieteticien.photoDeProfilUrl}"
-                                        alt="Profile photo"
-                                        style="max-height:50px; width:auto; height:auto;"/>
-                    </p:column>
-                    <p:column headerText="Nom">
-                        <h:outputText value="#{dieteticien.nom}"/>
-                    </p:column>
-                    <p:column headerText="Prénom">
-                        <h:outputText value="#{dieteticien.prenom}"/>
-                    </p:column>
-                    <p:column id="actionColoneAction" headerText="Actions">
-                        <p:commandButton icon="pi pi-pencil"
-                                         id="chargerDieteticien"
-                                         action="#{dieteticienController.loadDieteticien(dieteticien)}"
-                                         update=":formAddDieteticien" oncomplete="PF('dlgAddDieteticien').show()"
-                                         title="Modifier"/>
-                        <p:commandButton icon="pi pi-trash"
-                                         id="suppressionDieteticien"
-                                         action="#{dieteticienController.deleteDieteticien(dieteticien)}"
-                                         update="formDieteticiens" title="Supprimer"/>
-                    </p:column>
-                </p:dataTable>
-            </h:form>
-        </div>
-    </div>
-    <div class="bottom">
-        <p:commandButton value="Ajouter un dieteticien"
-                         id="ajoutDieteticien"
-                         actionListener="#{dieteticienController.resetForm()}"
-                         update="formAddDieteticien"
-                         oncomplete="PF('dlgAddDieteticien').show()"
-                         styleClass="button-bottom"/>
+        </main>
     </div>
 
-    <p:dialog id="dialogDieteticen" styleClass="dialog" widgetVar="dlgAddDieteticien" modal="true" resizable="false" draggable="false"
-              closeOnEscape="true" showEffect="fade" hideEffect="fade" width="50%" bottom="0" left="50%">
 
-        <h:form id="formAddDieteticien" enctype="multipart/form-data">
-            <h:inputHidden value="#{dieteticienController.dieteticien.idPersonne}"/>
+    <h:form id="dialogForm" enctype="multipart/form-data">
+        <p:dialog id="entityDialog"
+                  styleClass="entity-dialog"
+                  widgetVar="entityDialogWidget"
+                  modal="true"
+                  resizable="false"
+                  draggable="false"
+                  closeOnEscape="true"
+                  showEffect="fade"
+                  hideEffect="fade"
+                  fitViewport="true"
+                  responsive="true"
+                  width="700px"
+                  position="center center">
 
-            <p:panelGrid columns="2" styleClass="grid">
+            <h:panelGroup id="dialogContentPanel" layout="block">
+                <p:messages id="dialogMessages"
+                            globalOnly="false"
+                            closable="true"
+                            showDetail="false"/>
+                <p:focus context="dialogContentPanel"/>
+                <h:inputHidden id="dieteticienIdDlg" value="#{dieteticienController.dieteticien.idPersonne}"/>
 
-                <h:outputLabel value="Nom :"/>
-                <p:inputText id="deteticienNom" value="#{dieteticienController.dieteticien.nom}"/>
+                <div class="dialog-grid">
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="dieteticienNomDlg" value="Nom : *" />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:inputText id="dieteticienNomDlg"
+                                     value="#{dieteticienController.dieteticien.nom}"
+                                     required="true"
+                                     requiredMessage="Le nom est obligatoire."
+                                     styleClass="dialog-inputfield"/>
+                    </div>
 
-                <h:outputLabel value="Prénom :"/>
-                <p:inputText id="deteticienPrenom" value="#{dieteticienController.dieteticien.prenom}"/>
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="dieteticienPrenomDlg" value="Prénom : *" />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:inputText id="dieteticienPrenomDlg"
+                                     value="#{dieteticienController.dieteticien.prenom}"
+                                     required="true"
+                                     requiredMessage="Le prénom est obligatoire."
+                                     styleClass="dialog-inputfield"/>
+                    </div>
 
-                <h:outputLabel value="Identifiant:"/>
-                <p:inputText id="deteticienIdentifiant" value="#{dieteticienController.dieteticien.identifiant}"/>
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="dieteticienIdentifiantDlg" value="Identifiant : *" />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:inputText id="dieteticienIdentifiantDlg"
+                                     value="#{dieteticienController.dieteticien.identifiant}"
+                                     required="true"
+                                     requiredMessage="L’identifiant est obligatoire."
+                                     styleClass="dialog-inputfield"/>
+                    </div>
 
-                <h:outputLabel value="Mot de passe:"/>
-                <p:password id="deteticienMdp" value="#{dieteticienController.dieteticien.motDePasse}"/>
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="dieteticienUtilisateursDlg" value="Sélectionner les patients :" />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:selectCheckboxMenu id="dieteticienUtilisateursDlg"
+                                              multiple="true"
+                                              filter="false"
+                                              emptyLabel="Merci de sélectionner …"
+                                              updateLabel="true"
+                                              value="#{dieteticienController.utilisteursSelectionnesIds}"
+                                              styleClass="dialog-selectmenu">
+                            <f:selectItems value="#{utilisateurController.getUtilisateursByRole()}"
+                                           var="user"
+                                           itemLabel="#{user.nom} #{user.prenom}"
+                                           itemValue="#{user.idPersonne}"/>
+                        </p:selectCheckboxMenu>
+                    </div>
 
-                <p:selectCheckboxMenu  id="multiple"
-                                      multiple="true" emptyLabel="Please select..." updateLabel="true"
-                                      value="#{dieteticienController.utilisteursSelectionnesIds}">
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="dieteticienMdpDlg" value="Mot de passe : *" />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:password id="dieteticienMdpDlg"
+                                    value="#{dieteticienController.dieteticien.plainTextPassword}"
+                                    feedback="false"
+                                    weakLabel="Faible"
+                                    goodLabel="Moyen"
+                                    strongLabel="Fort"
+                                    requiredMessage="Mot de passe requis pour un nouveau diététicien."
+                                    styleClass="dialog-password"/>
+                    </div>
 
-                    <f:selectItems value="#{utilisateurController.read()}" var="user" itemLabel="#{user.nom} #{user.prenom}" itemValue="#{user.idPersonne}"/>
-                </p:selectCheckboxMenu>
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="dieteticienPhotoUploadDlg" value="Photo de profil :" />
+                    </div>
+                    <div class="dialog-input-col">
 
-                <h:outputLabel value="Photo de profil :"/>
-                <p:fileUpload mode="simple"
-                              value="#{imageController.uploadedFile}"
-                              sizeLimit="100000000"
-                              allowTypes="/(\.|\/)(jpg|jpeg|png)$/"
-                              dragDropSupport="false"/>
-            </p:panelGrid>
+                        <p:fileUpload id="dieteticienPhotoUploadDlg"
+                                      mode="advanced"
+                                      skinSimple="false"
+                                      auto="false"
+                                      value="#{imageController.uploadedFile}"
+                                      label="Choisir"
+                                      uploadLabel="Charger"
+                                      cancelLabel="Annuler"
+                                      sizeLimit="2097152"
+                                      multiple="false"
+                                      allowTypes="/(\.|\/)(jpg|jpeg|png|gif)$/"
+                                      invalidSizeMessage="Taille max : 2 Mo"
+                                      invalidFileMessage="Type invalide (JPG, PNG, GIF)."
+                                      showFileList="false"
 
-            <p:separator/>
 
-            <p:commandButton value="Enregistrer"
-                             id="saveDeteticien"
-                             actionListener="#{dieteticienController.editDieteticien()}"
-                             oncomplete="PF('dlgAddDieteticien').hide()"
-                             update="formDieteticiens"
-                             icon="pi pi-check"/>
+                                      update="currentPhotoDisplayDlg dialogMessages"
+                                      process="@this"
+                                      styleClass="dialog-fileupload"/>
 
-            <p:commandButton value="Annuler"
-                             id="cancelDeteticien"
-                             type="button"
-                             onclick="PF('dlgAddDieteticien').hide()"
-                             icon="pi pi-times"/>
-        </h:form>
-    </p:dialog>
+
+                    </div>
+
+                    <div class="dialog-label-col">
+                    </div>
+                </div>
+
+                <div class="dialog-buttons-bar">
+
+                    <p:commandButton value="Enregistrer"
+                                     action="#{dieteticienController.editDieteticien}"
+                                     update=":formTableDieteticiens:listDieteticien :formTableDieteticiens:tableMessages @form"
+                                     oncomplete="if (!args.validationFailed) {PF('entityDialogWidget').hide();}"
+                                     styleClass="ui-button-success"
+                                     icon="pi pi-check"/>
+                    <p:commandButton value="Annuler"
+                                     type="button"
+                                     onclick="PF('entityDialogWidget').hide()"
+                                     styleClass="ui-button-secondary ui-button-outlined"
+                                     icon="pi pi-times"/>
+                </div>
+
+            </h:panelGroup>
+        </p:dialog>
+    </h:form>
+
+    <p:confirmDialog global="true"
+                     styleClass="custom-confirm-dialog"
+                     showEffect="fade"
+                     hideEffect="fade"
+                     width="380">
+        <p:commandButton value="Oui"
+                         type="button"
+                         styleClass="ui-confirmdialog-yes ui-button-success"
+                         icon="pi pi-check"/>
+        <p:commandButton value="Non"
+                         type="button"
+                         styleClass="ui-confirmdialog-no ui-button-outlined ui-button-secondary"
+                         icon="pi pi-times"/>
+    </p:confirmDialog>
+
 </h:body>
 </html>

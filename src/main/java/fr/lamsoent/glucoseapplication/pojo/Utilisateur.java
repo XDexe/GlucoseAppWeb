@@ -15,7 +15,7 @@ public class Utilisateur extends Personne {
     private String seuilMax;
     private String seuilMin;
 
-    @OneToMany(mappedBy = "utilisateur")
+    @OneToMany(mappedBy = "utilisateur", cascade = CascadeType.ALL)
     @JsonbTransient
     private List<Alerte> listAlertes = new ArrayList<>();
 

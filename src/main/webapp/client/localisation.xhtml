@@ -1,141 +1,252 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 <h:head>
-    <title>Test Geolocalisation Capteurs </title>
+    <title>Géolocalisation des Capteurs</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" type="application/javascript"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <h:outputStylesheet library="css" name="mainCss.css"/>
+    <h:outputStylesheet library="css" name="topbar.css"/>
+    <h:outputStylesheet library="css" name="map.css"/>
 </h:head>
 
 <h:body>
+    <ui:include src="/WEB-INF/template/topbarAdmin.xhtml"/>
+    <main>
+        <div class="map-page-container">
 
-    <h:form id="formGeoloc">
-        <h:inputHidden id="idCapteur" value="#{activiteController.capteur.id}"/>
-    </h:form>
-    <div id="map" style="width: 80%; height: 80%;"></div>
-    <div id="controles" style="padding: 10px; background-color: #f8f9fa;">
-        <h:form id="formSelecteur">
-            <p:selectOneMenu id="selecteurCapteurs" style="width: 100%;"
-                             widgetVar="capteurWidget"
-            >
-                <f:selectItem itemLabel="-- Sélectionner un capteur --" itemValue="" />
-                <f:selectItems  value="#{capteurController.capteurModel.read()}"
-                                var="capteur"
-                                itemLabel="#{capteur.nom}"
-                                itemValue="#{capteur.id}" >
-                </f:selectItems>
-                <p:ajax update="formGeoloc:idCapteur" event="change" oncomplete="centraliser();" />
+            <div class="map-controls-panel">
+                <h:form id="formSelecteur">
+                    <p:outputLabel for="selecteurCapteurs" value="Centrer sur un capteur :"/>
+                    <p:selectOneMenu id="selecteurCapteurs" widgetVar="capteurWidget">
+                        <f:selectItem itemLabel="-- Sélectionner --" itemValue="" noSelectionOption="true"/>
+                        <f:selectItems value="#{capteurController.capteurModel.read()}"
+                                       var="capteur"
+                                       itemLabel="#{capteur.nom}"
+                                       itemValue="#{capteur.id}"/>
+                        <p:ajax event="change" oncomplete="centraliser();" />
+                    </p:selectOneMenu>
+                </h:form>
+            </div>
 
-            </p:selectOneMenu>
-        </h:form>
-    </div>
-    <script type="application/javascript">
+            <div class="map-container">
+                <div id="map"></div>
+            </div>
+
+        </div>
+    </main>
+
+    <h:outputScript>
         const mapCapteurMarker = new Map();
+
         let ws;
+
+
 
         var map = L.map('map').setView([47.32, 9.27],4);
 
+
+
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+
             attribution: '&lt;a href="https://www.openstreetmap.org/copyright">OpenStreetMap&lt;/a> contributors'
+
         }).addTo(map);
 
+
+
         function centraliser() {
+
             console.log("Appel méthode centraliser");
 
+
+
             const capteurId = PF('capteurWidget').getSelectedValue();
+
             console.log("Capteur id : " + capteurId);
+
+
 
             const marker = mapCapteurMarker.get(parseInt(capteurId));
 
+
+
             if (marker != null) {
+
                 map.setView(marker.getLatLng(), 15);
+
                 marker.openPopup(); // facultatif : ouvrir le popup du capteur
+
             } else {
+
                 console.warn("Aucun marqueur trouvé pour l'ID : " + capteurId);
+
             }
+
         }
+
+
 
         /*function selectionnerCapteur() {
-            const capteurId = PF('capteurWidget').getSelectedValue();
-            if (capteurId &amp;&amp; capteurs.has(parseInt(capteurId))) {
-                const capteur = capteurs.get(parseInt(capteurId));
-                map.setView([capteur.latitude, capteur.longitude], 17);
 
-                // Ouvrir le popup du marqueur sélectionné
-                const marker = mapCapteurMarker.get(parseInt(capteurId));
-                if (marker) {
-                    marker.openPopup();
-                }
-            }
+        const capteurId = PF('capteurWidget').getSelectedValue();
+
+        if (capteurId &amp;&amp; capteurs.has(parseInt(capteurId))) {
+
+        const capteur = capteurs.get(parseInt(capteurId));
+
+        map.setView([capteur.latitude, capteur.longitude], 17);
+
+
+
+        // Ouvrir le popup du marqueur sélectionné
+
+        const marker = mapCapteurMarker.get(parseInt(capteurId));
+
+        if (marker) {
+
+        marker.openPopup();
+
+        }
+
+        }
+
         }*/
-        ws = new WebSocket("ws://10.45.21.240:8080/GlucoseApplication-1.0-SNAPSHOT/websocketlocate");
+
+        ws = new WebSocket("ws://10.117.2.240:8080/GlucoseApplication-1.0-SNAPSHOT/websocketlocate");
+
+
 
         ws.onopen = event => {
+
             ws.send("geolocaliser#");
+
             console.log("WebSocket connection for map opened");
+
         };
+
+
 
         ws.onmessage = event => {
+
             let txt = event.data;
+
             let txtJson = JSON.parse(txt);
+
             console.log("Message received");
 
+
+
             if(Array.isArray(txtJson)){
+
                 for (let i = 0; i &lt; txtJson.length; i++) {
+
                     let capteur = txtJson[i];
 
+
+
                     if(mapCapteurMarker.has(capteur.id)){
+
                         deplacerPoint(map,capteur.id,capteur.latitude,capteur.longitude);
+
                     }else{
+
                         placerPoint(map,capteur.latitude,capteur.longitude,capteur.nom,capteur.id);
+
                     }
 
+
+
                 }
+
             }else {
+
                 let capteur = txtJson;
 
+
+
                 if(mapCapteurMarker.has(capteur.id)){
+
                     deplacerPoint(map,capteur.id,capteur.latitude,capteur.longitude);
+
                 }else{
+
                     placerPoint(map,capteur.latitude,capteur.longitude,capteur.nom,capteur.id);
+
                 }
+
             }
+
             console.log(txtJson);
+
         };
+
+
 
         ws.onerror = error => {
+
             console.error("WebSocket error:", error);
+
         };
 
+
+
         ws.onclose = event => {
+
             console.log("WebSocket connection closed:", event);
+
         }
+
+
 
         function placerPoint(mapCapteur,lat,long,nom,idCapteur){
+
             console.log('Ajoute du point sur la carte ' + nom);
+
             var marker = L.marker([lat, long]).addTo(mapCapteur).bindPopup(nom);;
+
             mapCapteurMarker.set(idCapteur,marker);
 
+
+
         }
+
+
 
         function deplacerPoint(mapCapteur, idCapteur, lat, long){
+
             console.log('Déplacement d\'un point sur la carte ' + idCapteur + ' ' + lat + ' ' + long);
+
             var marker = mapCapteurMarker.get(idCapteur);
+
             marker.setLatLng([lat, long]);
 
+
+
         }
+
+
 
         function supprimerPoint(mapCapteur,idCapteur){
+
             console.log('Suppression capteur sur la carte ' + idCapteur);
+
             var marker = mapCapteurMarker.get(idCapteur);
+
             mapCapteurMarker.delete(marker);
+
             mapCapteur.removeLayer(marker);
+
         }
 
-    </script>
+    </h:outputScript>
+
 </h:body>
 </html>

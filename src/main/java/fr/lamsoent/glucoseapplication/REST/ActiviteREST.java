@@ -177,7 +177,6 @@ public class  ActiviteREST {
 
     public Date formatDate(String date){
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-
         try {
             Date date1 = format.parse(date);
             return date1;
@@ -238,6 +237,10 @@ public class  ActiviteREST {
 
 
         Activite activite =activiteModel.read(idActivite);
+        if(activite.getCapteur() == null){
+            System.out.println("Capteur null");
+            return Response.noContent().build();
+        }
         activite.getCapteur().setLatitude(latitude);
         activite.getCapteur().setLongitude(longitude);
         capteurModel.update(activite.getCapteur());
@@ -257,8 +260,12 @@ public class  ActiviteREST {
 
             if (Double.parseDouble(activite.getUtilisateur().getSeuilMax()) < Double.parseDouble(donnee.getGlucose())){
                 alerte.setEstAuDessusTaux(true);
-            }else {
+                utilisateurController.sendMail(activite.getUtilisateur().getEmail(),"Alerte hyperGlycémie","Bonjour "+activite.getUtilisateur().getNom()+" "+activite.getUtilisateur().getPrenom()+",\n" +
+                        "Votre taux de glucose est supérieur à la limite autorisée de " + activite.getUtilisateur().getSeuilMax() + " mg/dL "+ "("+donnee.getGlucose()+")" +". Veuillez prendre les mesures nécessaires pour votre santé.");
+            }else if (Double.parseDouble(activite.getUtilisateur().getSeuilMin()) > Double.parseDouble(donnee.getGlucose())){
                 alerte.setEstAuDessusTaux(false);
+                utilisateurController.sendMail(activite.getUtilisateur().getEmail(),"Alerte hypoGlycémie","Bonjour "+activite.getUtilisateur().getNom()+" "+activite.getUtilisateur().getPrenom()+",\n" +
+                        "Votre taux de glucose est inférieur à la limite minimale de " + activite.getUtilisateur().getSeuilMin() +" mg/dL "+ "("+donnee.getGlucose()+")" +". Veuillez prendre les mesures nécessaires pour votre santé.");
             }
             alerteModel.update(alerte);
         }

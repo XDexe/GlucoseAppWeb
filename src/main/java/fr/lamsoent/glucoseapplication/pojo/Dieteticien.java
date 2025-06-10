@@ -1,6 +1,7 @@
 package fr.lamsoent.glucoseapplication.pojo;
 
 import jakarta.json.bind.annotation.JsonbTransient;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 
@@ -11,7 +12,7 @@ import java.util.List;
 public class Dieteticien extends Personne{
 
     @JsonbTransient
-    @OneToMany(mappedBy = "dieteticien")
+    @OneToMany(mappedBy = "dieteticien", cascade = CascadeType.ALL)
     private List<Utilisateur> listUtilisateurs = new ArrayList<>();
 
     public Dieteticien(){

@@ -1,6 +1,7 @@
 package fr.lamsoent.glucoseapplication.model;
 
 import fr.lamsoent.glucoseapplication.pojo.Activite;
+import fr.lamsoent.glucoseapplication.pojo.Donnee;
 import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -23,7 +24,28 @@ public class ActiviteModel {
         return em.merge(activite);
     }
     public void delete(Activite activite) {
-        em.remove(em.merge(activite));
+        if (activite == null || activite.getId() == 0) {
+            return; // Ne rien faire si l'activité est invalide
+        }
+
+        // Étape 1 : Interroger explicitement la base pour obtenir la liste des enfants.
+        // Cette approche est plus fiable que de naviguer via la collection de l'objet parent,
+        // car elle nous garantit d'obtenir une liste à jour, indépendamment du cache.
+        Query findDonneesQuery = em.createQuery("SELECT d FROM Donnee d WHERE d.activite.id = :activiteId");
+        findDonneesQuery.setParameter("activiteId", activite.getId());
+        List<Donnee> donneesToDelete = findDonneesQuery.getResultList();
+
+        // Étape 2 : Parcourir cette liste fraîchement obtenue et supprimer chaque enfant.
+        for (Donnee donnee : donneesToDelete) {
+            em.remove(donnee);
+        }
+
+        // Étape 3 : Maintenant que les enfants sont garantis d'être supprimés,
+        // nous pouvons supprimer l'activité parente en toute sécurité.
+        Activite activiteToDelete = em.find(Activite.class, activite.getId());
+        if (activiteToDelete != null) {
+            em.remove(activiteToDelete);
+        }
     }
     public Activite read(int id) {
         return em.find(Activite.class, id);

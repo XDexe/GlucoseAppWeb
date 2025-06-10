@@ -18,7 +18,7 @@ public class AuthentificationFilter implements Filter {
         @Override
         public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
                 throws IOException, ServletException {
-            String ipLuc = "10.45.21.146";
+            String ipLuc = "10.117.2.146";
             String remoteIP = request.getRemoteAddr();
 
             if(remoteIP.equals(ipLuc) || remoteIP.equals("192.168.137.176")){
@@ -29,7 +29,6 @@ public class AuthentificationFilter implements Filter {
             HttpServletRequest httpRequest = (HttpServletRequest) request;
             HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-            // Exclure les ressources statiques et les pages publiques
             String requestURI = httpRequest.getRequestURI();
             if (requestURI.contains("/javax.faces.resource/") ||
                     requestURI.contains("/index.xhtml") ||
@@ -39,7 +38,6 @@ public class AuthentificationFilter implements Filter {
                 return;
             }
 
-            // Vérifier si l'utilisateur est authentifié
             if (!authentificationController.isUserAuthenticated()) {
                 httpResponse.sendRedirect(httpRequest.getContextPath() + "/erreur.html");
             } else {

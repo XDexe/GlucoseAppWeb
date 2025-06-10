@@ -5,30 +5,27 @@
 
     <div class="app-header-bar">
         <div class="app-header-left">
-            <p:link outcome="/admin/interfaceAdministrateur.xhtml" styleClass="app-accueil-link">
-                Accueil
-            </p:link>
         </div>
         <div class="app-header-right">
             <div class="app-profil-trigger">
                 <span class="app-user-name">
-                    <h:outputText value="#{administrateurController.administrateur.prenom} #{administrateurController.administrateur.nom}"
-                                  rendered="#{not empty administrateurController.administrateur.nom or not empty administrateurController.administrateur.prenom}"/>
-                    <h:outputText value="Administrateur"
-                                  rendered="#{empty administrateurController.administrateur.nom and empty administrateurController.administrateur.prenom}"/>
+                    <h:outputText value="#{utilisateurController.utilisateur.prenom} #{utilisateurController.utilisateur.nom}"
+                                  rendered="#{not empty utilisateurController.utilisateur.prenom or not empty utilisateurController.utilisateur.prenom}"/>
+                    <h:outputText value="Personne"
+                                  rendered="#{empty utilisateurController.utilisateur.nom and empty utilisateurController.utilisateur.nom}"/>
                 </span>
                 <div class="app-avatar-wrapper">
                     <p:graphicImage library="photo-profil"
                                     id="adminProfilePicHeader"
-                                    name="#{administrateurController.administrateur.photoDeProfilUrl}"
+                                    name="#{utilisateurController.utilisateur.photoDeProfilUrl}"
                                     styleClass="app-user-avatar"
-                                    rendered="#{not empty administrateurController.administrateur.photoDeProfilUrl}"
+                                    rendered="#{not empty utilisateurController.utilisateur.photoDeProfilUrl}"
                                     alt="Photo de profil"/>
                     <p:avatar id="adminProfileAvatarHeader"
                               icon="fas fa-user-shield"
                               styleClass="app-user-avatar default-avatar"
                               shape="circle"
-                              rendered="#{empty administrateurController.administrateur.photoDeProfilUrl}"/>
+                              rendered="#{empty utilisateurController.utilisateur.photoDeProfilUrl}"/>
                 </div>
             </div>
 

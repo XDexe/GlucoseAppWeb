@@ -75,7 +75,7 @@ public class AuthentificationController implements Serializable {
             if (role != null && role.equals("ADMINISTRATEUR")) {
                 Utilisateur admin = (Utilisateur) personneLogin;
                 administrateurController.setAdministrateur(admin);
-                return "admin/interfaceAdmin?faces-redirect=true";
+                return "admin/interfaceAdministrateur?faces-redirect=true";
             } else if (personneLogin instanceof Utilisateur) {
                 Utilisateur utilisateur = (Utilisateur) personneLogin;
                 utilisateurController.setUtilisateur(utilisateur);
@@ -94,12 +94,15 @@ public class AuthentificationController implements Serializable {
                 return "utilisateur/dashboardEntraineur?faces-redirect=true";
             }
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Erreur", "Identifiant ou mot de passe incorrect"));
-            System.out.println("Authentification échouée");
+            FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Identifiant ou mot de passe incorrect",
+                            "Veuillez vérifier vos informations d'identification.")
+            );
         }
 
-        return "";
+        return null;
     }
 
     public String logout() {

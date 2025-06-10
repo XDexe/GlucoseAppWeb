@@ -2,12 +2,15 @@ package fr.lamsoent.glucoseapplication.controller;
 import fr.lamsoent.glucoseapplication.model.CapteurModel;
 import fr.lamsoent.glucoseapplication.pojo.Activite;
 import fr.lamsoent.glucoseapplication.pojo.Capteur;
+import fr.lamsoent.glucoseapplication.pojo.Medecin;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Named
 @RequestScoped
@@ -49,7 +52,7 @@ public class CapteurController implements Serializable {
 
         if (capteur.getId() == 0) {
             capteur =null;
-            System.out.println("Erreur activiter et 0");
+            System.out.println("Erreur activité et 0");
         }
     }
 
@@ -57,7 +60,27 @@ public class CapteurController implements Serializable {
         return capteurModel;
     }
 
+    public void resetForm() {
+        this.capteur = new Capteur();
+    }
+
+    public void afficherCapteurs() {
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("./../client/localisation.html?faces-redirect=true");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void setCapteurModel(CapteurModel capteurModel) {
         this.capteurModel = capteurModel;
     }
+
+    public List<Capteur> getCapteurs() {
+        return capteurModel.read();
+    }
 }
+
+
