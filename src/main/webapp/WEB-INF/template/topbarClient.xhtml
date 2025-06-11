@@ -1,45 +1,49 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
 
     <div class="app-header-bar">
         <div class="app-header-left">
+
+            <h:link outcome="/utilisateur/dashboardMedecin.xhtml?faces-redirect=true"
+                    styleClass="app-accueil-link"
+                    value="Accueil"
+                    rendered="#{authentificationController.personneLoginRole eq 'Medecin'}"/>
+
+            <h:link outcome="/utilisateur/dashboardDieteticien.xhtml?faces-redirect=true"
+                    styleClass="app-accueil-link"
+                    value="Accueil"
+                    rendered="#{authentificationController.personneLoginRole eq 'Dieteticien'}"/>
+
+            <h:link outcome="/utilisateur/dashboardEntraineur.xhtml?faces-redirect=true"
+                    styleClass="app-accueil-link"
+                    value="Accueil"
+                    rendered="#{authentificationController.personneLoginRole eq 'Entraineur'}"/>
+
         </div>
+
         <div class="app-header-right">
             <div class="app-profil-trigger">
                 <span class="app-user-name">
-                    <h:outputText value="#{utilisateurController.utilisateur.prenom} #{utilisateurController.utilisateur.nom}"
-                                  rendered="#{not empty utilisateurController.utilisateur.prenom or not empty utilisateurController.utilisateur.prenom}"/>
-                    <h:outputText value="Personne"
-                                  rendered="#{empty utilisateurController.utilisateur.nom and empty utilisateurController.utilisateur.nom}"/>
+                    #{authentificationController.personneLogin.prenom} #{authentificationController.personneLogin.nom}
                 </span>
                 <div class="app-avatar-wrapper">
-                    <p:graphicImage library="photo-profil"
-                                    id="adminProfilePicHeader"
-                                    name="#{utilisateurController.utilisateur.photoDeProfilUrl}"
-                                    styleClass="app-user-avatar"
-                                    rendered="#{not empty utilisateurController.utilisateur.photoDeProfilUrl}"
-                                    alt="Photo de profil"/>
-                    <p:avatar id="adminProfileAvatarHeader"
-                              icon="fas fa-user-shield"
-                              styleClass="app-user-avatar default-avatar"
-                              shape="circle"
-                              rendered="#{empty utilisateurController.utilisateur.photoDeProfilUrl}"/>
+                    <h:graphicImage library="photo-profil" name="#{authentificationController.personneLogin.photoDeProfilUrl}" styleClass="app-user-avatar" rendered="#{not empty authentificationController.personneLogin.photoDeProfilUrl}"/>
+                    <p:avatar icon="fas fa-user-circle" styleClass="app-user-avatar default-avatar" rendered="#{empty authentificationController.personneLogin.photoDeProfilUrl}"/>
                 </div>
             </div>
-
-            <div class="app-profil-dropdown">
-                <ul class="app-dropdown-list">
-                    <li>
-                        <h:form styleClass="app-dropdown-form">
-                            <p:commandLink action="#{authentificationController.logout()}" process="@this" ajax="false" styleClass="app-dropdown-item">
-                                <span class="app-dropdown-text">Se déconnecter</span>
-                            </p:commandLink>
-                        </h:form>
-                    </li>
-                </ul>
-            </div>
+            <ul class="app-profil-dropdown">
+                <li>
+                    <p:commandLink value="Modifier le profil" oncomplete="PF('profileDialogWidget').show()" styleClass="app-dropdown-item"/>
+                </li>
+                <li>
+                    <h:form styleClass="app-dropdown-form">
+                        <h:commandLink action="#{authentificationController.logout}" styleClass="app-dropdown-item" value="Se déconnecter"/>
+                    </h:form>
+                </li>
+            </ul>
         </div>
     </div>
+
 </ui:composition>

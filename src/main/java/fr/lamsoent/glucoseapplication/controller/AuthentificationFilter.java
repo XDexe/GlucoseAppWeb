@@ -18,7 +18,7 @@ public class AuthentificationFilter implements Filter {
         @Override
         public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
                 throws IOException, ServletException {
-            String ipLuc = "10.117.2.146";
+            String ipLuc = "172.22.40.96";
             String remoteIP = request.getRemoteAddr();
 
             if(remoteIP.equals(ipLuc) || remoteIP.equals("192.168.137.176")){

@@ -22,6 +22,7 @@ public class UtilisateurController implements Serializable {
     private Entraineur entraineurSelectionne = new Entraineur();
     private Dieteticien dieteticienSelectionne = new Dieteticien();
     private Categorie categorieSelectionnee = new Categorie();
+    private Capteur capteurSelectionne = new Capteur();
 
     @EJB
     private UtilisateurModel utilisateurModel;
@@ -50,6 +51,9 @@ public class UtilisateurController implements Serializable {
     @Inject
     private CategorieController categorieController;
 
+    @Inject
+    private CapteurController capteurController;
+
     public void sendMail(String to, String subject, String body) {;
         if (to == null || to.isEmpty()) {
             System.out.println("L'adresse e-mail est vide.");
@@ -70,8 +74,9 @@ public class UtilisateurController implements Serializable {
         utilisateur.setEntraineur(entraineurSelectionne != null && entraineurSelectionne.getIdPersonne() != 0 ? entraineurSelectionne : null);
         utilisateur.setDieteticien(dieteticienSelectionne != null && dieteticienSelectionne.getIdPersonne() != 0 ? dieteticienSelectionne : null);
         utilisateur.setCategorie(categorieSelectionnee != null && categorieSelectionnee.getId() != 0 ? categorieSelectionnee : null);
+        utilisateur.setCapteur(capteurSelectionne != null && capteurSelectionne.getId() != 0 ? capteurSelectionne : null);
 
-        utilisateurModel.update(utilisateur);
+        utilisateur = utilisateurModel.update(utilisateur);
         imageController.saveImage(utilisateur);
 
         resetForm();
@@ -100,6 +105,7 @@ public class UtilisateurController implements Serializable {
         this.dieteticienSelectionne = this.utilisateur.getDieteticien() != null ? this.utilisateur.getDieteticien() : new Dieteticien();
         this.entraineurSelectionne = this.utilisateur.getEntraineur() != null ? this.utilisateur.getEntraineur() : new Entraineur();
         this.categorieSelectionnee = this.utilisateur.getCategorie() != null ? this.utilisateur.getCategorie() : new Categorie();
+        this.capteurSelectionne = this.utilisateur.getCapteur() != null ? this.utilisateur.getCapteur() : new Capteur();
     }
 
     public List<Utilisateur> readByMedecin(int medecinId) {
@@ -135,6 +141,7 @@ public class UtilisateurController implements Serializable {
         this.dieteticienSelectionne = new Dieteticien();
         this.entraineurSelectionne = new Entraineur();
         this.categorieSelectionnee = new Categorie();
+        this.capteurSelectionne = new Capteur();
 
         if (imageController != null) {
             imageController.resetUploadedFile();
@@ -208,15 +215,16 @@ public class UtilisateurController implements Serializable {
         this.dieteticienSelectionne = dieteticienSelectionne;
     }
 
-    public void accesActivitesPatient(Utilisateur utilisateur) {
-        setUtilisateur(utilisateur);
+    public void accesActivitesPatient(Utilisateur patient) {
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("patientSelectionne", patient);
+        setUtilisateur(patient);
         try {
             FacesContext.getCurrentInstance().getExternalContext().redirect("./../client/listeActivites.html?faces-redirect=true");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     public ImageController getImageController() {
         return imageController;
     }
@@ -279,6 +287,22 @@ public class UtilisateurController implements Serializable {
 
     public void setRoleModel(RoleModel roleModel) {
         this.roleModel = roleModel;
+    }
+
+    public Capteur getCapteurSelectionne() {
+        return capteurSelectionne;
+    }
+
+    public void setCapteurSelectionne(Capteur capteurSelectionne) {
+        this.capteurSelectionne = capteurSelectionne;
+    }
+
+    public CapteurController getCapteurController() {
+        return capteurController;
+    }
+
+    public void setCapteurController(CapteurController capteurController) {
+        this.capteurController = capteurController;
     }
 }
 

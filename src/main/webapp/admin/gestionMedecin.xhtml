@@ -17,6 +17,7 @@
 <h:body style="background-color: #F4F1DF;">
     <div class="admin-page-wrapper">
         <ui:include src="/WEB-INF/template/topbarAdmin.xhtml"/>
+        <p:messages id="tableMessages" globalOnly="true" closable="true" showDetail="false"/>
         <main class="admin-page-main-content">
             <div class="gestion-entity-page">
                 <div class="table-with-button-wrapper">
@@ -51,18 +52,21 @@
 
                                 <p:column headerText="Nom"
                                           sortBy="#{medecin.nom}"
+                                          filterBy="#{medecin.nom}"
                                           styleClass="col-nom">
                                     <h:outputText value="#{medecin.nom}"/>
                                 </p:column>
 
                                 <p:column headerText="Prénom"
                                           sortBy="#{medecin.prenom}"
+                                            filterBy="#{medecin.prenom}"
                                           styleClass="col-prenom">
                                     <h:outputText value="#{medecin.prenom}"/>
                                 </p:column>
 
                                 <p:column headerText="Identifiant"
                                           sortBy="#{medecin.identifiant}"
+                                            filterBy="#{medecin.identifiant}"
                                           styleClass="col-identifiant">
                                     <h:outputText value="#{medecin.identifiant}"/>
                                 </p:column>

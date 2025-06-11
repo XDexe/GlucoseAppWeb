@@ -51,18 +51,21 @@
 
                                 <p:column headerText="Nom"
                                           sortBy="#{dieteticien.nom}"
+                                          filterBy="#{dieteticien.nom}"
                                           styleClass="col-nom">
                                     <h:outputText value="#{dieteticien.nom}"/>
                                 </p:column>
 
                                 <p:column headerText="Prénom"
                                           sortBy="#{dieteticien.prenom}"
+                                            filterBy="#{dieteticien.prenom}"
                                           styleClass="col-prenom">
                                     <h:outputText value="#{dieteticien.prenom}"/>
                                 </p:column>
 
                                 <p:column headerText="Identifiant"
                                           sortBy="#{dieteticien.identifiant}"
+                                            filterBy="#{dieteticien.identifiant}"
                                           styleClass="col-identifiant">
                                     <h:outputText value="#{dieteticien.identifiant}"/>
                                 </p:column>

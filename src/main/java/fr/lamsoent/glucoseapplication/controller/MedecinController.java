@@ -8,6 +8,8 @@ import fr.lamsoent.glucoseapplication.pojo.Role;
 import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
@@ -98,6 +100,10 @@ public class MedecinController implements Serializable {
         }
         imageController.deleteImage(medecin);
         medecinModel.delete(medecin);
+
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Succès", "Le médecin " + medecin.getNom() + " a été supprimé.");
+        FacesContext.getCurrentInstance().addMessage(null, message);
+
     }
 
     public void loadMedecin(Medecin medecin) {

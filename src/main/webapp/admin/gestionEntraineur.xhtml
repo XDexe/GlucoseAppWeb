@@ -51,18 +51,21 @@
 
                                 <p:column headerText="Nom"
                                           sortBy="#{entraineur.nom}"
+                                          filterBy="#{entraineur.nom}"
                                           styleClass="col-nom">
                                     <h:outputText value="#{entraineur.nom}"/>
                                 </p:column>
 
                                 <p:column headerText="Prénom"
                                           sortBy="#{entraineur.prenom}"
+                                            filterBy="#{entraineur.prenom}"
                                           styleClass="col-prenom">
                                     <h:outputText value="#{entraineur.prenom}"/>
                                 </p:column>
 
                                 <p:column headerText="Identifiant"
                                           sortBy="#{entraineur.identifiant}"
+                                            filterBy="#{entraineur.identifiant}"
                                           styleClass="col-identifiant">
                                     <h:outputText value="#{entraineur.identifiant}"/>
                                 </p:column>

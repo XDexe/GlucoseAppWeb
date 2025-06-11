@@ -47,37 +47,18 @@
         const mapCapteurMarker = new Map();
 
         let ws;
-
-
-
         var map = L.map('map').setView([47.32, 9.27],4);
-
-
-
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
             attribution: '&lt;a href="https://www.openstreetmap.org/copyright">OpenStreetMap&lt;/a> contributors'
 
         }).addTo(map);
-
-
-
         function centraliser() {
 
             console.log("Appel méthode centraliser");
-
-
-
             const capteurId = PF('capteurWidget').getSelectedValue();
-
             console.log("Capteur id : " + capteurId);
-
-
-
             const marker = mapCapteurMarker.get(parseInt(capteurId));
-
-
-
             if (marker != null) {
 
                 map.setView(marker.getLatLng(), 15);
@@ -85,127 +66,48 @@
                 marker.openPopup(); // facultatif : ouvrir le popup du capteur
 
             } else {
-
                 console.warn("Aucun marqueur trouvé pour l'ID : " + capteurId);
-
             }
-
         }
-
-
-
-        /*function selectionnerCapteur() {
-
-        const capteurId = PF('capteurWidget').getSelectedValue();
-
-        if (capteurId &amp;&amp; capteurs.has(parseInt(capteurId))) {
-
-        const capteur = capteurs.get(parseInt(capteurId));
-
-        map.setView([capteur.latitude, capteur.longitude], 17);
-
-
-
-        // Ouvrir le popup du marqueur sélectionné
-
-        const marker = mapCapteurMarker.get(parseInt(capteurId));
-
-        if (marker) {
-
-        marker.openPopup();
-
-        }
-
-        }
-
-        }*/
-
-        ws = new WebSocket("ws://10.117.2.240:8080/GlucoseApplication-1.0-SNAPSHOT/websocketlocate");
-
-
-
+        ws = new WebSocket("ws://172.22.40.116:8080/GlucoseApplication-1.0-SNAPSHOT/websocketlocate");
         ws.onopen = event => {
-
             ws.send("geolocaliser#");
-
             console.log("WebSocket connection for map opened");
 
         };
-
-
-
         ws.onmessage = event => {
-
             let txt = event.data;
-
             let txtJson = JSON.parse(txt);
-
             console.log("Message received");
-
-
-
             if(Array.isArray(txtJson)){
-
                 for (let i = 0; i &lt; txtJson.length; i++) {
-
                     let capteur = txtJson[i];
-
-
-
                     if(mapCapteurMarker.has(capteur.id)){
-
                         deplacerPoint(map,capteur.id,capteur.latitude,capteur.longitude);
-
                     }else{
-
                         placerPoint(map,capteur.latitude,capteur.longitude,capteur.nom,capteur.id);
-
                     }
-
-
-
                 }
 
             }else {
-
                 let capteur = txtJson;
-
-
-
                 if(mapCapteurMarker.has(capteur.id)){
-
                     deplacerPoint(map,capteur.id,capteur.latitude,capteur.longitude);
-
                 }else{
-
                     placerPoint(map,capteur.latitude,capteur.longitude,capteur.nom,capteur.id);
-
                 }
-
             }
-
             console.log(txtJson);
-
         };
-
-
-
         ws.onerror = error => {
 
             console.error("WebSocket error:", error);
-
         };
-
-
-
         ws.onclose = event => {
 
             console.log("WebSocket connection closed:", event);
 
         }
-
-
-
         function placerPoint(mapCapteur,lat,long,nom,idCapteur){
 
             console.log('Ajoute du point sur la carte ' + nom);
@@ -213,13 +115,7 @@
             var marker = L.marker([lat, long]).addTo(mapCapteur).bindPopup(nom);;
 
             mapCapteurMarker.set(idCapteur,marker);
-
-
-
         }
-
-
-
         function deplacerPoint(mapCapteur, idCapteur, lat, long){
 
             console.log('Déplacement d\'un point sur la carte ' + idCapteur + ' ' + lat + ' ' + long);
@@ -227,13 +123,7 @@
             var marker = mapCapteurMarker.get(idCapteur);
 
             marker.setLatLng([lat, long]);
-
-
-
         }
-
-
-
         function supprimerPoint(mapCapteur,idCapteur){
 
             console.log('Suppression capteur sur la carte ' + idCapteur);

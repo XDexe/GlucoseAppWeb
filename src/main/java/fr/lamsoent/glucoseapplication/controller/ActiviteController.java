@@ -30,6 +30,22 @@ public class ActiviteController implements Serializable {
     @Inject
     private UtilisateurController utilisateurController;
 
+    private List<Activite> patientActivites;
+
+    public List<Activite> getpatientActivites() {
+        /*this.capteur = utilisateurController.getUtilisateur().getCapteur();
+        if (capteur == null || capteur.getId() == 0) {
+            return new ArrayList<>();
+        }*/
+        //List<Activite> activites = utilisateurController.getUtilisateur
+        return activiteModel.getActivitesByCapteur(capteur);
+
+    }
+
+    public void setPatientActivites(List<Activite> patientActivites) {
+        this.patientActivites = patientActivites;
+    }
+
     public void loadActivite(){
         activite = (Activite) FacesContext.getCurrentInstance().getExternalContext().getFlash().getOrDefault("activite", new Activite());
 
@@ -64,11 +80,11 @@ public class ActiviteController implements Serializable {
 
         return "graphiqueClient.html?faces-redirect=true";
     }
+    
 
     public List<Activite> getActiviteUtilisateur(){
         return getActiviteUtilisateur(utilisateurController.getUtilisateur());
     }
-
     public List<Activite> getActiviteUtilisateur(Utilisateur utilisateur){
         Utilisateur utilAlive=utilisateur;
 
@@ -89,6 +105,14 @@ public class ActiviteController implements Serializable {
         this.activite = activite;
     }
 
+    public List<Activite > getActivitesByCapteur(Capteur capteur) {
+        this.capteur = utilisateurController.getUtilisateur().getCapteur();
+        if (capteur == null || capteur.getId() == 0) {
+            return new ArrayList<>();
+        }
+        return activiteModel.getActivitesByCapteur(capteur);
+
+    }
     public List<Activite> getActivites() {
         return activiteModel.read();
     }

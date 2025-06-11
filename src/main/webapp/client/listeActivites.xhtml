@@ -29,7 +29,7 @@
                                         showDetail="false"/>
 
                             <p:dataTable id="listActivite"
-                                         value="#{activiteController.activites}"
+                                         value="#{activiteController.getActiviteUtilisateur()}"
                                          var="activite"
                                          styleClass="gestion-data-table"
                                          widgetVar="activitesTableWV"
@@ -56,7 +56,7 @@
                                           exportable="false">
 
                                     <p:commandButton id="btnAcceder"
-                                                     icon="btnEdit"
+                                                     icon="btnSee"
                                                      iconOnly="true"
                                                      action="#{activiteController.accesActivite(activite)}"
                                                      title="Modifier l'activité"

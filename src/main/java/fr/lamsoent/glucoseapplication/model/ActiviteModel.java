@@ -1,6 +1,7 @@
 package fr.lamsoent.glucoseapplication.model;
 
 import fr.lamsoent.glucoseapplication.pojo.Activite;
+import fr.lamsoent.glucoseapplication.pojo.Capteur;
 import fr.lamsoent.glucoseapplication.pojo.Donnee;
 import fr.lamsoent.glucoseapplication.pojo.Utilisateur;
 import jakarta.ejb.Stateless;
@@ -23,6 +24,13 @@ public class ActiviteModel {
     public Activite update(Activite activite) {
         return em.merge(activite);
     }
+
+    public List<Activite> getActivitesByCapteur(Capteur capteur) {
+        Query query = em.createQuery("SELECT a FROM Activite a WHERE a.capteur = :paramCapteur", Activite.class);
+        query.setParameter("paramCapteur", capteur);
+        return query.getResultList();
+    }
+
     public void delete(Activite activite) {
         if (activite == null || activite.getId() == 0) {
             return; // Ne rien faire si l'activité est invalide

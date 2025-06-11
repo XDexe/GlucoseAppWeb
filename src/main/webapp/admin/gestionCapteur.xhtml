@@ -37,18 +37,21 @@
 
                                 <p:column headerText="Nom"
                                           sortBy="#{capteur.nom}"
+                                            filterBy="#{capteur.nom}"
                                           styleClass="col-nom">
                                     <h:outputText value="#{capteur.nom}"/>
                                 </p:column>
 
                                 <p:column headerText="Adresse MAC"
                                           sortBy="#{capteur.mac}"
+                                            filterBy="#{capteur.mac}"
                                           styleClass="col-prenom">
                                     <h:outputText value="#{capteur.mac}"/>
                                 </p:column>
 
                                 <p:column headerText="Numero de série"
                                           sortBy="#{capteur.numeroSerie}"
+                                            filterBy="#{capteur.numeroSerie}"
                                           styleClass="col-identifiant">
                                     <h:outputText value="#{capteur.numeroSerie}"/>
                                 </p:column>

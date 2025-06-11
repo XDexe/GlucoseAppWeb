@@ -1,127 +1,71 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 <h:head>
-   <title>Dashboard Diététicien</title>
-   <h:outputStylesheet library="css" name="cssTemp.css"/>
+   <title>Tableau de Bord Diététicien</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+   <h:outputStylesheet library="css" name="mainCss.css"/>
+   <h:outputStylesheet library="css" name="topbar.css"/>
 </h:head>
 
-<h:body id="bodyElement">
-   <div class="header">
-      <div class="drop">
-         <input class="dropdown" type="checkbox" id="dropdown2" name="dropdown"/>
-         <label class="profile-image" for="dropdown2">
-            <h:graphicImage library="photo-profil"
-                            name="#{dieteticienController.dieteticien.photoDeProfilUrl}"
-                            alt="Profile"/>
-         </label>
-         <div class="section-dropdown">
-            <div class="toggle-switch">
-               <input type="checkbox" id="themeToggle" onchange="toggleTheme()"/>
-               <label class="slider" for="themeToggle"></label>
+<h:body style="background-color: #F4F1DF;">
+   <div class="admin-page-wrapper">
+
+      <ui:include src="/WEB-INF/template/topbarClient.xhtml"/>
+
+      <main class="admin-page-main-content">
+         <div class="gestion-entity-page">
+            <div class="table-with-button-wrapper">
+               <div class="data-table-wrapper">
+                  <h:form id="formPatients">
+                     <p:dataTable value="#{utilisateurController.readByDieteticien(dieteticienController.dieteticien.idPersonne)}"
+                                  var="patient"
+                                  styleClass="gestion-data-table"
+                                  emptyMessage="Aucun patient ne vous est actuellement associé.">
+
+                        <p:column headerText="Photo" styleClass="col-photo text-center">
+                           <p:graphicImage library="photo-profil" name="#{patient.photoDeProfilUrl}" styleClass="table-profile-pic" rendered="#{not empty patient.photoDeProfilUrl}"/>
+                           <p:avatar icon="fas fa-user" styleClass="table-profile-pic default-avatar" rendered="#{empty patient.photoDeProfilUrl}"/>
+                        </p:column>
+
+                        <p:column headerText="Nom" sortBy="#{patient.nom}">
+                           <h:outputText value="#{patient.nom}"/>
+                        </p:column>
+
+                        <p:column headerText="Prénom" sortBy="#{patient.prenom}">
+                           <h:outputText value="#{patient.prenom}"/>
+                        </p:column>
+
+                        <p:column headerText="Seuil Min (mg/dL)">
+                           <h:outputText value="#{patient.seuilMin}"/>
+                        </p:column>
+
+                        <p:column headerText="Seuil Max (mg/dL)">
+                           <h:outputText value="#{patient.seuilMax}"/>
+                        </p:column>
+
+                        <p:column headerText="Actions" styleClass="col-actions text-center">
+                           <p:commandButton icon="pi pi-eye" styleClass="btn-icon-only"
+                                            action="#{utilisateurController.accesActivitesPatient(patient)}"
+                                            title="Voir les activités de #{patient.prenom}"/>
+                        </p:column>
+                     </p:dataTable>
+                  </h:form>
+               </div>
             </div>
-            <p:commandButton styleClass="custom-btn" value="Modifier votre profil"
-                             update="formProfile"
-                             oncomplete="PF('dlgProfile').show()"/>
-            <p:commandButton value="Déconnexion"
-                             action="#{authentificationController.logout()}"
-                             styleClass="custom-btn"/>
          </div>
-      </div>
-   </div>
-   <script type="text/javascript">
-      function toggleTheme() {
-         var body = document.getElementById('bodyElement');
-         body.classList.toggle('light-theme');
-      }
-   </script>
-
-   <div id="appContainer">
-      <h2>Bienvenue #{dieteticienController.dieteticien.prenom} #{dieteticienController.dieteticien.nom}</h2>
-
-      <div class="locked-table">
-         <h:form id="formPatients">
-            <h3>Vos patients</h3>
-            <p:dataTable value="#{utilisateurController.readByDieteticien(dieteticienController.dieteticien.idPersonne)}"
-                         var="patient"
-                         emptyMessage="Aucun patient associé">
-               <p:column headerText="Photo">
-                  <h:graphicImage library="photo-profil"
-                                  name="#{patient.photoDeProfilUrl}"
-                                  alt="Photo du patient"
-                                  style="max-height:50px; width:auto; height:auto;"/>
-               </p:column>
-               <p:column headerText="Nom">
-                  <h:outputText value="#{patient.nom}"/>
-               </p:column>
-               <p:column headerText="Prénom">
-                  <h:outputText value="#{patient.prenom}"/>
-               </p:column>
-               <p:column headerText="Seuil Min">
-                  <h:outputText value="#{patient.seuilMin}"/>
-               </p:column>
-               <p:column headerText="Seuil Max">
-                  <h:outputText value="#{patient.seuilMax}"/>
-               </p:column>
-               <p:column headerText="Remarques">
-                  <h:outputText value="#{patient.remarque}"/>
-               </p:column>
-               <p:column headerText="Actions">
-                  <p:commandButton icon="pi pi-eye"
-                                   action="#{utilisateurController.accesActivitesPatient(patient)}"
-                                   title="Voir détails">
-                     <f:setPropertyActionListener value="#{patient}"
-                                                  target="#{utilisateurController.utilisateur}"/>
-                  </p:commandButton>
-               </p:column>
-            </p:dataTable>
-         </h:form>
-      </div>
+      </main>
    </div>
 
-   <!-- Profile dialog -->
-   <p:dialog styleClass="dialog" widgetVar="dlgProfile" modal="true" resizable="false" draggable="false"
-             closeOnEscape="true" showEffect="fade" hideEffect="fade" width="50%" bottom="0" left="50%">
-      <h:form id="formProfile" enctype="multipart/form-data">
-         <h:inputHidden value="#{dieteticienController.dieteticien.idPersonne}"/>
+   <h:form id="formProfile" enctype="multipart/form-data">
+      <p:dialog header="Modifier votre profil" widgetVar="profileDialogWidget" modal="true"
+                styleClass="entity-dialog" resizable="false" draggable="false" width="700px">
+      </p:dialog>
+   </h:form>
 
-         <p:panelGrid columns="2" styleClass="grid">
-            <h:outputLabel value="Nom :"/>
-            <p:inputText value="#{dieteticienController.dieteticien.nom}"/>
-
-            <h:outputLabel value="Prénom :"/>
-            <p:inputText value="#{dieteticienController.dieteticien.prenom}"/>
-
-            <h:outputLabel value="Identifiant :"/>
-            <p:inputText value="#{dieteticienController.dieteticien.identifiant}"/>
-
-            <h:outputLabel value="Nouveau mot de passe :"/>
-            <p:password value="#{dieteticienController.dieteticien.motDePasse}"/>
-
-            <h:outputLabel value="Photo de profil :"/>
-            <p:fileUpload mode="simple"
-                          value="#{imageController.uploadedFile}"
-                          sizeLimit="100000000"
-                          allowTypes="/(\.|\/)(jpg|jpeg|png)$/"
-                          dragDropSupport="false"/>
-         </p:panelGrid>
-
-         <p:separator/>
-
-         <p:commandButton value="Enregistrer"
-                          actionListener="#{dieteticienController.editDieteticien()}"
-                          oncomplete="PF('dlgProfile').hide()"
-                          update="@form"
-                          icon="pi pi-check"/>
-
-         <p:commandButton value="Annuler"
-                          type="button"
-                          onclick="PF('dlgProfile').hide()"
-                          icon="pi pi-times"/>
-      </h:form>
-   </p:dialog>
 </h:body>
 </html>

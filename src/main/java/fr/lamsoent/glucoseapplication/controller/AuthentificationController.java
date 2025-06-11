@@ -194,4 +194,11 @@ public class AuthentificationController implements Serializable {
     }
 
 
+    public String getPersonneLoginRole() {
+        if (personneLogin == null) {
+            return "";
+        }
+        return personneLogin.getClass().getSimpleName();
+    }
+
 }

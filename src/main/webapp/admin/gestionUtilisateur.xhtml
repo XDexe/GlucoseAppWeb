@@ -51,18 +51,21 @@
 
                                 <p:column headerText="Nom"
                                           sortBy="#{utilisateur.nom}"
+                                          filterBy="#{utilisateur.nom}"
                                           styleClass="col-nom">
                                     <h:outputText value="#{utilisateur.nom}"/>
                                 </p:column>
 
                                 <p:column headerText="Prénom"
                                           sortBy="#{utilisateur.prenom}"
+                                            filterBy="#{utilisateur.prenom}"
                                           styleClass="col-prenom">
                                     <h:outputText value="#{utilisateur.prenom}"/>
                                 </p:column>
 
                                 <p:column headerText="Identifiant"
                                           sortBy="#{utilisateur.identifiant}"
+                                            filterBy="#{utilisateur.identifiant}"
                                           styleClass="col-identifiant">
                                     <h:outputText value="#{utilisateur.identifiant}"/>
                                 </p:column>
@@ -171,7 +174,54 @@
                     </div>
 
                     <div class="dialog-label-col">
-                        <h:outputLabel for="utilisateurMedecinsDlg" value="Sélectionner les médecins :" />
+                        <h:outputLabel for="utilisateurEmailDlg" value="Email : " />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:inputText id="utilisateurEmailDlg"
+                                     value="#{utilisateurController.utilisateur.email}"
+                                     required="false"
+                                     styleClass="dialog-inputfield"/>
+                    </div>
+
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="utilisateurMinDlg" value="Taux minimal (mg/dL) : " />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:inputText id="utilisateurMinDlg"
+                                     value="#{utilisateurController.utilisateur.seuilMin}"
+                                     required="false"
+                                     requiredMessage="Le seuil min est obligatoire."
+                                     styleClass="dialog-inputfield"/>
+                    </div>
+
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="utilisateurMaxDlg" value="Taux maximal (mg/dL) : " />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:inputText id="utilisateurMaxDlg"
+                                     value="#{utilisateurController.utilisateur.seuilMax}"
+                                     required="false"
+                                     requiredMessage="Le seuil max est obligatoire."
+                                     styleClass="dialog-inputfield"/>
+                    </div>
+
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="utilisateurCapteursDlg" value="Sélectionner le capteur :" />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:selectOneMenu id="utilisateurCapteursDlg" value="#{utilisateurController.capteurSelectionne.id}">
+                            <f:selectItem itemLabel="-- Aucun --" itemValue="0" noSelectionOption="true"/>
+                            <f:selectItems
+                                    value="#{capteurController.capteurs}"
+                                    var="capteur"
+                                    itemLabel="#{capteur.nom} #{capteur.mac}"
+                                    itemValue="#{capteur.id}"
+                                    styleClass="dialog-selectmenu"/>
+                        </p:selectOneMenu>
+                    </div>
+
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="utilisateurMedecinsDlg" value="Sélectionner le médecin :" />
                     </div>
                     <div class="dialog-input-col">
                         <p:selectOneMenu id="utilisateurMedecinsDlg" value="#{utilisateurController.medecinSelectionne.idPersonne}">
@@ -186,7 +236,7 @@
                     </div>
 
                     <div class="dialog-label-col">
-                        <h:outputLabel for="utilisateurDieteticiensDlg" value="Sélectionner les diététiciens :" />
+                        <h:outputLabel for="utilisateurDieteticiensDlg" value="Sélectionner le diététicien :" />
                     </div>
                     <div class="dialog-input-col">
                         <p:selectOneMenu id="utilisateurDieteticiensDlg" value="#{utilisateurController.dieteticienSelectionne.idPersonne}">
@@ -201,7 +251,7 @@
                     </div>
 
                     <div class="dialog-label-col">
-                        <h:outputLabel for="utilisateurEntraineursDlg" value="Sélectionner les entraineurs :" />
+                        <h:outputLabel for="utilisateurEntraineursDlg" value="Sélectionner l'entraineur :" />
                     </div>
                     <div class="dialog-input-col">
                         <p:selectOneMenu id="utilisateurEntraineursDlg" value="#{utilisateurController.entraineurSelectionne.idPersonne}">
@@ -211,6 +261,21 @@
                                     var="entraineur"
                                     itemLabel="#{entraineur.nom} #{entraineur.prenom}"
                                     itemValue="#{entraineur.idPersonne}"
+                                    styleClass="dialog-selectmenu"/>
+                        </p:selectOneMenu>
+                    </div>
+
+                    <div class="dialog-label-col">
+                        <h:outputLabel for="utilisateurCategorieDlg" value="Sélectionner la catégorie :" />
+                    </div>
+                    <div class="dialog-input-col">
+                        <p:selectOneMenu id="utilisateurCategorieDlg" value="#{utilisateurController.categorieSelectionnee.id}">
+                            <f:selectItem itemLabel="-- Aucun --" itemValue="0" noSelectionOption="true"/>
+                            <f:selectItems
+                                    value="#{utilisateurController.categories}"
+                                    var="categorie"
+                                    itemLabel="#{categorie.nom}"
+                                    itemValue="#{categorie.id}"
                                     styleClass="dialog-selectmenu"/>
                         </p:selectOneMenu>
                     </div>
@@ -242,7 +307,7 @@
                                       label="Choisir"
                                       uploadLabel="Charger"
                                       cancelLabel="Annuler"
-                                      sizeLimit="2097152"
+                                      sizeLimit="20971520"
                                       multiple="false"
                                       allowTypes="/(\.|\/)(jpg|jpeg|png|gif)$/"
                                       invalidSizeMessage="Taille max : 2 Mo"
